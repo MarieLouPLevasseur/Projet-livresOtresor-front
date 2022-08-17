@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Tutoriel', 'A Propos', 'Inscription', 'Profil'];
+const pages = ['Tutoriel', "S'inscrire", 'Enfant', 'Parent'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Navbar = () => {
