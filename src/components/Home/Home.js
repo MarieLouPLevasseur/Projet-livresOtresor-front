@@ -1,9 +1,12 @@
 import React from 'react'
 import './Home.scss'
+import Navbar from './Navbar/Navbar'
 
 function Home() {
   return (
-    <div>Home</div>
+    <div>
+      <Navbar />
+    </div>
   )
 }
 
