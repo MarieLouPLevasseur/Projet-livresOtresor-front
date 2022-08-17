@@ -34,7 +34,7 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -48,7 +48,7 @@ const Navbar = () => {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'Montserrat',
+              fontFamily: 'Verdana',
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
@@ -104,7 +104,7 @@ const Navbar = () => {
               mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: 'Montserrat',
+              fontFamily:'Montserrat',
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
@@ -118,7 +118,7 @@ const Navbar = () => {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: 'white',fontFamily:'Montserrat', display: 'block' }}
               >
                 {page}
               </Button>
