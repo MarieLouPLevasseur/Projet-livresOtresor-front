@@ -3,20 +3,19 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
-import Button from '@mui/material/Button';
 
 import './Footer.scss';
 
 const pages = [
-  {name:"Mentions légales", path: "/mentions-legales"},
-  {name:"Politique des cookies", path: "/politique-cookies"},
-  {name:"A propos", path:"/a-propos"},
   {name:"FAQ", path:"/faq"},
+  {name:"A propos", path:"/a-propos"},
+  {name:"Mentions légales", path: "/mentions-legales"},
+  {name:"Politique des cookies", path: "/politique-cookies"}, 
 ];
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="body2" color="white"  sx={{fontFamily:'Montserrat'}}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         Livres O'Trésor
@@ -45,16 +44,19 @@ export default function StickyFooter() {
       >
         <Container maxWidth="sm">
           <Typography variant="body1">
-           
+
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box className='footer-text' sx={{ flexGrow: 1, display: { xs: 'flex-direction:column', md: 'flex' }}}>
             {pages.map((page) => (
-              <Button
-                key={page.name}
-                sx={{ my: 2, color: 'black', display: 'block' }}
-              >
-                {page.name}
-              </Button>
+              // <Button
+              //   key={page.name}
+              //   sx={{ my: 2, color: 'white', display: 'block' ,fontFamily:'Montserrat'}}
+              // >
+              //   {page.name}
+              // </Button>
+              <Link to={page.path} key={page.name} style={{ textDecoration: 'none', color: 'white'}}>
+                <Typography sx={{fontFamily: 'Montserrat'}} textAlign="center" >{page.name}</Typography>
+              </Link>
             ))}
           </Box>
           <Copyright />
