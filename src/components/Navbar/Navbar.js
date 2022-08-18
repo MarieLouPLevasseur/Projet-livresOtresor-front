@@ -47,9 +47,9 @@ const Navbar = () => {
   
   return (
     <AppBar className='nav' position="static">
-      <Container maxWidth="xl">
+      <Container maxWidth="xxl">
         <Toolbar disableGutters>
-          <AutoStoriesIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }} />
+          <AutoStoriesIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 2, ml: 10 }} />
             <Link to="/" style={{ textDecoration: 'none', color:'white'}}>
               <Typography
                 variant="h6"
@@ -98,8 +98,8 @@ const Navbar = () => {
               }}
             >
               {pages.map((page) => (
-                <Link to={page.path} style={{ textDecoration: 'none', color: 'black'}}>
-                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                <Link to={page.path} key={page.name} style={{ textDecoration: 'none', color: 'black'}}>
+                  <MenuItem onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{page.name}</Typography>
                   </MenuItem>
                 </Link>
@@ -126,11 +126,11 @@ const Navbar = () => {
             Livres O'Trésor
           </Typography>
           {!isLog && (
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'center' }}}>
               <Button
                 className='button'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
@@ -143,7 +143,7 @@ const Navbar = () => {
               <Button
                 className='button'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
@@ -156,7 +156,7 @@ const Navbar = () => {
               <Button
                 className='button'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
@@ -169,7 +169,7 @@ const Navbar = () => {
               <Button
                 className='button'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
@@ -181,6 +181,25 @@ const Navbar = () => {
               </Button>
             </Box>
           )}
+
+          {isLog && (
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end'}, mr: 5}}>
+              <Button
+                className='button'
+                onClick={handleCloseNavMenu}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block'}}
+              >
+                <NavLink
+                  className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                  style={{ textDecoration: 'none'}}
+                  to='/tutoriel'
+                >
+                  Tutoriel
+                </NavLink>
+              </Button>
+            </Box>
+          )}
+
           {isLog && (
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
