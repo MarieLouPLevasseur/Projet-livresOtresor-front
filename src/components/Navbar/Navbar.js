@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link, NavLink } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,10 +12,19 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
-const pages = ['Tutoriel', "S'inscrire", 'Enfant', 'Parent'];
+import './Navbar.scss';
+
+const pages = [
+  {name:"Tutoriel", path: "/tutoriel"},
+  {name:"S'inscrire", path: "/inscription"},
+  {name:"Enfant", path:"/"},
+  {name:"Parents", path:"/"},
+];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
+
+const isLog = false;
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -36,27 +46,27 @@ const Navbar = () => {
   };
   
   return (
-    <AppBar position="static">
+    <AppBar className='nav' position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'Montserrat',
-              fontWeight: 700,
-              letterSpacing: '.1rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Livres O'Trésor
-          </Typography>
+          <AutoStoriesIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }} />
+            <Link to="/" style={{ textDecoration: 'none', color:'white'}}>
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{
+                  mr: 120,
+                  display: { xs: 'none', md: 'flex' },
+                  fontFamily: 'Montserrat',
+                  fontWeight: 700,
+                  letterSpacing: '.1rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                Livres O'Trésor
+              </Typography>
+            </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -88,13 +98,15 @@ const Navbar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                <Link to={page.path} style={{ textDecoration: 'none', color: 'black'}}>
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <AutoStoriesIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -106,25 +118,70 @@ const Navbar = () => {
               flexGrow: 1,
               fontFamily:'Montserrat',
               fontWeight: 700,
-              letterSpacing: '.3rem',
+              letterSpacing: '.1rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Livres O'Trésor
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+          {!isLog && (
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               <Button
-                key={page}
+                className='button'
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
               >
-                {page}
+                <NavLink
+                  className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                  style={{ textDecoration: 'none'}}
+                  to='/tutoriel'
+                >
+                  Tutoriel
+                </NavLink>
               </Button>
-            ))}
-          </Box>
-
+              <Button
+                className='button'
+                onClick={handleCloseNavMenu}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+              >
+                <NavLink
+                  className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                  style={{ textDecoration: 'none'}}
+                  to='/inscription'
+                >
+                  S'inscrire
+                </NavLink>
+              </Button>
+              <Button
+                className='button'
+                onClick={handleCloseNavMenu}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+              >
+                <NavLink
+                  className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                  style={{ textDecoration: 'none'}}
+                  to='/'
+                >
+                  Enfant
+                </NavLink>
+              </Button>
+              <Button
+                className='button'
+                onClick={handleCloseNavMenu}
+                sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block' }}
+              >
+                <NavLink
+                  className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                  style={{ textDecoration: 'none'}}
+                  to='/'
+                >
+                  Parent
+                </NavLink>
+              </Button>
+            </Box>
+          )}
+          {isLog && (
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -154,6 +211,7 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

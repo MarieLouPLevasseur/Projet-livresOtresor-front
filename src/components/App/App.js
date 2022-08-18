@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
+import Navbar from '../Navbar/Navbar'
 import Home from '../Home/Home'
 import Register from '../Register/Register'
 import Profiles from '../Profiles/Profiles'
@@ -22,6 +23,7 @@ import './App.scss';
 function App() {
   return (
     <div className="App">
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/inscription" element={<Register />} />
