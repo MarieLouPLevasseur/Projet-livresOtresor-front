@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import Navbar from '../Navbar/Navbar'
 import Home from '../Home/Home'
+import KidLogin from '../KidLogin/KidLogin'
 import Register from '../Register/Register'
 import Profiles from '../Profiles/Profiles'
 import Legal from '../Legal/Legal'
@@ -27,6 +28,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path="/inscription" element={<Register />} />
         <Route path="/profil" element={<Profiles />} />
         <Route path="/mentions-legales" element={<Legal />} />
