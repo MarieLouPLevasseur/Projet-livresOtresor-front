@@ -1,12 +1,23 @@
 .footer {
   background:#4462A5 !important;
-}
+  padding-top: 0 !important;
+  padding-bottom: 10px !important;
 
-.footer-text {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+
+  &-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+  }
+
+  &-link {
+    color: white !important;  
+
+    &--active {
+      font-weight: bold !important;   
+    }
+  }
 }
 
 // ********************RESPONSIVE**********************************

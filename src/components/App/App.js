@@ -29,7 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/inscription" element={<Register />} />
         <Route path="/profil" element={<Profiles />} />
-        <Route path="/legal" element={<Legal />} />
+        <Route path="/mentions-legales" element={<Legal />} />
         <Route path="/tutoriel" element={<Tutorial />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/cookies" element={<Cookies />} />

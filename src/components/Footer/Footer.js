@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
+import { NavLink } from 'react-router-dom';
+import { Button } from '@material-ui/core';
 
 import './Footer.scss';
 
@@ -10,7 +12,7 @@ const pages = [
   {name:"FAQ", path:"/faq"},
   {name:"A propos", path:"/a-propos"},
   {name:"Mentions légales", path: "/mentions-legales"},
-  {name:"Politique des cookies", path: "/politique-cookies"}, 
+  {name:"Politique des cookies", path: "/cookies"}, 
 ];
 
 function Copyright() {
@@ -43,20 +45,17 @@ export default function StickyFooter() {
         }}
       >
         <Container maxWidth="sm">
-          <Typography variant="body1">
-
-          </Typography>
           <Box className='footer-text' sx={{ flexGrow: 1, display: { xs: 'flex-direction:column', md: 'flex' }}}>
             {pages.map((page) => (
-              // <Button
-              //   key={page.name}
-              //   sx={{ my: 2, color: 'white', display: 'block' ,fontFamily:'Montserrat'}}
-              // >
-              //   {page.name}
-              // </Button>
-              <Link to={page.path} key={page.name} style={{ textDecoration: 'none', color: 'white'}}>
-                <Typography sx={{fontFamily: 'Montserrat'}} textAlign="center" >{page.name}</Typography>
-              </Link>
+              <Button key={page.name} sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }} >
+                <NavLink 
+                  to={page.path}
+                  className={({ isActive }) => (isActive ? 'footer-link footer-link--active' : 'footer-link')}
+                  style={{ textDecoration: 'none', color: 'white'}}
+                >
+                  {page.name}
+                </NavLink>
+              </Button>
             ))}
           </Box>
           <Copyright />
