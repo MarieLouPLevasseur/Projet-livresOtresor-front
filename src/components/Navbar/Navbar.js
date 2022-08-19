@@ -24,7 +24,7 @@ const pages = [
 ];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const isLog = false;
+const isLog = true;
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -55,7 +55,6 @@ const Navbar = () => {
                 variant="h6"
                 noWrap
                 sx={{
-                  mr: 120,
                   display: { xs: 'none', md: 'flex' },
                   fontFamily: 'Montserrat',
                   fontWeight: 700,
