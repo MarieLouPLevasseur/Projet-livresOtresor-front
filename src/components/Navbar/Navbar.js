@@ -24,7 +24,7 @@ const pages = [
 ];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const isLog = true;
+const isLog = false;
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
