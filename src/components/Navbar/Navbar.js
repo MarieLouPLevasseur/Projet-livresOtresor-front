@@ -126,9 +126,8 @@ const Navbar = () => {
             Livres O'Trésor
           </Typography>
           {!isLog && (
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'center' }}}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end' }}}>
               <Button
-                className='button'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
@@ -141,7 +140,6 @@ const Navbar = () => {
                 </NavLink>
               </Button>
               <Button
-                className='button'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
@@ -154,7 +152,6 @@ const Navbar = () => {
                 </NavLink>
               </Button>
               <Button
-                className='button'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >
@@ -167,7 +164,6 @@ const Navbar = () => {
                 </NavLink>
               </Button>
               <Button
-                className='button'
                 onClick={handleCloseNavMenu}
                 sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }}
               >

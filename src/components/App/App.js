@@ -17,6 +17,7 @@ import Search from '../Search/Search'
 import MyBooks from '../MyBooks/MyBooks'
 import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
+import Footer from '../Footer/Footer'
 
 import './App.scss';
 
@@ -28,7 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/inscription" element={<Register />} />
         <Route path="/profil" element={<Profiles />} />
-        <Route path="/legal" element={<Legal />} />
+        <Route path="/mentions-legales" element={<Legal />} />
         <Route path="/tutoriel" element={<Tutorial />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/cookies" element={<Cookies />} />
@@ -41,6 +42,7 @@ function App() {
         <Route path="/recompenses" element={<Rewards />} />
         <Route path="/recherche/voir-livre" element={<Book />} />
       </Routes>
+      <Footer />
     </div>
   );
 }
