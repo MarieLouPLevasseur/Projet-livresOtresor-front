@@ -29,7 +29,7 @@ function Copyright() {
 
 export default function Footer() {
   const { pathname } = useLocation();
-  if (pathname === "/connexion-parent") return null;
+  if (pathname === "/connexion-parent" || pathname === "/connexion-enfant") return null;
   return (
       <Box
         className="footer"
@@ -43,7 +43,7 @@ export default function Footer() {
         <Container maxWidth="sm">
           <Box className='footer-text' sx={{ flexGrow: 1, display: { xs: 'flex-direction:column', md: 'flex' }}}>
             {pages.map((page) => (
-              <Typography key={page.name} sx={{ my: 2, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }} >
+              <Typography key={page.name} sx={{ my: { xs: 1, md: 2}, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }} >
                 <NavLink 
                   to={page.path}
                   className={({ isActive }) => (isActive ? 'footer-link footer-link--active' : 'footer-link')}

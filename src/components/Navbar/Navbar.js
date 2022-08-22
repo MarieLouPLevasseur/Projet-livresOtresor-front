@@ -169,7 +169,7 @@ const Navbar = () => {
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
                   style={{ textDecoration: 'none'}}
-                  to='/'
+                  to='/connexion-parent'
                 >
                   Parent
                 </NavLink>

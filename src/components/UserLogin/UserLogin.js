@@ -3,19 +3,21 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import './UserLogin.scss';
+import Image from '../../assets/img/userlogin.jpg';
+
+
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>    
+    <Typography variant="body2" fontFamily={'Montserrat'} color="text.secondary" align="center" {...props}>    
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         Livres O'Trésor
@@ -26,26 +28,42 @@ function Copyright(props) {
   );
 }
 
+const theme = createTheme({
+  palette:{
+    primary:{
+      main: '#768fd7',
+    }
+  },
+  avatar: {
+    primary:{
+      main: '#768fd7',
+    }
+  },
+  typography: {
+    fontFamily: [
+      'Montserrat'
+    ]
+  }
+});
+
 function AnotherFooter(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>    
-      <Link color="inherit" style= {{textDecoration: 'none'}} href="https://mui.com/">
+      <Link color="inherit" underline="hover" href="/faq">
         FAQ
       </Link>{' | '}
-      <Link color="inherit" style= {{textDecoration: 'none'}} href="https://mui.com/">
+      <Link color="inherit" underline="hover" href="/a-propos">
         A propos
       </Link>{' | '}
-      <Link color="inherit" style= {{textDecoration: 'none'}} href="https://mui.com/">
+      <Link color="inherit" underline="hover" href="mentions-legales">
         Mention légales
       </Link>{' | '}
-      <Link color="inherit" style= {{textDecoration: 'none'}} href="https://mui.com/">
+      <Link color="inherit" underline="hover" href="cookies">
         Politique des cookies
       </Link>{' '}
     </Typography>
   );
 }
-
-const theme = createTheme();
 
 export default function UserLogin() {
   const handleSubmit = (event) => {
@@ -67,7 +85,7 @@ export default function UserLogin() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',
+            backgroundImage: `url(${Image})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -85,19 +103,20 @@ export default function UserLogin() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
+            <Avatar sx={{ m: 1 , bgcolor: 'grey' }}>
+              <AutoStoriesIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Connexion Parent
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
+                className='loginField'
                 margin="normal"
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -107,32 +126,24 @@ export default function UserLogin() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Mot de passe"
                 type="password"
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
               <Button
+                className='loginButton'
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 2, mb: 2, backgroundColor: '#4462A5' }}
               >
-                Sign In
+                S'identifier
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                  <Link href="/inscription" underline="hover" variant="body2" fontFamily={'Montserrat'} color="#768fd7">
+                    {"Pas encore de compte? Incrivez-vous"}
                   </Link>
                 </Grid>
               </Grid>
