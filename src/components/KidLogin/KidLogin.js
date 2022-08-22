@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Image from '../../../src/assets/img/image-connexion-enfant.jpg';
+import Image from '../../../src/assets/img/kidlogin.jpg';
 import './KidLogin.scss';
 
 
