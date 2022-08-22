@@ -24,7 +24,7 @@ const pages = [
 ];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
-const isLog = true;
+const isLog = false;
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -169,7 +169,7 @@ const Navbar = () => {
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
                   style={{ textDecoration: 'none'}}
-                  to='/'
+                  to='/connexion-parent'
                 >
                   Parent
                 </NavLink>

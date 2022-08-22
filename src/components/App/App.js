@@ -21,6 +21,7 @@ import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
 
 import './App.scss';
+import UserLogin from '../UserLogin/UserLogin';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path="/inscription" element={<Register />} />
+        <Route path='/connexion-parent' element={<UserLogin />} />
         <Route path="/profil" element={<Profiles />} />
         <Route path="/mentions-legales" element={<Legal />} />
         <Route path="/tutoriel" element={<Tutorial />} />
