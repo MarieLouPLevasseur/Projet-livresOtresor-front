@@ -3,8 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
-import { NavLink } from 'react-router-dom';
-import { Button } from '@material-ui/core';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import './Footer.scss';
 
@@ -28,7 +27,9 @@ function Copyright() {
   );
 }
 
-export default function StickyFooter() {
+export default function Footer() {
+  const { pathname } = useLocation();
+  if (pathname === "/connexion-parent") return null;
   return (
       <Box
         className="footer"
@@ -37,25 +38,20 @@ export default function StickyFooter() {
           py: 3,
           px: 2,
           mt: 'auto',
-          backgroundColor: 
-          (theme) =>
-            theme.palette.mode === 'light'
-              ? theme.palette.grey[200]
-              : theme.palette.grey[800],
         }}
       >
         <Container maxWidth="sm">
           <Box className='footer-text' sx={{ flexGrow: 1, display: { xs: 'flex-direction:column', md: 'flex' }}}>
             {pages.map((page) => (
-              <Button key={page.name} sx={{ my: 3, color: 'white',fontFamily:'Montserrat', display: 'block', mr: 2 }} >
+              <Typography key={page.name} sx={{ my: { xs: 1, md: 2}, color: 'white', fontFamily:'Montserrat', display: 'block', mr: 2 }} >
                 <NavLink 
                   to={page.path}
                   className={({ isActive }) => (isActive ? 'footer-link footer-link--active' : 'footer-link')}
-                  style={{ textDecoration: 'none', color: 'white'}}
+                  style={{ textDecoration: 'none', color:'white'}}
                 >
                   {page.name}
                 </NavLink>
-              </Button>
+              </Typography>
             ))}
           </Box>
           <Copyright />

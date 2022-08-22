@@ -7,15 +7,16 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Image from '../../../src/assets/img/image-connexion-enfant.jpg'
+import Image from '../../../src/assets/img/image-connexion-enfant.jpg';
+import './KidLogin.scss';
 
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" fontFamily={'montserrat'} color="text.secondary" align="center" {...props}>
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="/">
         Livres O'Trésor
@@ -27,7 +28,7 @@ function Copyright(props) {
 }
 function AnotherFooter(props) {
   return (
-    <Typography variant="body2" fontFamily={'montserrat'} color="text.secondary" align="center" {...props}>
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
       <Link color="inherit" underline='hover' href="/faq">
         FAQ
       </Link>{' | '}
@@ -44,9 +45,20 @@ function AnotherFooter(props) {
   );
 }
 
-const theme = createTheme();
+const theme = createTheme({
+  palette:{
+    primary:{
+      main: '#768fd7',
+    }
+  },
+  typography: {
+    fontFamily: [
+      'Montserrat'
+    ]
+  }
+});
 
-export default function SignInSide() {
+export default function KidLogin() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -84,11 +96,11 @@ export default function SignInSide() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
+            <Avatar className='loginAvatar' sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <AutoStoriesIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Espace enfant
+              Connexion enfant
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
@@ -96,8 +108,8 @@ export default function SignInSide() {
                 required
                 fullWidth
                 id="identifiant"
-                label="identifiant"
-                name="identifiant"
+                label="Identifiant"
+                name="Identifiant"
                 autoComplete="current-identifiant"
                 autoFocus
               />
@@ -112,6 +124,7 @@ export default function SignInSide() {
                 autoComplete="current-password"
               />
               <Button
+                className="loginButton"
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -121,17 +134,12 @@ export default function SignInSide() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="/inscription" variant="body2">
+                  <Link href="/inscription" variant="body2" underline='hover' color='#768fd7' >
                     Pas encore de compte ? Inscrivez-vous
                   </Link>
                 </Grid>
-                {/* <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Pas de compte "}
-                  </Link>
-                </Grid> */}
               </Grid>
-              <AnotherFooter sx={{ mt: 4 , color:'g#4462A5' }}/>
+              <AnotherFooter sx={{ mt: 5 }}/>
               <Copyright sx={{ mt: 2 }} />
             </Box>
           </Box>
