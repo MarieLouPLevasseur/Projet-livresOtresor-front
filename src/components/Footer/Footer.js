@@ -29,7 +29,7 @@ function Copyright() {
 
 export default function Footer() {
   const { pathname } = useLocation();
-  if (pathname === "/connexion-parent" || pathname === "/connexion-enfant") return null;
+  if (pathname === "/connexion-parent" || pathname === "/connexion-enfant" || pathname === "/inscription") return null;
   return (
       <Box
         className="footer"
