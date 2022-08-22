@@ -19,8 +19,8 @@ import './Navbar.scss';
 const pages = [
   {name:"Tutoriel", path: "/tutoriel"},
   {name:"S'inscrire", path: "/inscription"},
-  {name:"Enfant", path:"/"},
-  {name:"Parents", path:"/"},
+  {name:"Enfant", path:"/connexion-enfant"},
+  {name:"Parents", path:"/connexion-parent"},
 ];
 const settings = ['Profil', 'Compte', 'Déconnexion'];
 
@@ -157,7 +157,7 @@ const Navbar = () => {
                 <NavLink
                   className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
                   style={{ textDecoration: 'none'}}
-                  to='/'
+                  to='/connexion-enfant'
                 >
                   Enfant
                 </NavLink>
