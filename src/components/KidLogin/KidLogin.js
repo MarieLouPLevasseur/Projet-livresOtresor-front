@@ -1,11 +1,8 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -18,7 +15,7 @@ import Image from '../../../src/assets/img/image-connexion-enfant.jpg'
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+    <Typography variant="body2" fontFamily={'montserrat'} color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="/">
         Livres O'Trésor
@@ -30,19 +27,19 @@ function Copyright(props) {
 }
 function AnotherFooter(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      <NavLink colorText="inherit" style={{textDecoration:'none'}} to="/faq">
+    <Typography variant="body2" fontFamily={'montserrat'} color="text.secondary" align="center" {...props}>
+      <Link color="inherit" underline='hover' href="/faq">
         FAQ
-      </NavLink>{' | '}
-      <NavLink color="inherit" style={{textDecoration:'none'}} to="/a-propos">
+      </Link>{' | '}
+      <Link color="inherit" underline='hover' href="/a-propos">
         A propos
-      </NavLink>{' | '}
-      <NavLink color="inherit" style={{textDecoration:'none'}} to="/mentions-legales">
+      </Link>{' | '}
+      <Link color="inherit" underline='hover' href="/mentions-legales">
         Mentions légales
-      </NavLink>{' | '}
-      <NavLink color="inherit" style={{textDecoration:'none'}} to="/cookies">
+      </Link>{' | '}
+      <Link color="inherit" underline='hover' href="/cookies">
         Politique des cookies
-      </NavLink>
+      </Link>
     </Typography>
   );
 }
@@ -114,10 +111,6 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Se souvenir de moi"
-              />
               <Button
                 type="submit"
                 fullWidth
@@ -128,15 +121,15 @@ export default function SignInSide() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Mot de passe oublié ?
+                  <Link href="/inscription" variant="body2">
+                    Pas encore de compte ? Inscrivez-vous
                   </Link>
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <Link href="#" variant="body2">
                     {"Pas de compte "}
                   </Link>
-                </Grid>
+                </Grid> */}
               </Grid>
               <AnotherFooter sx={{ mt: 4 , color:'g#4462A5' }}/>
               <Copyright sx={{ mt: 2 }} />
