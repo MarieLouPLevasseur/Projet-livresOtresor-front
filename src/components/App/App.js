@@ -29,8 +29,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path="/inscription" element={<Register />} />
+        <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path='/connexion-parent' element={<UserLogin />} />
         <Route path="/profil" element={<Profiles />} />
         <Route path="/mentions-legales" element={<Legal />} />

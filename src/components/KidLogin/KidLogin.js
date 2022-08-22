@@ -100,7 +100,7 @@ export default function KidLogin() {
               <AutoStoriesIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Connexion enfant
+              Connexion Enfant
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField

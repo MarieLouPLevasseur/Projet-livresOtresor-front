@@ -34,11 +34,6 @@ const theme = createTheme({
       main: '#768fd7',
     }
   },
-  avatar: {
-    primary:{
-      main: '#768fd7',
-    }
-  },
   typography: {
     fontFamily: [
       'Montserrat'
@@ -55,10 +50,10 @@ function AnotherFooter(props) {
       <Link color="inherit" underline="hover" href="/a-propos">
         A propos
       </Link>{' | '}
-      <Link color="inherit" underline="hover" href="mentions-legales">
-        Mention légales
+      <Link color="inherit" underline="hover" href="/mentions-legales">
+        Mentions légales
       </Link>{' | '}
-      <Link color="inherit" underline="hover" href="cookies">
+      <Link color="inherit" underline="hover" href="/cookies">
         Politique des cookies
       </Link>{' '}
     </Typography>
@@ -103,7 +98,7 @@ export default function UserLogin() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1 , bgcolor: 'grey' }}>
+            <Avatar className='loginAvatar' sx={{ m: 1 }}>
               <AutoStoriesIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -143,7 +138,7 @@ export default function UserLogin() {
               <Grid container>
                 <Grid item xs>
                   <Link href="/inscription" underline="hover" variant="body2" fontFamily={'Montserrat'} color="#768fd7">
-                    {"Pas encore de compte? Incrivez-vous"}
+                    {"Pas encore de compte ? Inscrivez-vous"}
                   </Link>
                 </Grid>
               </Grid>
