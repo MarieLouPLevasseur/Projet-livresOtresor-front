@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './UserLogin.scss';
-import Image from '../../assets/img/userlogin.jpg';
+import Image from '../../assets/img/userlogin2.jpg';
 
 
 function Copyright(props) {
@@ -69,6 +70,17 @@ export default function UserLogin() {
       password: data.get('password'),
     });
   };
+
+  axios.post('http://localhost:8000/api/v1/login/user', {
+    email: "senger.simeon@nicolas.info" ,
+    password: "devinci"
+  })
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.err(err);
+  });
 
   return (
     <ThemeProvider theme={theme}>
