@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './Register.scss';
-import Image from '../../assets/img/logo.3.png';
+import Image from '../../assets/img/register.jpg';
 
 
 function Copyright(props) {
@@ -84,7 +84,7 @@ export default function Register() {
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'contain',
+            backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />

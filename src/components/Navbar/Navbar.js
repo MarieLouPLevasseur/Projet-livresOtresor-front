@@ -12,7 +12,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import Logo from '../../assets/img/logo.5.png';
 
 import './Navbar.scss';
 
@@ -49,7 +49,7 @@ const Navbar = () => {
     <AppBar className='nav' position="static">
       <Container maxWidth="xxl">
         <Toolbar disableGutters>
-          <AutoStoriesIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 2, ml: 10 }} />
+          <Box component="img" sx={{ display: { xs: 'none', md: 'flex' }, mr: 2, ml: 10 }} src={Logo} className="app-logo" alt="logo"/>          
             <Link to="/" style={{ textDecoration: 'none', color:'white'}}>
               <Typography
                 variant="h6"
@@ -105,7 +105,7 @@ const Navbar = () => {
               ))}
             </Menu>
           </Box>
-          <AutoStoriesIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Box component="img" sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src={Logo} className="app-logo" alt="logo" />
           <Typography
             variant="h5"
             noWrap
