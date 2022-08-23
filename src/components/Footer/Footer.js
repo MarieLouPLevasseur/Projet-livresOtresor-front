@@ -16,7 +16,7 @@ const pages = [
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="white"  sx={{fontFamily:'Montserrat'}}>
+    <Typography variant="body2" color="white"  sx={{fontFamily:'Montserrat', textAlign: "center"}}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         Livres O'Trésor
