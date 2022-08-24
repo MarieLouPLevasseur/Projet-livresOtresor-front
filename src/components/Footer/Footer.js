@@ -16,7 +16,7 @@ const pages = [
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="white"  sx={{fontFamily:'Montserrat'}}>
+    <Typography variant="body2" color="white"  sx={{fontFamily:'Montserrat', textAlign: "center"}}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
         Livres O'Trésor
@@ -29,7 +29,7 @@ function Copyright() {
 
 export default function Footer() {
   const { pathname } = useLocation();
-  if (pathname === "/connexion-parent" || pathname === "/connexion-enfant") return null;
+  if (pathname === "/connexion-parent" || pathname === "/connexion-enfant" || pathname === "/inscription") return null;
   return (
       <Box
         className="footer"
