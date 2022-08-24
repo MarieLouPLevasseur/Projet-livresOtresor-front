@@ -78,6 +78,7 @@ export default function Register() {
   //alert snackbar control
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+  const [alertInvalidEmail, setAlertInvalidEmail] = useState(false)
 
   const checkEmailValidity = () => {
     if (
@@ -110,8 +111,10 @@ export default function Register() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (emailError === true || firstNameValue === "" || lastNameValue === "" || passwordValue === "" ) {
+    if (emailValue === "" || firstNameValue === "" || lastNameValue === "" || passwordValue === "" ) {
       setAlertErrorSubmit(true);
+    } else if (emailError === true) {
+      setAlertInvalidEmail(true)
     } else {
       setAlertSuccesSubmit(true);
     const profilUser = {
@@ -188,6 +191,8 @@ export default function Register() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  error={ emailError }
+                  helperText={ emailError ? "Email invalide." : "" }
                   required
                   fullWidth
                   id="email"
@@ -263,6 +268,20 @@ export default function Register() {
           sx={{ width: "100%" }}
         >
           Inscription incomplète ! Merci de remplir tous les champs
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={alertInvalidEmail}
+        autoHideDuration={6000}
+        onClose={() => setAlertInvalidEmail(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          Adresse Email invalide !
         </MuiAlert>
       </Snackbar>
     </ThemeProvider>
