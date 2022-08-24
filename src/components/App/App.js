@@ -25,7 +25,6 @@ import UserLogin from '../UserLogin/UserLogin';
 
 function App() {
   return (
-    <>
     <div className="App">
       <Navbar />
       <Routes>
@@ -47,9 +46,8 @@ function App() {
         <Route path="/recompenses" element={<Rewards />} />
         <Route path="/recherche/voir-livre" element={<Book />} />
       </Routes>
-    </div>
       <Footer />
-      </>
+    </div>
   );
 }
 
