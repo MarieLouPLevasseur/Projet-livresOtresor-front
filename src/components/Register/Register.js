@@ -66,6 +66,7 @@ function AnotherFooter(props) {
 
 export default function Register() {
 
+  // local state because we need those only here
   const [firstNameValue, setFirstName] = useState("");
   const [lastNameValue, setLastName] = useState("");
   const [emailValue, setEmail] = useState("");
@@ -73,6 +74,10 @@ export default function Register() {
 
   // error control
   const [emailError, setEmailError] = useState(false);
+
+  //alert snackbar control
+  const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
+  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
 
   const checkEmailValidity = () => {
     if (
@@ -102,9 +107,6 @@ export default function Register() {
 
   const routeApi="adresseApiEndpoint"
 
-  //alert snackbar control
-  const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
-  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -260,7 +262,7 @@ export default function Register() {
           severity="error"
           sx={{ width: "100%" }}
         >
-          Formulaire incomplet ! Merci de remplir tous les champs
+          Inscription incomplète ! Merci de remplir tous les champs
         </MuiAlert>
       </Snackbar>
     </ThemeProvider>
