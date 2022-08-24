@@ -2,7 +2,6 @@ import React from 'react'
 
 import Faq from './Faq/Faq'
 import HomeCarousel from './HomeCarousel/HomeCarousel'
-import Faq from './Faq/Faq'
 
 import './Home.scss'
 

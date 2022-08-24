@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -6,6 +8,8 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import Grid from '@mui/material/Grid';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
@@ -61,13 +65,62 @@ function AnotherFooter(props) {
 }
 
 export default function Register() {
+
+  const [firstNameValue, setFirstName] = useState("");
+  const [lastNameValue, setLastName] = useState("");
+  const [emailValue, setEmail] = useState("");
+  const [passwordValue, setPassword] = useState("");
+
+  // error control
+  const [emailError, setEmailError] = useState(false);
+
+  const checkEmailValidity = () => {
+    if (
+      !emailValue.match(
+        "^([A-Za-z0-9_\\-\\.]+)@([A-Za-z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+      )
+    ) {
+      setEmailError(true);
+    } else {
+      setEmailError(false);
+    }
+  };
+
+  //api call
+  const postApi = (routeApi ,data) => {
+    axios.post(routeApi , data, {headers : {
+      "Content-Type": "application/json"
+    },
+    } )
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  const routeApi="adresseApiEndpoint"
+
+  //alert snackbar control
+  const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
+  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    if (emailError === true || firstNameValue === "" || lastNameValue === "" || passwordValue === "" ) {
+      setAlertErrorSubmit(true);
+    } else {
+      setAlertSuccesSubmit(true);
+    const profilUser = {
+      firstName: firstNameValue,
+      lastName: lastNameValue,
+      email: emailValue,
+      password: passwordValue,
+    };
+    const profilUserJson = JSON.stringify(profilUser);
+    postApi(routeApi,profilUserJson)
+  }
   };
 
   return (
@@ -115,6 +168,8 @@ export default function Register() {
                   id="firstName"
                   label="Prénom"
                   autoFocus
+                  value={firstNameValue}
+                  onChange={(e) => setFirstName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -125,6 +180,8 @@ export default function Register() {
                   label="Nom"
                   name="lastName"
                   autoComplete="family-name"
+                  value={lastNameValue}
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -135,6 +192,9 @@ export default function Register() {
                   label="Email"
                   name="email"
                   autoComplete="email"
+                  onBlur={checkEmailValidity}
+                  value={emailValue}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -146,6 +206,8 @@ export default function Register() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  value={passwordValue}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -173,6 +235,34 @@ export default function Register() {
           </Box>
         </Grid>
       </Grid>
+      <Snackbar
+        open={alertSuccesSubmit}
+        autoHideDuration={6000}
+        onClose={() => setAlertSuccesSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Inscription réussie !
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={alertErrorSubmit}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Formulaire incomplet ! Merci de remplir tous les champs
+        </MuiAlert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
