@@ -107,9 +107,10 @@ const Navbar = () => {
           </Box>
           <Box component="img" sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src={Logo} className="app-logo" alt="logo" />
           <Typography
+            component={Link}
+            to="/"
             variant="h5"
             noWrap
-            component="a"
             href=""
             sx={{
               mr: 2,
