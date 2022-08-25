@@ -16,7 +16,7 @@ function Home() {
       <Typography className='titre2' variant="h2" sx={{paddingBottom:'40px', lineHeight: '40px', letterSpacing:'2px', width:{xs:'70%', md:'100%'}}}>
         Vous trouverez ici un espace de tranquillité personnel pour ranger les livres de votre enfant en toute simplicité.
       </Typography>
-      <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '35px', gap:'40px'} }}>
+      <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '35px', gap:'100px'} }}>
       <Box 
       component="img"
       alt="à définir"
@@ -33,7 +33,7 @@ function Home() {
       Permettre aux plus grands d’y stocker facilement et d’y répertorier leurs listes d’envie à venir comme leurs livres lus.
       </Typography>
       </Box>
-      <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'center', alignItems: 'center', gap:'40px'} }}>
+      <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'center', alignItems: 'center', gap:'100px'} }}>
       <Typography className='paragraphe' sx={{ padding:'44px', maxWidth: '300px', lineHeight: '30px', letterSpacing:'2px'}}>
       Plus de doublons dans leur collection, vous pourrez désormais plus facilement vous y retrouver vous aussi.
       La gestion de la bibliothèque a volontairement été simplifiée pour une utilisation plus fluide pour les jeunes enfants. Il ne reste plus qu’à prendre possession de votre nouvel espace.

@@ -111,7 +111,6 @@ const Navbar = () => {
             to="/"
             variant="h5"
             noWrap
-            component="a"
             href=""
             sx={{
               mr: 2,
