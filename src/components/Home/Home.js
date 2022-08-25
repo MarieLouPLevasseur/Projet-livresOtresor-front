@@ -10,7 +10,7 @@ import Image1 from '../../assets/img/kidlogin.jpg'
 
 function Home() {
   return (
-    <div className='home'sx={{width: '70%' , display: {xs:'flex-column', md: 'flex'} }}>
+    <div className='home'>
       <HomeCarousel />
       <Typography className='titre1' variant="h1" sx={{color:"#4462A5", padding: '40px', letterSpacing:'1px'}}>Bienvenue sur le site de O'Trésor</Typography>
       <Typography className='titre2' variant="h2" sx={{paddingBottom:'40px', lineHeight: '40px', letterSpacing:'2px', width:{xs:'70%', md:'100%'}}}>
