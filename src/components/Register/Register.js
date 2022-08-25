@@ -106,7 +106,7 @@ export default function Register() {
     });
   }
 
-  const routeApi="adresseApiEndpoint"
+  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/users"
 
 
   const handleSubmit = (event) => {
@@ -125,7 +125,7 @@ export default function Register() {
     };
     const profilUserJson = JSON.stringify(profilUser);
     postApi(routeApi,profilUserJson)
-  }
+    }
   };
 
   return (
