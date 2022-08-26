@@ -67,6 +67,7 @@ function AnotherFooter(props) {
 export default function Register() {
 
   // local state because we need those only here
+
   // controlled components
   const [firstNameValue, setFirstName] = useState("");
   const [lastNameValue, setLastName] = useState("");
