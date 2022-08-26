@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import Navbar from '../Navbar/Navbar'
 import Home from '../Home/Home'
@@ -20,16 +21,36 @@ import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
 
-import './App.scss';
 import UserLogin from '../UserLogin/UserLogin';
+import { userLogin } from '../../features/login/userSlice';
+import { kidLogin } from '../../features/login/kidSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+import './App.scss';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  const isLogUser = useSelector((state) => state.user.isLogUser);
+  const isLogKid = useSelector((state) => state.kid.isLogKid);
+
+  useEffect(() => {
+    const loggedUser = JSON.parse(localStorage.getItem('user'));
+    const loggedKid = JSON.parse(localStorage.getItem('kid'));
+    if (loggedUser) {
+      dispatch(userLogin(loggedUser.token));
+    } else if (loggedKid) {
+      dispatch(kidLogin(loggedKid.token));
+    }
+  },[]);
+
   return (
     <div className="App">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/inscription" element={<Register />} />
+        {!isLogKid && <Route path="/inscription" element={<Register />} />}
         <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path='/connexion-parent' element={<UserLogin />} />
         <Route path="/profil" element={<Profiles />} />
@@ -38,13 +59,14 @@ function App() {
         <Route path="/faq" element={<Faq />} />
         <Route path="/cookies" element={<Cookies />} />
         <Route path="/a-propos" element={<About />} />
-        <Route path="/profil/utilisateur" element={<HomeUser />} />
+        {isLogUser && <Route path="/profil/utilisateur" element={<HomeUser />} />}
         <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />
         <Route path="/profil/enfant" element={<HomeKid />} />
         <Route path="/recherche" element={<Search />} />
         <Route path="/mes-livres" element={<MyBooks />} />
         <Route path="/recompenses" element={<Rewards />} />
         <Route path="/recherche/voir-livre" element={<Book />} />
+        <Route path="*" element={<h1>404</h1>} />
       </Routes>
       <Footer />
     </div>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,7 +10,13 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { kidLogin } from '../../features/login/kidSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import Image from '../../../src/assets/img/kidlogin.jpg';
 import './KidLogin.scss';
 
@@ -59,13 +66,52 @@ const theme = createTheme({
 });
 
 export default function KidLogin() {
+  // Redux-toolkit state import
+  const dispatch = useDispatch()
+
+  // Controlled components
+  const [userNameValue, setUserName] = useState("");
+  const [passwordValue, setPassword] = useState("");
+
+  // Error states
+  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+  const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+
+  // Api Call
+  const postApi = (routeApi ,data) => {
+    axios.post(routeApi , data, {headers : {
+      "Content-Type": "application/json"
+    },
+    })
+    .then(function (response) {
+      console.log(response);
+      const { token } = response.data;
+
+      localStorage.setItem('kid', JSON.stringify({
+        token,
+      }));
+      dispatch(kidLogin(token))
+    })
+    .catch(function (error) {
+      console.log(error);
+      setAlertErrorLogin(true)
+    });
+  }
+
+  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/login/kid"
+  
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      userKid: data.get('userKid'),
-      password: data.get('password'),
-    });
+    if (userNameValue === "" || passwordValue === "" ) {
+      setAlertErrorSubmit(true);
+    } else {
+    const profilUser = {
+      username: userNameValue,
+      password: passwordValue,
+    };
+    const profilUserJson = JSON.stringify(profilUser);
+    postApi(routeApi,profilUserJson)
+    }
   };
 
   return (
@@ -112,6 +158,8 @@ export default function KidLogin() {
                 name="Identifiant"
                 autoComplete="current-identifiant"
                 autoFocus
+                value={userNameValue}
+                onChange={(e) => setUserName(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -122,6 +170,8 @@ export default function KidLogin() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={passwordValue}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Button
                 className="loginButton"
@@ -145,6 +195,34 @@ export default function KidLogin() {
           </Box>
         </Grid>
       </Grid>
+      <Snackbar
+        open={alertErrorSubmit}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          La connexion a échouée : Merci de remplir tous les champs
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={alertErrorLogin}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorLogin(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          La connexion a échouée : Identifiants incorrects
+        </MuiAlert>
+      </Snackbar>
     </ThemeProvider>
   );
 }

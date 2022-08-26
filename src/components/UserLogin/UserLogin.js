@@ -10,6 +10,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { userLogin } from '../../features/login/userSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import './UserLogin.scss';
@@ -62,25 +67,53 @@ function AnotherFooter(props) {
 }
 
 export default function UserLogin() {
+  // Redux-toolkit state import
+  const dispatch = useDispatch()
+
+  // Controlled components
+  const [emailValue, setEmail] = useState("");
+  const [passwordValue, setPassword] = useState("");
+
+  // Error states
+  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+  const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+
+  // Api Call
+  const postApi = (routeApi ,data) => {
+    axios.post(routeApi , data, {headers : {
+      "Content-Type": "application/json"
+    },
+    })
+    .then(function (response) {
+      console.log(response);
+      const token = response.data;
+
+      localStorage.setItem('user', JSON.stringify({
+        token,
+      }));
+      dispatch(userLogin(token))
+    })
+    .catch(function (error) {
+      console.log(error);
+      setAlertErrorLogin(true)
+    });
+  }
+
+  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/login/user"
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    if (emailValue === "" || passwordValue === "" ) {
+      setAlertErrorSubmit(true);
+    } else {
+    const profilUser = {
+      email: emailValue,
+      password: passwordValue,
+    };
+    const profilUserJson = JSON.stringify(profilUser);
+    postApi(routeApi,profilUserJson)
+    }
   };
-
-  axios.post('http://localhost:8000/api/v1/login/user', {
-    email: "senger.simeon@nicolas.info" ,
-    password: "devinci"
-  })
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.err(err);
-  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -127,6 +160,8 @@ export default function UserLogin() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={emailValue}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -137,6 +172,8 @@ export default function UserLogin() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={passwordValue}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Button
                 className='loginButton'
@@ -160,6 +197,34 @@ export default function UserLogin() {
           </Box>
         </Grid>
       </Grid>
+      <Snackbar
+        open={alertErrorSubmit}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          La connexion a échouée : Merci de remplir tous les champs
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={alertErrorLogin}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorLogin(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          La connexion a échouée : Identifiants incorrects
+        </MuiAlert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
