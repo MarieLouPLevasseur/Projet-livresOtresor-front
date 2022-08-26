@@ -13,6 +13,10 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Logo from '../../assets/img/logo.5.png';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { userLogout } from '../../features/login/userSlice';
+import { kidLogout } from '../../features/login/kidSlice';
 
 import './Navbar.scss';
 
@@ -22,11 +26,16 @@ const pages = [
   {name:"Enfant", path:"/connexion-enfant"},
   {name:"Parents", path:"/connexion-parent"},
 ];
-const settings = ['Profil', 'Compte', 'Déconnexion'];
-
-const isLog = false;
+const settings = [
+  {name:'Profil', path:"/profil"},
+  {name:'Compte', path:"/"},
+];
 
 const Navbar = () => {
+  const isLogUser = useSelector((state) => state.user.isLogUser)
+  const isLogKid = useSelector ((state => state.kid.isLogKid))
+  const dispatch = useDispatch()
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -43,6 +52,14 @@ const Navbar = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    handleCloseNavMenu();
+    dispatch(userLogout());
+    dispatch(kidLogout())
+    localStorage.removeItem('user');
+    localStorage.removeItem('kid');
   };
   
   return (
@@ -125,7 +142,7 @@ const Navbar = () => {
           >
             Livres O'Trésor
           </Typography>
-          {!isLog && (
+          {!isLogUser && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end' }}}>
               <Button
                 onClick={handleCloseNavMenu}
@@ -178,7 +195,7 @@ const Navbar = () => {
             </Box>
           )}
 
-          {isLog && (
+          {isLogUser && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end'}, mr: 5}}>
               <Button
                 className='button'
@@ -196,7 +213,7 @@ const Navbar = () => {
             </Box>
           )}
 
-          {isLog && (
+          {isLogUser && (
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -220,10 +237,17 @@ const Navbar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+                <Link to={setting.path} key={setting.name} style={{ textDecoration: 'none', color: 'black'}}>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting.name}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
+              <Link to="/" style={{ textDecoration: 'none', color: 'black'}}>
+                <MenuItem onClick={handleLogout}>
+                  <Typography textAlign="center">Déconnexion</Typography>
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>
           )}

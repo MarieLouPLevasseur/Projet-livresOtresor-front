@@ -67,10 +67,13 @@ function AnotherFooter(props) {
 export default function Register() {
 
   // local state because we need those only here
+
+  // controlled components
   const [firstNameValue, setFirstName] = useState("");
   const [lastNameValue, setLastName] = useState("");
   const [emailValue, setEmail] = useState("");
   const [passwordValue, setPassword] = useState("");
+
 
   // error control
   const [emailError, setEmailError] = useState(false);
@@ -100,6 +103,7 @@ export default function Register() {
     } )
     .then(function (response) {
       console.log(response);
+      setAlertSuccesSubmit(true);
     })
     .catch(function (error) {
       console.log(error);
@@ -116,7 +120,6 @@ export default function Register() {
     } else if (emailError === true) {
       setAlertInvalidEmail(true)
     } else {
-      setAlertSuccesSubmit(true);
     const profilUser = {
       firstName: firstNameValue,
       lastName: lastNameValue,
@@ -267,7 +270,7 @@ export default function Register() {
           severity="error"
           sx={{ width: "100%" }}
         >
-          Inscription incomplète ! Merci de remplir tous les champs
+          Inscription incomplète : Merci de remplir tous les champs
         </MuiAlert>
       </Snackbar>
       <Snackbar
