@@ -45,6 +45,8 @@ function App() {
     }
   },[]);
 
+  const notForKids = isLogUser || !isLogKid;
+
   return (
     <div className="App">
       <Navbar />
@@ -59,7 +61,7 @@ function App() {
         <Route path="/faq" element={<Faq />} />
         <Route path="/cookies" element={<Cookies />} />
         <Route path="/a-propos" element={<About />} />
-        {isLogUser && <Route path="/profil/utilisateur" element={<HomeUser />} />}
+        {notForKids && <Route path="/profil/utilisateur" element={<HomeUser />} />}
         <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />
         <Route path="/profil/enfant" element={<HomeKid />} />
         <Route path="/recherche" element={<Search />} />
