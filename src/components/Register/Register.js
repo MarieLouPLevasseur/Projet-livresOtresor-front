@@ -66,6 +66,7 @@ function AnotherFooter(props) {
 
 export default function Register() {
 
+  // local state because we need those only here
   const [firstNameValue, setFirstName] = useState("");
   const [lastNameValue, setLastName] = useState("");
   const [emailValue, setEmail] = useState("");
@@ -73,6 +74,11 @@ export default function Register() {
 
   // error control
   const [emailError, setEmailError] = useState(false);
+
+  //alert snackbar control
+  const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
+  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+  const [alertInvalidEmail, setAlertInvalidEmail] = useState(false)
 
   const checkEmailValidity = () => {
     if (
@@ -100,16 +106,15 @@ export default function Register() {
     });
   }
 
-  const routeApi="adresseApiEndpoint"
+  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/users"
 
-  //alert snackbar control
-  const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
-  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (emailError === true || firstNameValue === "" || lastNameValue === "" || passwordValue === "" ) {
+    if (emailValue === "" || firstNameValue === "" || lastNameValue === "" || passwordValue === "" ) {
       setAlertErrorSubmit(true);
+    } else if (emailError === true) {
+      setAlertInvalidEmail(true)
     } else {
       setAlertSuccesSubmit(true);
     const profilUser = {
@@ -120,7 +125,7 @@ export default function Register() {
     };
     const profilUserJson = JSON.stringify(profilUser);
     postApi(routeApi,profilUserJson)
-  }
+    }
   };
 
   return (
@@ -186,6 +191,8 @@ export default function Register() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  error={ emailError }
+                  helperText={ emailError ? "Email invalide." : "" }
                   required
                   fullWidth
                   id="email"
@@ -260,7 +267,21 @@ export default function Register() {
           severity="error"
           sx={{ width: "100%" }}
         >
-          Formulaire incomplet ! Merci de remplir tous les champs
+          Inscription incomplète ! Merci de remplir tous les champs
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={alertInvalidEmail}
+        autoHideDuration={6000}
+        onClose={() => setAlertInvalidEmail(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          Adresse Email invalide !
         </MuiAlert>
       </Snackbar>
     </ThemeProvider>
