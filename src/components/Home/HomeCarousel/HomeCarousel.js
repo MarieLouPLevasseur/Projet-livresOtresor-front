@@ -2,7 +2,8 @@ import React from 'react';
 import Carousel from 'react-material-ui-carousel'
 import { Paper } from '@mui/material'
 
-// import Image1 from '../../../assets/img/userlogin'
+import Banner1 from '../../../assets/img/banner.png'
+import Banner2 from '../../../assets/img/banner2.png'
 
 import './HomeCarousel.scss'
 
@@ -10,10 +11,10 @@ function HomeCarousel(props)
 {
     var items = [
         {
-            url: "https://www.secure-retail.com/wp-content/uploads/2021/07/SR-EVCP-Neon-Car-BW-1400-x-400-Page-Banner.jpg",
+            url: Banner1,
         },
         {
-            url: "https://www.itvscience.com/wp-content/uploads/2016/08/blackhole_1600-1400x400.jpg",
+            url: Banner2,
         }
     ]
 

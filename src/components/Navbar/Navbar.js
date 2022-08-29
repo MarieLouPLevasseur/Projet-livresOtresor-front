@@ -112,6 +112,9 @@ const Navbar = () => {
               ))}
             </Menu>
           <Box>
+            <Link to='/'>
+            <Box component="img" sx={{ display: { xs: 'block', md: 'none' }, justifyContent: 'center' ,mr: 1 }} src={Logo} className="app-logo" alt="logo" />
+            </Link>
           <Box component="img" sx={{ display: { xs: 'block', md: 'none' }, justifyContent: 'center' ,mr: 1 }} src={Logo} className="app-logo" alt="logo" />
           </Box>
           </Box>
