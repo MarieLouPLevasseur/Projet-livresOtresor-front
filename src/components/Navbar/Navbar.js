@@ -12,7 +12,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import Logo from '../../assets/img/logo.5.png';
+import Logo from '../../assets/img/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { userLogout } from '../../features/login/userSlice';
@@ -34,6 +34,9 @@ const settings = [
 const Navbar = () => {
   const isLogUser = useSelector((state) => state.user.isLogUser)
   const isLogKid = useSelector ((state => state.kid.isLogKid))
+
+  const isLog = isLogUser || isLogKid;
+
   const dispatch = useDispatch()
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -66,26 +69,13 @@ const Navbar = () => {
     <AppBar className='nav' position="static">
       <Container maxWidth="xxl">
         <Toolbar disableGutters>
-          <Box component="img" sx={{ display: { xs: 'none', md: 'flex' }, mr: 2, ml: 10 }} src={Logo} className="app-logo" alt="logo"/>          
-            <Link to="/" style={{ textDecoration: 'none', color:'white'}}>
-              <Typography
-                variant="h6"
-                noWrap
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                  fontFamily: 'Montserrat',
-                  fontWeight: 700,
-                  letterSpacing: '.1rem',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                }}
-              >
-                Livres O'Trésor
-              </Typography>
-            </Link>
+          <Link to="/" style={{ textDecoration: 'none', color:'white'}}>
+            <Box component="img" sx={{ display: { xs: 'none', md: 'flex' }, mr: 2, ml: 10 }} src={Logo} className="app-logo" alt="logo"/>          
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
+              sx={{ mr: 10 }}
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
@@ -121,28 +111,13 @@ const Navbar = () => {
                 </Link>
               ))}
             </Menu>
+          <Box>
+            <Link to='/'>
+            <Box component="img" sx={{ display: { xs: 'block', md: 'none' }, justifyContent: 'center' ,mr: 1 }} src={Logo} className="app-logo" alt="logo" />
+            </Link>
           </Box>
-          <Box component="img" sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} src={Logo} className="app-logo" alt="logo" />
-          <Typography
-            component={Link}
-            to="/"
-            variant="h5"
-            noWrap
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily:'Montserrat',
-              fontWeight: 700,
-              letterSpacing: '.1rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Livres O'Trésor
-          </Typography>
-          {!isLogUser && (
+          </Box>
+          {!isLog && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end' }}}>
               <Button
                 onClick={handleCloseNavMenu}
@@ -195,7 +170,7 @@ const Navbar = () => {
             </Box>
           )}
 
-          {isLogUser && (
+          {isLog && (
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', justifyContent: 'flex-end'}, mr: 5}}>
               <Button
                 className='button'
@@ -213,7 +188,7 @@ const Navbar = () => {
             </Box>
           )}
 
-          {isLogUser && (
+          {isLog && (
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
