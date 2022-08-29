@@ -20,6 +20,7 @@ import MyBooks from '../MyBooks/MyBooks'
 import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
+import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
 import { userLogin } from '../../features/login/userSlice';
@@ -69,7 +70,7 @@ function App() {
         {isLog && <Route path="/mes-livres" element={<MyBooks />} />}
         {isLog && <Route path="/recompenses" element={<Rewards />} />}
         {isLog && <Route path="/recherche/voir-livre" element={<Book />} />}
-        <Route path="*" element={<h1>404</h1>} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </div>
