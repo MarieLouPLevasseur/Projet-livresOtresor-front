@@ -14,6 +14,7 @@ import Grid from '@mui/material/Grid';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 
 import './Register.scss';
 import Image from '../../assets/img/register.jpg';
@@ -66,6 +67,9 @@ function AnotherFooter(props) {
 
 export default function Register() {
 
+  // Api base url
+  const apiUrl = useSelector((state) => state.api.apiUrl);
+
   // local state because we need those only here
 
   // controlled components
@@ -110,7 +114,7 @@ export default function Register() {
     });
   }
 
-  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/users"
+  const apiEndpoint ="/api/v1/users"
 
 
   const handleSubmit = (event) => {
@@ -127,7 +131,7 @@ export default function Register() {
       password: passwordValue,
     };
     const profilUserJson = JSON.stringify(profilUser);
-    postApi(routeApi,profilUserJson)
+    postApi(apiUrl + apiEndpoint,profilUserJson)
     }
   };
 

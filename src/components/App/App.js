@@ -47,7 +47,7 @@ function App() {
   },[]);
 
   const notForKids = isLogUser || !isLogKid;
-  const isLog = isLogUser || isLogKid;
+  // const isLog = isLogUser || isLogKid;
 
   return (
     <div className="App">
@@ -65,11 +65,11 @@ function App() {
         <Route path="/a-propos" element={<About />} />
         {notForKids && <Route path="/profil/utilisateur" element={<HomeUser />} />}
         {notForKids && <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />}
-        {isLog && <Route path="/profil/enfant" element={<HomeKid />} />}
-        {isLog && <Route path="/recherche" element={<Search />} />}
-        {isLog && <Route path="/mes-livres" element={<MyBooks />} />}
-        {isLog && <Route path="/recompenses" element={<Rewards />} />}
-        {isLog && <Route path="/recherche/voir-livre" element={<Book />} />}
+        <Route path="/profil/enfant" element={<HomeKid />} />
+        <Route path="/recherche" element={<Search />} />
+        <Route path="/mes-livres" element={<MyBooks />} />
+        <Route path="/recompenses" element={<Rewards />} />
+        <Route path="/recherche/voir-livre" element={<Book />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />

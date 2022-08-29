@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userLogin } from '../../features/login/userSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -67,6 +67,9 @@ function AnotherFooter(props) {
 }
 
 export default function UserLogin() {
+  // Api base url
+  const apiUrl = useSelector((state) => state.api.apiUrl);
+
   // Redux-toolkit state import
   const dispatch = useDispatch()
 
@@ -99,7 +102,7 @@ export default function UserLogin() {
     });
   }
 
-  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/login/user"
+  const apiEndpoint = "/api/v1/login/user"
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -111,7 +114,7 @@ export default function UserLogin() {
       password: passwordValue,
     };
     const profilUserJson = JSON.stringify(profilUser);
-    postApi(routeApi,profilUserJson)
+    postApi(apiUrl + apiEndpoint,profilUserJson)
     }
   };
 
