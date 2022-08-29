@@ -114,7 +114,7 @@ export default function Register() {
     });
   }
 
-  const apiEndpoint ="/api/v1/users"
+  const apiEndpoint ="/api/v1/registration"
 
 
   const handleSubmit = (event) => {
