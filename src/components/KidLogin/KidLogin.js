@@ -12,8 +12,9 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { kidLogin } from '../../features/login/kidSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -66,8 +67,14 @@ const theme = createTheme({
 });
 
 export default function KidLogin() {
+
   // Redux-toolkit state import
+  const apiUrl = useSelector((state) => state.api.apiUrl);
+
   const dispatch = useDispatch()
+
+  // Redirect when connected
+  const navigate = useNavigate();
 
   // Controlled components
   const [userNameValue, setUserName] = useState("");
@@ -76,6 +83,13 @@ export default function KidLogin() {
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+
+  useEffect(() => {
+    const loggedKid = JSON.parse(localStorage.getItem('kid'));
+    if (loggedKid) {
+      navigate("/profil/enfant");
+    }
+  });
 
   // Api Call
   const postApi = (routeApi ,data) => {
@@ -98,7 +112,7 @@ export default function KidLogin() {
     });
   }
 
-  const routeApi="http://marie-lou-prince-levasseur.vpnuser.lan:8000/api/v1/login/kid"
+  const apiEndpoint = "/api/v1/login/kid"
   
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -110,7 +124,7 @@ export default function KidLogin() {
       password: passwordValue,
     };
     const profilUserJson = JSON.stringify(profilUser);
-    postApi(routeApi,profilUserJson)
+    postApi(apiUrl + apiEndpoint,profilUserJson);
     }
   };
 
