@@ -13,6 +13,9 @@ function HomeKid() {
   return (
     <div className='homeKid'>
       <HomeCarousel />
+      <Typography sx={{ mt: 3, mb: 3, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 40, letterSpacing: 2, color: '#4462A5' }}>
+            Bonjour Nolan !
+      </Typography>
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
         <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', mt: 2}}>
@@ -52,7 +55,7 @@ function HomeKid() {
           <Typography sx={{ mt: 3,mb: 3, fontFamily: 'Montserrat', fontWeight: 500 }}>
             le 29/08/2022
           </Typography>
-          <Rating name="read-only" value='4' readOnly />
+          <Rating name="read-only" precision={0.5} value={4.5} readOnly />
           <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic' }}>
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue sem ante, vitae vestibulum nisi consectetur eget. Maecenas luctus fermentum commodo. Maecenas id mauris maximus, dapibus ante eu, elementum nulla. Sed elit velit, venenatis quis est ac, porttitor dignissim magna. Integer non lectus sit amet ante elementum fringilla. Ut in varius leo."
           </Typography>
