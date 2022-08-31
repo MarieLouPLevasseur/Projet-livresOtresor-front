@@ -3,13 +3,14 @@ import { Box, TextField, Button } from '@mui/material'
 
 import './SearchBar.scss'
 
-function SearchBar({ search, setSearch, fetchResults }) {
+function SearchBar({ search, setSearch, setItemToSearch }) {
   return (
     <Box
     component="form"
     onSubmit={(e) => {
       e.preventDefault()
-      fetchResults();
+      setItemToSearch(search)
+      setSearch('')
     }}
     sx={{
       mt: 2,

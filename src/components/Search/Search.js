@@ -7,6 +7,7 @@ import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons'
 import SearchBar from './SearchBar/SearchBar';
 import usePagination from "./UsePagination";
+import Loading from '../Loading/Loading';
 import ImgCard from '../../assets/img/defaultCover.jpg'
 
 import './Search.scss'
@@ -28,7 +29,9 @@ function Search() {
   
   // Local state
   const [Cards, setCards] = useState([]);
-  const [Search, setSearch] = useState('Harry');
+  const [Loading, setLoading] = useState(true)
+  const [Search, setSearch] = useState('');
+  const [itemToSearch, setItemToSearch] = useState('');
 
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
@@ -43,23 +46,22 @@ function Search() {
   };
 
   // Api Call
-  const fetchResults = (e) => {
-    axios
-      .get(`https://www.googleapis.com/books/v1/volumes?q=${Search}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`)
+    useEffect(() => {
+      if(itemToSearch){
+      axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 40 } })
       .then((response) => {
         console.log(response.data)
         setCards(response.data.items);
-        setCurrentPage(1);
-        _DATA.jump(1);
       })
       .catch((error) => {
         console.log('Erreur !', error);
+      })
+      .finally(()=> {
+        setLoading(false);
       });
-  };
+    }}, [itemToSearch]);
 
-  useEffect(() => {
-    fetchResults();
-  }, []);
+    console.log(Cards)
 
   return (
     <ThemeProvider theme={theme}>
@@ -71,8 +73,9 @@ function Search() {
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
       <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml:'3%' }}>
-        <SearchBar search={Search} setSearch={setSearch} fetchResults={fetchResults}/>
-        {_DATA.currentData().map((data) => (
+        <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch}/>
+        {!Loading && (
+        _DATA.currentData().map((data) => (
           <Card key={data.id} sx={{ display: "flex", width: "100%", height: "50%", mb: 1.5 }}>
             <CardMedia
               sx={{ width: '15%', height: '100%' }}
@@ -93,7 +96,9 @@ function Search() {
               <Button size="small">Ajouter le livre</Button>
             </CardActions>
           </Card>
-        ))}
+        ))
+        )}
+
         <Pagination sx={{mt: 3, mb: 3}} count={count} page={CurrentPage} onChange={handleChange} />
       </Box>
       </Box>
