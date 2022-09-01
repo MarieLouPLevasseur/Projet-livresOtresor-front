@@ -64,7 +64,7 @@ function App() {
         <Route path="/cookies" element={<Cookies />} />
         <Route path="/a-propos" element={<About />} />
         {notForKids && <Route path="/profil/utilisateur" element={<HomeUser />} />}
-        {notForKids && <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />}
+        <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />
         <Route path="/profil/enfant" element={<HomeKid />} />
         <Route path="/recherche" element={<Search />} />
         <Route path="/mes-livres" element={<MyBooks />} />
