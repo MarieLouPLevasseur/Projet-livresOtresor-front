@@ -17,13 +17,13 @@ function BoxBook() {
             maxHeight: { xs: 200, md: 300 },
             maxWidth: { xs: 200, md: 300 },
             marginLeft: 20,
-            marginRight:{xs:'20px'},
+            marginRight:{xs:'10px'},
             marginBottom: 15,
-            marginTop: {xs:'-40px', md:'30px'}
+            marginTop: {xs:'5px', md:'30px'}
             // marginTop: 8
           }}
         />
-        <Box sx={{width:{xs:'100%', md:'50%', marginLeft:'-45px', marginTop:'-120px'}, textAlign: 'center'}}>
+        <Box sx={{width:{xs:'100%', md:'50%', marginLeft:'-45px', marginTop:'-45px'}, textAlign: 'center'}}>
           <Typography sx={{ mt: 8, fontFamily: 'Montserrat', fontWeight: 500 }}>
             Livre le plus récent ajouté
           </Typography>
