@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
@@ -15,6 +15,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import './Register.scss';
 import Image from '../../assets/img/register.jpg';
@@ -78,7 +79,6 @@ export default function Register() {
   const [emailValue, setEmail] = useState("");
   const [passwordValue, setPassword] = useState("");
 
-
   // error control
   const [emailError, setEmailError] = useState(false);
 
@@ -86,6 +86,9 @@ export default function Register() {
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertInvalidEmail, setAlertInvalidEmail] = useState(false)
+
+  // Redirect when connected
+  const navigate = useNavigate();
 
   const checkEmailValidity = () => {
     if (
@@ -98,6 +101,15 @@ export default function Register() {
       setEmailError(false);
     }
   };
+  
+  // Redirect when success
+    useEffect(() => {
+    if (alertSuccesSubmit) {
+      setTimeout(() => {
+        navigate("/connexion-parent")
+      }, 2000);
+    }
+  });
 
   //api call
   const postApi = (routeApi ,data) => {

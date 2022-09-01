@@ -91,9 +91,8 @@ function Search() {
                 {data.volumeInfo.description == null ? "Aucune décription n'est disponible pour ce livre" : data.volumeInfo.description.length > 500 ? `${data.volumeInfo.description.substring(0, 500)}...` : data.volumeInfo.description}
               </Typography>
             </CardContent>
-            <CardActions sx={{ width: '20%' }}>
+            <CardActions sx={{ width: '10%' }}>
               <Button size="small">Voir le livre</Button>
-              <Button size="small">Ajouter le livre</Button>
             </CardActions>
           </Card>
         ))
