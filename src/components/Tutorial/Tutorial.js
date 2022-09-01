@@ -10,6 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
+import { borders, height } from '@mui/system';
+
 
 import './Tutorial.scss';
 
@@ -24,8 +26,14 @@ function Tutorial() {
       </Typography>
 
     {/* Image à droite */}
-      <Card sx={{ display: 'flex', flexDirection: {xs:'column', md:'row'},justifyContent:'space-between', ml: 20, mr:20, mb:10, height:300}}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:'50%'}}>
+      <Card sx={{display: 'flex',
+                 flexDirection: {xs:'column', md:'row'},
+                 justifyContent:'space-between',
+                 ml: 20, mr:20, mb:10, height:300,
+                 borderRadius: '16px', borderColor:  '#4462A5', border: 2
+                 }}>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", md:'50%'}}}>
           <CardContent sx={{ flex: '1 0 auto', AlignItem:'center' }}>
             <Typography component="div" variant="h5" textAlign='center'>
               blablabla mon titre de carte
@@ -36,7 +44,7 @@ function Tutorial() {
           </CardContent>
         
       </Box>
-        <Box sx={{ width:'50%'}}>
+        <Box sx={{ width:{xs:"100%", md:'50%'}, height:{xs:"50%", md:'100%'}}}>
           <CardMedia
             component="img"
             sx={{ height: '100%'}}
@@ -47,8 +55,13 @@ function Tutorial() {
   
     {/* Image à Gauche */}
 
-      <Card sx={{ display: 'flex', flexDirection: {xs:'column', md:'row-reverse'},justifyContent:'space-between', ml: 20, mr:20, height:300}}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:'50%'}}>
+      <Card sx={{display: 'flex',
+                 flexDirection: {xs:'column', md:'row-reverse'},
+                 justifyContent:'space-between',
+                 ml: 20, mr:20, mb:10, height:300,
+                 borderRadius: '16px', borderColor:  '#4462A5', border: 2
+                 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", md:'50%'}}}>
           <CardContent sx={{ flex: '1 0 auto', AlignItem:'center' }}>
             <Typography component="div" variant="h5" textAlign='center'>
               blablabla mon titre de carte
@@ -59,7 +72,7 @@ function Tutorial() {
           </CardContent>
         
       </Box>
-        <Box sx={{ width:'50%'}}>
+      <Box sx={{ width:{xs:"100%", md:'50%'}, height:{xs:"50%", md:'100%'}}}>
           <CardMedia
             component="img"
             sx={{ height: '100%'}}
