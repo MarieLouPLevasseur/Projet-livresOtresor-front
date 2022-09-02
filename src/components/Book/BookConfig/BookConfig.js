@@ -13,6 +13,10 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import FormLabel from '@mui/material/FormLabel';
 
 
 import './BookConfig.scss'
@@ -157,7 +161,7 @@ function BookConfig() {
       </Box>
 
     {/* ******************************************espace formulaire******************************* */}
-      <Box>
+      <Box sx={{marginBottom:'30px'}}>
         <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'85%', margin:'auto'}}>
             <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>Je peux choisir d'ajouter ou modifier des informations</Typography>
             <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', alignItems:'center'}}>
@@ -248,7 +252,28 @@ function BookConfig() {
                         </Grid>
                     </Box>
                 </Box>
-                
+                <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center'}}>
+                  <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>C'est un livre :</Typography>
+                  <FormControl>
+                    {/* <FormLabel id="demo-controlled-radio-buttons-group">Gender</FormLabel> */}
+                    <RadioGroup
+                      aria-labelledby="demo-controlled-radio-buttons-group"
+                      name="controlled-radio-buttons-group"
+                      sx={{display:'flex', flexDirection:{xs:'column', md:'row'}}}
+                    >
+                      <FormControlLabel value="read" control={<Radio />} label="Que j'ai lu" />
+                      <FormControlLabel value="urge" control={<Radio />} label="Dont j'ai envie" />
+                    </RadioGroup>
+                  </FormControl>
+                </Box>
+            <Box sx={{margin:'30px'}}>
+                <Button
+                className='button'
+                sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px', margin:'auto'}}
+              >
+                Enregistrer les modifications
+              </Button>
+            </Box>
         </Card>
       </Box>
 
