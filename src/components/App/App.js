@@ -17,6 +17,7 @@ import AccountManagement from '../AccountManagement/AccountManagement'
 import HomeKid from '../HomeKid/HomeKid'
 import Search from '../Search/Search'
 import MyBooks from '../MyBooks/MyBooks'
+import BookConfig from '../Book/BookConfig/BookConfig'
 import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
@@ -73,7 +74,7 @@ function App() {
         <Route path="/mes-livres" element={<MyBooks />} />
         <Route path="/recompenses" element={<Rewards />} />
         <Route path="/recherche/voir-livre" element={<Book />} />
-        <Route path="/mes-livres/voir-livre" element={<Book />} />
+        <Route path="/mes-livres-voir-livre" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
