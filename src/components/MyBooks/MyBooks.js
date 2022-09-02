@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions, Select, MenuItem } from '@mui/material'
+import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
@@ -97,13 +97,22 @@ function MyBooks() {
                 Description
               </Typography>
             </CardContent>
-            <CardActions sx={{ width: '20%' }}>
+            <CardActions sx={{ width: '10%' }}>
               <Button size="small">Voir le livre</Button>
-              <Button size="small">Ajouter le livre</Button>
             </CardActions>
           </Card>
         <Pagination sx={{mt: 3, mb: 3}} count={count} page={CurrentPage} onChange={handleChange} />
       </Box>
+      </Box>
+      <Box sx={{ display: 'flex', width: '76%', justifyContent: 'flex-end', m:'auto', mb: 1 }}>
+        <Button
+          className="searchButton"
+          type="submit"
+          variant="contained"
+          sx={{ width: '15%' }}
+        >
+          Imprimer ma liste
+        </Button>
       </Box>
     </div>
     </ThemeProvider>
