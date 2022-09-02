@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { borders, height } from '@mui/system';
+import { borders, height, maxHeight } from '@mui/system';
 
 import Rewards from '../../assets/img/Rewards.png'
 import myLibrary from '../../assets/img/myLibrary.png'
@@ -22,7 +22,7 @@ function Tutorial() {
   return (
     <div>
       
-    <Box sx={{m:10}}>
+    <Box sx={{m:10,  width: {xs:"100%", lg: "70%"}, m:'auto'}}>
       <HomeCarousel />
       <Typography sx={{ mt: 3, mb: 3, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 40, letterSpacing: 2, color: '#4462A5' }}>
           Tutoriel
@@ -30,14 +30,16 @@ function Tutorial() {
 
     {/* Image à droite */}
       <Card sx={{display: 'flex',
-                 flexDirection: {xs:'column', md:'row'},
-                 justifyContent:'space-between',
-                 ml: 20, mr:20, mb:10, height:'auto',
-                 borderRadius: '16px', borderColor:  '#4462A5', border: 2
+                 flexDirection: {xs:'column', lg:'row'},
+                 justifyContent:{lg:'space-between'},
+                 AlignItems: {xs:'center'}, 
+                 ml:'auto', mr:'auto', mb:{ lg:10}, height:{ lg:'auto'},
+                 borderRadius: '16px', borderColor:  '#4462A5', border: 2,
+                 width: {xs:'90%', lg:"80%"}
                  }}>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", md:'50%'}}}>
-          <CardContent sx={{ flex: '1 0 auto', AlignItem:'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", lg:'50%'}}}>
+          <CardContent sx={{ flex: '1 0 auto', AlignItem:'center'}}>
             <Typography component="div" variant="h5" textAlign='center'>
             Ajouter un espace enfant
             </Typography>
@@ -58,7 +60,7 @@ function Tutorial() {
           </CardContent>
         
       </Box>
-        <Box sx={{ width:{xs:"100%", md:'50%'}, height:{xs:"50%", md:'100%'}, display:'flex',alignSelf:'center'  }}>
+        <Box sx={{ width:{xs:"100%", lg:'50%'}, height:{xs:"50%", lg:'100%'}, display:'flex',alignSelf:'center'  }}>
           <CardMedia
             component="img"
             sx={{ height: '100%', padding:"auto"}}
@@ -71,12 +73,14 @@ function Tutorial() {
     {/* Image à Gauche */}
 
       <Card sx={{display: 'flex',
-                 flexDirection: {xs:'column', md:'row-reverse'},
-                 justifyContent:'space-between',
-                 ml: 20, mr:20, mb:10, height:'auto',
-                 borderRadius: '16px', borderColor:  '#4462A5', border: 2
-                 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", md:'50%'}}}>
+                 flexDirection: {xs:'column', lg:'row-reverse'},
+                 justifyContent:{lg:'space-between'},
+                  AlignItems: {xs:'center'}, 
+                  ml:'auto', mr:'auto', mb:{ lg:10}, height:{ lg:'auto'},
+                  borderRadius: '16px', borderColor:  '#4462A5', border: 2,
+                  width: {xs:'90%', lg:"80%"}
+                  }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", lg:'50%'}}}>
           <CardContent sx={{ flex: '1 0 auto', AlignItem:'center' }}>
             <Typography component="div" variant="h5" textAlign='center'>
             Consulter ses livres
@@ -88,7 +92,7 @@ function Tutorial() {
           </CardContent>
         
       </Box>
-      <Box sx={{ width:{xs:"100%", md:'50%'}, height:{xs:"50%", md:'100%'}, display:'flex',alignSelf:'center'}}>
+      <Box sx={{ width:{xs:"100%", lg:'50%'}, height:{xs:"50%", lg:'100%'}, display:'flex',alignSelf:'center'}}>
           <CardMedia
             component="img"
             sx={{ height: '100%'}}
@@ -100,13 +104,15 @@ function Tutorial() {
 
       {/* Image à droite */}
       <Card sx={{display: 'flex',
-                 flexDirection: {xs:'column', md:'row'},
-                 justifyContent:'space-between',
-                 ml: 20, mr:20, mb:10, height:'auto',
-                 borderRadius: '16px', borderColor:  '#4462A5', border: 2
-                 }}>
+                  flexDirection: {xs:'column', lg:'row'},
+                  justifyContent:{lg:'space-between'},
+                  AlignItems: {xs:'center'}, 
+                  ml:'auto', mr:'auto', mb:{ lg:10}, height:{ lg:'auto'},
+                  borderRadius: '16px', borderColor:  '#4462A5', border: 2,
+                  width: {xs:'90%', lg:"80%"}
+                  }}>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", md:'50%'}}}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', textAlign:'center', width:{xs:"100%", lg:'50%'}}}>
           <CardContent sx={{ flex: '1 0 auto', AlignItem:'center' }}>
             <Typography component="div" variant="h5" textAlign='center'>
             Comment gagner une récompense ?
@@ -120,7 +126,7 @@ function Tutorial() {
           </CardContent>
         
       </Box>
-        <Box sx={{ width:{xs:"100%", md:'50%'}, height:{xs:"50%", md:'100%'}, display:'flex',alignSelf:'center'  }}>
+        <Box sx={{ width:{xs:"100%", lg:'50%'}, height:{xs:"50%", lg:'100%'}, display:'flex',alignSelf:'center'  }}>
           <CardMedia
             component="img"
             sx={{ height: '100%', padding:"auto"}}

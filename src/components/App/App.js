@@ -25,7 +25,7 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
 import { userLogin } from '../../features/login/userSlice';
-import { kidLogin } from '../../features/login/kidSlice';
+import { kidAvatar, kidId, kidLogin, kidUsername } from '../../features/login/kidSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
@@ -44,6 +44,9 @@ function App() {
       dispatch(userLogin(loggedUser.token));
     } else if (loggedKid) {
       dispatch(kidLogin(loggedKid.token));
+      dispatch(kidId(loggedKid.id));
+      dispatch(kidUsername(loggedKid.username));
+      dispatch(kidAvatar(loggedKid.profile_avatar));
     }
   },[]);
 

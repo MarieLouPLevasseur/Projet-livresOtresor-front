@@ -15,7 +15,7 @@ import MuiAlert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { kidLogin } from '../../features/login/kidSlice';
+import { kidLogin, kidId, kidUsername, kidAvatar } from '../../features/login/kidSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Image from '../../../src/assets/img/kidlogin.jpg';
@@ -98,13 +98,20 @@ export default function KidLogin() {
     },
     })
     .then(function (response) {
-      console.log(response);
+      console.log(response.data);
       const { token } = response.data;
-
+      const { id, username, profile_avatar } = response.data.user;
+      console.log(id, username, profile_avatar);
       localStorage.setItem('kid', JSON.stringify({
         token,
+        id,
+        username,
+        profile_avatar,
       }));
       dispatch(kidLogin(token))
+      dispatch(kidId(id))
+      dispatch(kidUsername(username))
+      dispatch(kidAvatar(profile_avatar))
     })
     .catch(function (error) {
       console.log(error);
