@@ -37,7 +37,7 @@ function Item(props)
 {
     return (
         <Paper sx={{ boxShadow: 0 }}  >
-            <img src={props.item.url} alt='slider'/>
+            <img width='100%' src={props.item.url} alt='slider'/>
         </Paper>
     )
 }
