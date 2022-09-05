@@ -110,7 +110,7 @@ export default function UserLogin() {
       setAlertErrorSubmit(true);
     } else {
     const profilUser = {
-      email: emailValue,
+      username: emailValue,
       password: passwordValue,
     };
     const profilUserJson = JSON.stringify(profilUser);

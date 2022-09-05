@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Box, Rating, Typography, Avatar } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
 import HomeKidButtons from './HomeKidButtons/HomeKidButtons';

@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons';
 import SearchBar from '../Search/SearchBar/SearchBar';
 import usePagination from "../Search/UsePagination";
-import MyBooksSelect from './MyBooksSelect/MyBooksSelect';
-import ImgCard from '../../assets/img/defaultCover.jpg'
+import Loading from '../Loading/Loading';
 
 import './MyBooks.scss';
 
@@ -27,23 +31,125 @@ const theme = createTheme({
 
 function MyBooks() {
 
-    // Local state
-    const [Books, setBookss] = useState([]);
-    const [SearchBooks, setSearchBooks] = useState('');
-    // const [itemToSearch, setItemToSearch] = useState('');
-  
-    // State and data for pagination
-    const [CurrentPage, setCurrentPage] = useState(1);
-    const PER_PAGE = 4;
-  
-    const count = Math.ceil(Books.length / PER_PAGE);
-    const _DATA = usePagination(Books, PER_PAGE);
-  
-    const handleChange = (e, value) => {
-      setCurrentPage(value);
-      _DATA.jump(value);
-    };
+  // Local State
+  const [Cards, setCards] = useState([]);
+  const [CardsFilter, setCardsFilter] = useState([]);
+  const [LoadingCards, setLoadingCards] = useState(true);
+  const [LoadingCategories, setLoadingCategories] = useState(true);
+  const [LoadingAuthors, setLoadingAuthors] = useState(true);
+  const [SearchBooks, setSearchBooks] = useState('');
 
+  // Local Select State
+  const [category, setCategory] = useState("");
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [author, setAuthor] = useState("");
+  const [authorsList, setAuthorsList] = useState([]);
+  const [collection, setCollection] = useState("");
+
+  // Redux-toolkit state import
+  const apiUrl = useSelector((state) => state.api.apiUrl);
+  const token = useSelector((state) => state.kid.token);
+  const id = useSelector((state) => state.kid.id)
+
+  // State and data for pagination
+  const [CurrentPage, setCurrentPage] = useState(1);
+  const PER_PAGE = 4;
+
+  const count = Math.ceil(CardsFilter.length / PER_PAGE);
+  const _DATA = usePagination(CardsFilter, PER_PAGE);
+
+  const handleChange = (e, value) => {
+    setCurrentPage(value);
+    _DATA.jump(value);
+  };
+
+  // Api Calls
+  const apiEndpointAllBooks = `/api/v1/kids/${id}/books`
+  const apiEndpointCategories = `/api/v1/categories`
+  const apiEndpointAuthors = `/api/v1/kids/${id}/books/authors`
+
+  // All Books at first
+  useEffect(() => {
+    if(id){
+    axios.get(apiUrl + apiEndpointAllBooks, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      console.log(response.data.data)
+      setCards(response.data.data);
+      setCardsFilter(response.data.data);
+      setLoadingCards(false);
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    })
+
+    // call API for Categories 
+    axios.get(apiUrl + apiEndpointCategories, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      console.log(response.data)
+      setCategoriesList(response.data)
+      setLoadingCategories(false);
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    })
+
+    // call API for Authors
+    axios.get(apiUrl + apiEndpointAuthors, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      console.log(response.data)
+      setAuthorsList(response.data)
+      setLoadingAuthors(false);
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    })
+  }
+  }, [id]);
+
+  // Handle Functions
+  const handleChangeRead = () => {
+    const booksRead = Cards.filter((books)=> {
+      return books.is_read === true;
+    });
+    setCardsFilter(booksRead);
+  }
+
+  const handleChangeEnvy = () => {
+    const booksEnvy = Cards.filter((books)=> {
+      return books.is_read === false;
+    });
+    setCardsFilter(booksEnvy);
+  }
+
+  const handleChangeCategory = (event) => {
+    setCategory(event.target.value);
+
+    const booksCategories = CardsFilter.filter((books)=> {
+      return books.category.name === category;
+    });
+      setCardsFilter(booksCategories);
+  };
+
+  const handleChangeAuthor = (event) => {
+    setAuthor(event.target.value);
+  };
+
+  const handleChangeCollection = (event) => {
+    setCollection(event.target.value);
+  };
+
+  if (LoadingCards || LoadingCategories || LoadingAuthors) {
+    return <Loading />
+  }
   return (
     <ThemeProvider theme={theme}>
     <div>
@@ -55,13 +161,60 @@ function MyBooks() {
         <HomeKidButtons />
         <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml:'3%' }}>
           <SearchBar />
-          <MyBooksSelect />
+          <Box sx={{ display: "flex", width: "100%", justifyContent: 'center', mb: 3}}>
+            <FormControl sx={{ width: '20%' }}>
+              <InputLabel id="demo-simple-select-category">Catégorie</InputLabel>
+                <Select
+                  sx={{ width: "80%" }}
+                  labelId="demo-simple-select-category"
+                  id="demo-simple-category"
+                  value={category}
+                  label="category"
+                  onChange={handleChangeCategory}
+                >
+                  {categoriesList.map((data)=> (
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                  ))};
+                </Select>
+              </FormControl>
+              <FormControl sx={{ width: '20%'}}>
+                <InputLabel id="demo-simple-select-category">Auteur</InputLabel>
+                <Select
+                  sx={{ width: "80%" }}
+                  labelId="demo-simple-select-category"
+                  id="demo-simple-category"
+                  value={author}
+                  label="category"
+                  onChange={handleChangeAuthor}
+                >
+                  {authorsList.map((data)=> (
+                    <MenuItem key={data[0].id} value={data[0].name}>{data[0].name}</MenuItem>
+                  ))};
+                </Select>
+              </FormControl>
+              <FormControl sx={{ width: '20%'}}>
+                <InputLabel id="demo-simple-select-category">Collection</InputLabel>
+                <Select
+                  sx={{ width: "80%" }}
+                  labelId="demo-simple-select-collection"
+                  id="demo-simple-collection"
+                  value={collection}
+                  label="collection"
+                  onChange={handleChangeCollection}
+                >
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
           <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', gap: '5%', mr: '4%', mb: 5 }}>
             <Button
               className="searchButton"
               type="submit"
               variant="contained"
               sx={{ width: '15%' }}
+              onClick={() => setCardsFilter(Cards)}
             >
               Tous mes livres
             </Button>
@@ -70,6 +223,7 @@ function MyBooks() {
               type="submit"
               variant="contained"
               sx={{ width: '15%' }}
+              onClick={handleChangeRead}
             >
               Mes livres lus
             </Button>
@@ -78,29 +232,32 @@ function MyBooks() {
               type="submit"
               variant="contained"
               sx={{ width: '15%' }}
+              onClick={handleChangeEnvy}
             >
               Ma liste d'envie
             </Button>
           </Box>
-          <Card sx={{ display: "flex", width: "100%", height: "50%", mb: 1.5 }}>
+          {_DATA.currentData().map((data) => (
+          <Card key={data.id} sx={{ display: "flex", width: "100%", height: "50%", mb: 1.5 }}>
             <CardMedia
               sx={{ width: '15%', height: '100%' }}
               component="img"
-              image={ImgCard}
+              image={data.book.cover}
               alt="Book Cover"
             />
             <CardContent sx={{width: '80%'}}>
               <Typography gutterBottom variant="h5" component="div">
-                Titre
+                {data.book.title}
               </Typography>
               <Typography sx={{ fontStyle: 'italic', maxLines: 4 }} variant="body2" color="text.secondary">
-                Description
+                {data.book.description}
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
               <Button size="small">Voir le livre</Button>
             </CardActions>
           </Card>
+          ))}
         <Pagination sx={{mt: 3, mb: 3}} count={count} page={CurrentPage} onChange={handleChange} />
       </Box>
       </Box>
