@@ -109,7 +109,7 @@ function MyBooks() {
     })
     .then((response) => {
       console.log(response.data)
-      setAuthorsList(response.data)
+      setAuthorsList(response.data.authors)
       setLoadingAuthors(false);
     })
     .catch((error) => {
@@ -202,7 +202,7 @@ function MyBooks() {
                   onChange={handleChangeAuthor}
                 >
                   {authorsList.map((data)=> (
-                    <MenuItem key={data[0].id} value={data[0].name}>{data[0].name}</MenuItem>
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
                   ))};
                 </Select>
               </FormControl>
