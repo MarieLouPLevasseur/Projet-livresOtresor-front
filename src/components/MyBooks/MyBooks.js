@@ -37,7 +37,6 @@ function MyBooks() {
   const [LoadingCards, setLoadingCards] = useState(true);
   const [LoadingCategories, setLoadingCategories] = useState(true);
   const [LoadingAuthors, setLoadingAuthors] = useState(true);
-  const [SearchBooks, setSearchBooks] = useState('');
 
   // Local Select State
   const [category, setCategory] = useState("");
@@ -45,6 +44,10 @@ function MyBooks() {
   const [author, setAuthor] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [collection, setCollection] = useState("");
+
+  // Local Search State
+  const [Search, setSearch] = useState('');
+  const [itemToSearch, setItemToSearch] = useState('');
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
@@ -114,7 +117,7 @@ function MyBooks() {
     })
   }
   }, [id]);
-
+  
   // Handle Functions
   const handleChangeRead = () => {
     const booksRead = Cards.filter((books)=> {
@@ -132,11 +135,6 @@ function MyBooks() {
 
   const handleChangeCategory = (event) => {
     setCategory(event.target.value);
-
-    const booksCategories = CardsFilter.filter((books)=> {
-      return books.category.name === category;
-    });
-      setCardsFilter(booksCategories);
   };
 
   const handleChangeAuthor = (event) => {
@@ -146,6 +144,22 @@ function MyBooks() {
   const handleChangeCollection = (event) => {
     setCollection(event.target.value);
   };
+
+  useEffect(() => {
+  if (category){
+    setCardsFilter(CardsFilter.filter((book) => book.category.name === category));
+  }
+  if (author){
+    setCardsFilter(CardsFilter.filter((book) => book.book.authors[0].name === author));
+  }
+  return () => {
+    setCardsFilter(Cards);
+  };
+  }, [category, author]);
+
+  useEffect(() => {
+    setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
+  }, [itemToSearch]);
 
   if (LoadingCards || LoadingCategories || LoadingAuthors) {
     return <Loading />
@@ -160,7 +174,7 @@ function MyBooks() {
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
         <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml:'3%' }}>
-          <SearchBar />
+          <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch}/>
           <Box sx={{ display: "flex", width: "100%", justifyContent: 'center', mb: 3}}>
             <FormControl sx={{ width: '20%' }}>
               <InputLabel id="demo-simple-select-category">Catégorie</InputLabel>

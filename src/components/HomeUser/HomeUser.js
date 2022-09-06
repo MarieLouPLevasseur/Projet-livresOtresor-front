@@ -7,7 +7,6 @@ import './HomeUser.scss'
 import { Button, Typography } from '@mui/material';
 import Account from './Account/Account';
 
-
 function HomeUser() {
   return (
     <div>

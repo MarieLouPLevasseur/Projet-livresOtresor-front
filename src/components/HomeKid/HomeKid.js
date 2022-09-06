@@ -59,9 +59,9 @@ function HomeKid() {
   }
   }, [id]);
   
-if (loadingLastBookValue || loadingProgressValue) {
-  return <Loading/>
-}
+  if (loadingLastBookValue || loadingProgressValue) {
+    return <Loading/>
+  }
   return (
     <div className='homeKid'>
       <HomeCarousel />
