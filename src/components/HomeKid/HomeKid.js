@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Box, Rating, Typography, Avatar } from '@mui/material'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { kidProgress } from '../../features/login/kidSlice';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
 import HomeKidButtons from './HomeKidButtons/HomeKidButtons';
@@ -17,10 +18,12 @@ function HomeKid() {
   const token = useSelector((state) => state.kid.token);
   const username = useSelector((state) => state.kid.username);
   const avatar = useSelector((state) => state.kid.avatar);
-  const id = useSelector((state) => state.kid.id)
+  const id = useSelector((state) => state.kid.id);
+  const progress = useSelector((state) => state.kid.progress)
+
+  const dispatch = useDispatch();
 
   // Local States
-  const [progressValue, setProgressValue] = useState("");
   const [lastBookValue, setLastBookValue] = useState("");
   const [loadingLastBookValue, setLoadingLastBookValue] = useState(true);
   const [loadingProgressValue, setLoadingProgressValue] = useState(true);
@@ -36,8 +39,12 @@ function HomeKid() {
     }
     })
     .then((response) => {
-      console.log(response.data)
-      setProgressValue(response.data);
+      console.log(response.data);
+      const progress = response.data;
+      localStorage.setItem('kidProgress', JSON.stringify({
+        progress
+      }));
+      dispatch(kidProgress(response.data));
       setLoadingProgressValue(false)
     })
     .catch((error) => {
@@ -77,11 +84,11 @@ function HomeKid() {
         sx={{ width: 150, height: 150 }}
         />
           <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 600 }}>
-            Niveau {progressValue.currentLevel}
+            Niveau {progress.currentLevel}
           </Typography>
-          <HomeKidProgressBar bgcolor= '#4462A5' completed={progressValue.completion}/>
+          <HomeKidProgressBar bgcolor= '#4462A5' completed={progress.completion}/>
           <Typography sx={{ mt: 3, fontFamily: 'Montserrat', fontWeight: 500 }}>
-            Plus que {progressValue.bookToReadToNewLevel} livres avant le niveau suivant !
+            Plus que {progress.bookToReadToNewLevel} livres avant le niveau suivant !
           </Typography>
         </Box>
       </Box>

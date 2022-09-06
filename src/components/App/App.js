@@ -25,7 +25,7 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
 import { userLogin } from '../../features/login/userSlice';
-import { kidAvatar, kidId, kidLogin, kidUsername } from '../../features/login/kidSlice';
+import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../features/login/kidSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
@@ -40,6 +40,7 @@ function App() {
   useEffect(() => {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
+    const progressKid = JSON.parse(localStorage.getItem('kidProgress'));
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
     } else if (loggedKid) {
@@ -47,6 +48,7 @@ function App() {
       dispatch(kidId(loggedKid.id));
       dispatch(kidUsername(loggedKid.username));
       dispatch(kidAvatar(loggedKid.profile_avatar));
+      dispatch(kidProgress(progressKid.progress));
     }
   },[]);
 
