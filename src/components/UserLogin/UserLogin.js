@@ -14,11 +14,13 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userLogin } from '../../features/login/userSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import './UserLogin.scss';
 import Image from '../../assets/img/userlogin2.jpg';
+import { userLogin, userId, userFirstname, userLastname, userKids  } from '../../features/login/userSlice';
 
 
 function Copyright(props) {
@@ -73,6 +75,9 @@ export default function UserLogin() {
   // Redux-toolkit state import
   const dispatch = useDispatch()
 
+  // Redirect when connected
+  const navigate = useNavigate();
+
   // Controlled components
   const [emailValue, setEmail] = useState("");
   const [passwordValue, setPassword] = useState("");
@@ -81,6 +86,14 @@ export default function UserLogin() {
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
 
+  useEffect(() => {
+    const loggedUser = JSON.parse(localStorage.getItem('user'));
+    if (loggedUser) {
+        setTimeout(() => {
+        navigate("/profil/utilisateur");
+    }, 1000);
+  }});
+  
   // Api Call
   const postApi = (routeApi ,data) => {
     axios.post(routeApi , data, {headers : {
@@ -90,11 +103,20 @@ export default function UserLogin() {
     .then(function (response) {
       console.log(response);
       const token = response.data;
+      const { id, firstname, lastname, userkids } = response.data.user;
 
       localStorage.setItem('user', JSON.stringify({
         token,
+        id,
+        firstname, 
+        lastname,
+        userkids,
       }));
       dispatch(userLogin(token))
+      dispatch(userId(id))
+      dispatch(userFirstname(firstname))
+      dispatch(userLastname(lastname))
+      dispatch(userKids(userkids))
     })
     .catch(function (error) {
       console.log(error);
@@ -110,7 +132,7 @@ export default function UserLogin() {
       setAlertErrorSubmit(true);
     } else {
     const profilUser = {
-      email: emailValue,
+      username: emailValue,
       password: passwordValue,
     };
     const profilUserJson = JSON.stringify(profilUser);
