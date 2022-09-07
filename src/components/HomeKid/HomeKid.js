@@ -12,24 +12,51 @@ import './HomeKid.scss';
 
 function HomeKid() {
 
-  // TODO créer une condition: si le state.kid.token est vide 
-    // TODO : alors il n'y a pas d'enfant c'est un utilisateur parent qui est connecté
-    // TODO : utilisation de state.user.kidId / kidAvatar / kidUsername  dans le state adulte dans les variable
+ 
+    // Redux-toolkit state import
+      const apiUrl = useSelector((state) => state.api.apiUrl);
 
-//     if (je suis un user){
-//       const token = useSelector((state) => state.user.token);
-//   const username = useSelector((state) => state.user.KidUsername);
-//   const avatar = useSelector((state) => state.user.avatar);
-//   const id = useSelector((state) => state.user.kidId)
-//     }
-// else{ je suis un kid
-  // Redux-toolkit state import
-  const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const username = useSelector((state) => state.kid.username);
-  const avatar = useSelector((state) => state.kid.avatar);
-  const id = useSelector((state) => state.kid.id)
-// }
+
+    // Set datas if User or Kid
+    const isLogUser = useSelector((state) => state.user.isLogUser);
+    const isLogKid = useSelector((state) => state.kid.isLogKid);
+  
+    console.log(isLogUser);
+    console.log(isLogKid);
+
+
+    const token = useSelector(state => {
+      if(isLogUser) {
+          return state.user.token
+      }
+      return state.kid.token;
+     })
+// console.log(token);
+
+    const username = useSelector(state => {
+      if(isLogUser) {
+          return state.user.KidUsername
+      }
+      return state.kid.username;
+     })
+// console.log(username);
+
+    const avatar = useSelector(state => {
+      if(isLogUser) {
+          return state.user.kidAvatar
+      }
+      return state.kid.avatar;
+     })
+// console.log(avatar);
+
+    const id = useSelector(state => {
+      if(isLogUser) {
+          return state.user.kidId
+      }
+      return state.kid.id;
+     })
+// console.log(id);
+   
 
   // Local States
   const [progressValue, setProgressValue] = useState("");
