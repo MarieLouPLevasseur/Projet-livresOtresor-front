@@ -19,10 +19,44 @@ function Rewards() {
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const avatar = useSelector((state) => state.kid.avatar);
-  const id = useSelector((state) => state.kid.id);
+  // const token = useSelector((state) => state.kid.token);
+  // const avatar = useSelector((state) => state.kid.avatar);
+  // const id = useSelector((state) => state.kid.id);
   const progress = useSelector((state) => state.kid.progress);
+
+  // **********************
+ // Set datas if User or Kid
+ const isLogUser = useSelector((state) => state.user.isLogUser);
+ const isLogKid = useSelector((state) => state.kid.isLogKid);
+
+ console.log(isLogUser);
+ console.log(isLogKid);
+
+  // set token
+  const token = useSelector(state => {
+    if(isLogUser) {
+        return state.user.token
+    }
+    return state.kid.token;
+    })
+
+
+  // set avatar
+  const avatar = useSelector(state => {
+    if(isLogUser) {
+        return state.user.kidAvatar
+    }
+    return state.kid.avatar;
+    })
+
+  // set id
+  const id = useSelector(state => {
+    if(isLogUser) {
+        return state.user.kidId
+    }
+    return state.kid.id;
+    })
+  // ************************
 
   // Local States
   const [avatarsList, setAvatarsList] = useState([]);
