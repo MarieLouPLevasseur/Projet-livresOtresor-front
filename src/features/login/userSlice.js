@@ -7,7 +7,6 @@ const initialState = {
   userId: "",
   firstname: "",
   lastname: "",
-  email: "",
   kidId: "",
   kidAvatar: "",
   kidUsername: "",
@@ -31,9 +30,6 @@ export const userSlice = createSlice({
     userLastname: (state, action) => {
       state.lastname = action.payload
     },
-    userEmail: (state, action) => {
-      state.email = action.payload
-    },
     userKidId: (state, action) => {
       state.kidId = action.payload
     },
@@ -49,7 +45,6 @@ export const userSlice = createSlice({
       state.userId= ""
       state.firstname= ""
       state.lastname= ""
-      state.email= ""
       state.kidId= ""
       state.kidAvatar= ""
       state.kidUsername= ""
@@ -57,6 +52,6 @@ export const userSlice = createSlice({
   }
 })
 
-export const { userLogin, userId, userFirstname, userLastname, userLogout , userKidId, userKidAvatar , userKidUsername, userEmail} = userSlice.actions
+export const { userLogin, userId, userFirstname, userLastname, userLogout , userKidId, userKidAvatar , userKidUsername} = userSlice.actions
 
 export default userSlice.reducer
