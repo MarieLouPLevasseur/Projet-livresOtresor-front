@@ -107,10 +107,6 @@ export default function UserLogin() {
       const { token } = response.data;
 
     
-
-      // **************
-      // TODO modifier les constantes de stockage du User en créant les variables: kidId kidAvatar et kidUsername 
-        // TODO ces variables ne seront pas stocker à la connexion mais sur la page Homage User lors du clique pour voir un compte enfant
       const { id, firstname, lastname } = response.data.user;
       console.log(id, firstname, lastname);
       localStorage.setItem('user', JSON.stringify({

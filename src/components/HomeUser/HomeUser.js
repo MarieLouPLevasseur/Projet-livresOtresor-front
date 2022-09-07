@@ -17,7 +17,6 @@ import { userFirstname, userLastname } from '../../features/login/userSlice';
 
 
 function HomeUser() {
-  // *************modif ML******************
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
@@ -25,18 +24,7 @@ function HomeUser() {
   const id = useSelector((state) => state.user.userId);
   const firstname = useSelector((state) => state.user.firstname);
   const lastname = useSelector((state) => state.user.lastname);
-
- // TODO a remplir au clique car vide 
-    // TODO lorsqu'un clique est effectuer sur voir un compte enfant, on stocke les infos de cet enfant dans le state du parent
-    // TODO à chaque clique les données doivent êtres remplacer par ceux de l'enfant cliqué
-    // TODO celà permettrait de ne pas écraser le token ou les données parents, et de dynamiser automatiquement la page enfant avec les infos du kid sélectionner. 
-    // TODO Si le parent sélectionne un autre compte, on écrase les anciennes infos avec celles du nouvel enfant 
-    // TODO les infos kid devront etre mis sous condition de connexion utilisateur pour le nommage (et appel) conforme des données
 	
-	
-	// const KidUsername = useSelector((state) => state.user.kidUsername);
-  // const kidAvatar = useSelector((state) => state.user.kidAvatar);
-  // const kidId = useSelector((state) => state.user.kidId)
 
     // Local States
     const [KidsValue, setKidsValue] = useState([]);
@@ -70,7 +58,6 @@ function HomeUser() {
   if (loadinKidsValue ) {
     return <Loading/>
   }
-  // **************END modif ML****************
   return (
     <div>
       <HomeCarousel />
@@ -86,7 +73,7 @@ function HomeUser() {
       {KidsValue.map((e) => (
       <Card className='card' variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', background: '#'}}>
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> Compte enfant : {e.username}  </Typography>
-        <ButtonList />
+        <ButtonList kidId={e.id} username={e.username} avatar={e.profile_avatar}/>
       </Card>
       ))} 
      

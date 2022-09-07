@@ -24,38 +24,37 @@ function HomeKid() {
     console.log(isLogUser);
     console.log(isLogKid);
 
-
+  // set token
     const token = useSelector(state => {
       if(isLogUser) {
           return state.user.token
       }
       return state.kid.token;
      })
-// console.log(token);
 
+  // set username
     const username = useSelector(state => {
       if(isLogUser) {
-          return state.user.KidUsername
+          return state.user.kidUsername
       }
       return state.kid.username;
      })
-// console.log(username);
 
+  // set avatar
     const avatar = useSelector(state => {
       if(isLogUser) {
           return state.user.kidAvatar
       }
       return state.kid.avatar;
      })
-// console.log(avatar);
-
+  
+  // set id
     const id = useSelector(state => {
       if(isLogUser) {
           return state.user.kidId
       }
       return state.kid.id;
      })
-// console.log(id);
    
 
   // Local States
