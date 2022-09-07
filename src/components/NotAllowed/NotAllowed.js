@@ -3,9 +3,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import ImageError from '../../assets/img/image-404.png'
+import NotAllowedCover from '../../assets/img/notAllowed.png'
 
-import './PageNotFound.scss'
+import './NotAllowed.scss'
 
 const theme = createTheme({
   palette:{
@@ -15,12 +15,12 @@ const theme = createTheme({
   },
 });
 
-function PageNotFound() {
+function NotAllowed() {
   return (
     <div className='container'>
       <ThemeProvider theme={theme}>
         <Box sx={{display:'flex', flexDirection: 'column', width: '60%', alignItems: 'center', mt: 1,ml:'auto', mr:'auto'}}>
-          <img src={ ImageError} alt="page erreur"></img>
+          <img src={NotAllowedCover} alt="page erreur"></img>
           <Link to='/' style={{ textDecoration: 'none'}}>
             <Button
               className="searchButton"
@@ -37,4 +37,4 @@ function PageNotFound() {
   )
 }
 
-export default PageNotFound
+export default NotAllowed
