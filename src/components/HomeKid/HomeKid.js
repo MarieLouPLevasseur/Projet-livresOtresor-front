@@ -99,7 +99,7 @@ function HomeKid() {
           src={lastBookValue.book.cover}
           sx={{
             height: 300,
-            width: 300,
+            width: 250,
             maxHeight: { xs: 200, md: 300 },
             maxWidth: { xs: 200, md: 300 },
             marginLeft: 20,
