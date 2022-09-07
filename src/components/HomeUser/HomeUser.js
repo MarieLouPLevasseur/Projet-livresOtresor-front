@@ -4,6 +4,7 @@ import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 import Card from '@mui/material/Card';
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
+import {  Link } from 'react-router-dom';
 
 
 import './HomeUser.scss'
@@ -22,9 +23,9 @@ function HomeUser() {
   const lastname = useSelector((state) => state.user.lastname);
 	
 
-    // Local States
-    const [KidsValue, setKidsValue] = useState([]);
-    const [loadinKidsValue, setLoadingKidsValue] = useState(true);
+  // Local States
+  const [KidsValue, setKidsValue] = useState([]);
+  const [loadinKidsValue, setLoadingKidsValue] = useState(true);
 
   // Api Calls
   const apiEndpointKids = `/api/v1/users/${id}/kids`
@@ -61,10 +62,12 @@ function HomeUser() {
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Compte personnel de: {firstname} {lastname}</Typography>
         <Account />
       </Card>
-      <Button className='button'sx={{marginBottom: '30px'}}>
-        <Typography sx={{fontSize: '1.4rem', padding:'20px', background:'#4462A5', color:'white', letterSpacing:'1px', fontFamily: 'montserrat'}}>Ajouter un compte</Typography>
-      </Button>
+      <Link to = "/profil/utilisateur/compte">
 
+        <Button className='button'sx={{marginBottom: '30px'}}>
+          <Typography sx={{fontSize: '1.4rem', padding:'20px', background:'#4462A5', color:'white', letterSpacing:'1px', fontFamily: 'montserrat'}}>Ajouter un compte</Typography>
+        </Button>
+      </Link>
     
       {KidsValue.map((e) => (
       <Card className='card' variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', background: '#'}}>
