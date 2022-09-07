@@ -6,7 +6,6 @@ import Link from '@mui/material/Link';
 import { NavLink, useLocation } from 'react-router-dom';
 
 import './Footer.scss';
-import { useSelector } from 'react-redux';
 
 const pages = [
   {name:"FAQ", path:"/faq"},
@@ -29,12 +28,8 @@ function Copyright() {
 }
 
 export default function Footer() {
-
-  const isLogKid = useSelector((state) => state.kid.isLogKid);
   const { pathname } = useLocation();
-  if (!isLogKid){
-    if (pathname === "/connexion-parent" || pathname === "/connexion-enfant" || pathname === "/inscription") return null;
-  }
+  if (pathname === "/connexion-parent" || pathname === "/connexion-enfant" || pathname === "/inscription") return null;
   return (
       <Box
         className="footer"
