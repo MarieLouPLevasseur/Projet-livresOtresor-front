@@ -14,7 +14,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userLastname, userLogin, userId , userFirstname } from '../../features/login/userSlice';
+import { userLastname, userLogin, userId , userFirstname ,userEmail} from '../../features/login/userSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { useNavigate } from 'react-router-dom';
@@ -107,18 +107,20 @@ export default function UserLogin() {
       const { token } = response.data;
 
     
-      const { id, firstname, lastname } = response.data.user;
-      console.log(id, firstname, lastname);
+      const { id, firstname, lastname, email } = response.data.user;
+      console.log(id, firstname, lastname, email);
       localStorage.setItem('user', JSON.stringify({
         token,
         id,
         firstname,
         lastname,
+        email
       }));
       dispatch(userLogin(token))
       dispatch(userId(id))
       dispatch(userFirstname(firstname))
       dispatch(userLastname(lastname))
+      dispatch(userEmail(email))
     })
       // ************
     // })
