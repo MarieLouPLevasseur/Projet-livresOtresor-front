@@ -24,7 +24,7 @@ import Footer from '../Footer/Footer'
 import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
-import { userLogin } from '../../features/login/userSlice';
+import { userFirstname, userId, userLastname, userLogin } from '../../features/login/userSlice';
 import { kidAvatar, kidId, kidLogin, kidUsername } from '../../features/login/kidSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -42,6 +42,11 @@ function App() {
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
+      // **************modif ML
+      dispatch(userId(loggedUser.id));
+      dispatch(userFirstname(loggedUser.firstname));
+      dispatch(userLastname(loggedUser.lastname));
+
     } else if (loggedKid) {
       dispatch(kidLogin(loggedKid.token));
       dispatch(kidId(loggedKid.id));
