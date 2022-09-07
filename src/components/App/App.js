@@ -24,7 +24,7 @@ import Footer from '../Footer/Footer'
 import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
-import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
+import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername, userLastname, userLogin } from '../../features/login/userSlice';
 import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../features/login/kidSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -51,7 +51,6 @@ function App() {
       dispatch(userId(loggedUser.id));
       dispatch(userFirstname(loggedUser.firstname));
       dispatch(userLastname(loggedUser.lastname));
-      dispatch(userEmail(loggedUser.email));
 
   // set kid user data only
       dispatch(userKidAvatar(loggedUserKids.avatar));

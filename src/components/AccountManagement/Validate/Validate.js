@@ -3,25 +3,15 @@ import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 // import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
-import {  useNavigate } from 'react-router-dom';
 
 
-
-function Validate({ handleSubmit }) {
-
-  let navigate = useNavigate(); 
-  const routeChange = () =>{ 
-    let path = `/profil/utilisateur`; 
-    navigate(path);
-  }
+function Validate() {
   return (
     <div>
     <Box sx={{ '& > :not(style)': { m: 1 } }}>
-     
-          <Fab color='success'  onClick={()=>{handleSubmit();routeChange();}} >
-            <DoneOutlineIcon />
-          </Fab>
-      
+      <Fab color='success'>
+        <DoneOutlineIcon />
+      </Fab>
     </Box>
     </div>
   )
