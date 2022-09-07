@@ -43,13 +43,13 @@ function App() {
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
       // **************modif ML
-      dispatch(userId(loggedUser.id));
+      dispatch(userId(loggedUser.userId));
       dispatch(userFirstname(loggedUser.firstname));
       dispatch(userLastname(loggedUser.lastname));
 
     } else if (loggedKid) {
       dispatch(kidLogin(loggedKid.token));
-      dispatch(kidId(loggedKid.id));
+      dispatch(kidId(loggedKid.kidId));
       dispatch(kidUsername(loggedKid.username));
       dispatch(kidAvatar(loggedKid.profile_avatar));
     }

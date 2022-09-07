@@ -12,12 +12,24 @@ import './HomeKid.scss';
 
 function HomeKid() {
 
+  // TODO créer une condition: si le state.kid.token est vide 
+    // TODO : alors il n'y a pas d'enfant c'est un utilisateur parent qui est connecté
+    // TODO : utilisation de state.user.kidId / kidAvatar / kidUsername  dans le state adulte dans les variable
+
+//     if (je suis un user){
+//       const token = useSelector((state) => state.user.token);
+//   const username = useSelector((state) => state.user.KidUsername);
+//   const avatar = useSelector((state) => state.user.avatar);
+//   const id = useSelector((state) => state.user.kidId)
+//     }
+// else{ je suis un kid
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
   const token = useSelector((state) => state.kid.token);
   const username = useSelector((state) => state.kid.username);
   const avatar = useSelector((state) => state.kid.avatar);
   const id = useSelector((state) => state.kid.id)
+// }
 
   // Local States
   const [progressValue, setProgressValue] = useState("");

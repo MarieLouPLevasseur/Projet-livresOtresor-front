@@ -1,11 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+ // TODO modifier les constantes de stockage du User en créant les variables: kidId kidAvatar et kidUsername 
+        // TODO ces variables ne seront pas stocker à la connexion mais sur la page Homage User lors du clique pour voir un compte enfant
 const initialState = {
   isLogUser: false,
   token: "",
-  id: "",
+  userId: "",
   firstname: "",
   lastname: "",
+  kidId: "",
+  kidAvatar: "",
+  kidUsername: "",
 }
 
 export const userSlice = createSlice({
@@ -18,7 +23,7 @@ export const userSlice = createSlice({
     },
     //******* */ modif ML ***************
     userId: (state, action) => {
-      state.id = action.payload
+      state.userId = action.payload
     },
     userFirstname: (state, action) => {
       state.firstname = action.payload
@@ -26,11 +31,23 @@ export const userSlice = createSlice({
     userLastname: (state, action) => {
       state.lastname = action.payload
     },
+    kidId: (state, action) => {
+      state.lastname = action.payload
+    },
+    kidAvatar: (state, action) => {
+      state.lastname = action.payload
+    },
+    kidUsername: (state, action) => {
+      state.lastname = action.payload
+    },
     userLogout: (state) => {
       state.isLogUser = false
       state.token= ""
       state.firstname= ""
       state.lastname= ""
+      state.kidId= ""
+      state.kidAvatar= ""
+      state.kidUsername= ""
     },
   }
 })

@@ -17,6 +17,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userLastname, userLogin, userId , userFirstname } from '../../features/login/userSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import { useNavigate } from 'react-router-dom';
+
+
 import './UserLogin.scss';
 import Image from '../../assets/img/userlogin2.jpg';
 
@@ -73,6 +76,10 @@ export default function UserLogin() {
   // Redux-toolkit state import
   const dispatch = useDispatch()
 
+    // Redirect when connected
+    const navigate = useNavigate();
+
+
   // Controlled components
   const [emailValue, setEmail] = useState("");
   const [passwordValue, setPassword] = useState("");
@@ -80,6 +87,14 @@ export default function UserLogin() {
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+
+
+  useEffect(() => {
+    const loggedUser = JSON.parse(localStorage.getItem('user'));
+    if (loggedUser) {
+      navigate("/profil/utilisateur");
+    }
+  });
 
   // Api Call
   const postApi = (routeApi ,data) => {
@@ -91,14 +106,11 @@ export default function UserLogin() {
       console.log(response.data);
       const { token } = response.data;
 
-      // localStorage.setItem('user', JSON.stringify({
-      //   token,
-      // }));
-      // dispatch(userLogin(token))
-
+    
 
       // **************
-    
+      // TODO modifier les constantes de stockage du User en créant les variables: kidId kidAvatar et kidUsername 
+        // TODO ces variables ne seront pas stocker à la connexion mais sur la page Homage User lors du clique pour voir un compte enfant
       const { id, firstname, lastname } = response.data.user;
       console.log(id, firstname, lastname);
       localStorage.setItem('user', JSON.stringify({
