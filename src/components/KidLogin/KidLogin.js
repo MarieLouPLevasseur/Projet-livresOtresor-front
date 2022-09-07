@@ -87,9 +87,10 @@ export default function KidLogin() {
   useEffect(() => {
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
     if (loggedKid) {
+      setTimeout(() => {
       navigate("/profil/enfant");
-    }
-  });
+    }, 1000)
+  }});
 
   // Api Call
   const postApi = (routeApi ,data) => {
