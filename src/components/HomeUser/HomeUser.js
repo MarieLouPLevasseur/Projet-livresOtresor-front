@@ -9,12 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import './HomeUser.scss'
 import { Button, Typography } from '@mui/material';
 import Account from './Account/Account';
-
-
-
 import Loading from '../Loading/Loading';
 import { userFirstname, userLastname } from '../../features/login/userSlice';
-
 
 function HomeUser() {
 

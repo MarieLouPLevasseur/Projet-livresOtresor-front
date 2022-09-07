@@ -25,7 +25,8 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
 import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername, userLastname, userLogin } from '../../features/login/userSlice';
-import { kidAvatar, kidId, kidLogin, kidUsername } from '../../features/login/kidSlice';
+import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../features/login/kidSlice';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
@@ -41,6 +42,7 @@ function App() {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
     const loggedUserKids = JSON.parse(localStorage.getItem('userKids'));
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
+    const progressKid = JSON.parse(localStorage.getItem('kidProgress'));
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
 
@@ -61,6 +63,7 @@ function App() {
       dispatch(kidId(loggedKid.kidId));
       dispatch(kidUsername(loggedKid.username));
       dispatch(kidAvatar(loggedKid.profile_avatar));
+      dispatch(kidProgress(progressKid.progress));
     }
   },[]);
 
@@ -87,7 +90,7 @@ function App() {
         <Route path="/mes-livres" element={<MyBooks />} />
         <Route path="/recompenses" element={<Rewards />} />
         <Route path="/recherche/voir-livre" element={<Book />} />
-        <Route path="/mes-livres-voir-livre" element={<BookConfig />} />
+        <Route path="/mes-livres/voir-livre" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
