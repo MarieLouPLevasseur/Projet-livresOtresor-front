@@ -9,6 +9,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios'
 
+import {  Link } from 'react-router-dom';
 
 import Loading from '../Loading/Loading';
 
@@ -38,16 +39,24 @@ function AccountManagement() {
   const lastname = useSelector((state) => state.user.lastname);
   const email = useSelector((state) => state.user.email);
 
-  console.log(email);
 
   // Local States
   const [KidsValue, setKidsValue] = useState([]);
   const [loadinKidsValue, setLoadingKidsValue] = useState(true);
  
+
+  // Controlled components
+  const [kidAddUsernameValue, setKidAddUsernameValue] = useState("");
+  const [kidAddPasswordValue, setKidAddPasswordValue] = useState("");
+
+  // Error states
+  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+  const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+
    // Api Calls
    const apiEndpointKids = `/api/v1/users/${id}/kids`
  
- 
+//  GET List of users
    useEffect(() => {
      if(id){
      axios.get(apiUrl + apiEndpointKids, {headers : {
@@ -63,7 +72,6 @@ function AccountManagement() {
      .catch((error) => {
        console.log('Erreur !', error);
      })
- 
      
    }
    }, [id]);
@@ -71,7 +79,40 @@ function AccountManagement() {
    if (loadinKidsValue ) {
      return <Loading/>
    }
+// ***************Set Datas for Create a Kid**************************
 
+ // Api Call
+ const postApi = (routeApi ,data) => {
+  axios.post(routeApi , data, {headers : {
+    'Authorization': `Bearer ${token}`
+  },
+  })
+  .then(function (response) {
+   
+   
+  })
+  // })
+  .catch(function (error) {
+    console.log(error);
+    setAlertErrorLogin(true)
+  });
+}
+   const apiEndpoint = `/api/v1/users/${id}/kids`
+  
+   const handleSubmit = () => {
+    //  event.preventDefault();
+     
+      const profilUser = {
+        username: kidAddUsernameValue,
+        password: kidAddPasswordValue,
+      };
+       const profilUserJson = JSON.stringify(profilUser);
+     postApi(apiUrl + apiEndpoint,profilUserJson);
+
+
+     
+   };
+// **************************************************************
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -108,7 +149,6 @@ function AccountManagement() {
                           autoComplete="given-name"
                           name="firstName"
                           fullWidth
-                         // id="firstName"
                           label= "Nom"
                           autoFocus
                         />
@@ -130,7 +170,6 @@ function AccountManagement() {
                       <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
-                         // id="lastName"
                           defaultValue={lastname}
                           label= "pseudonyme"
                           name="lastName"
@@ -158,7 +197,6 @@ function AccountManagement() {
                             defaultValue = {e.username}
                             name="firstName"
                             fullWidth
-                          //  id="firstName"
                             label="Nom du compte"
                             autoFocus
                           />
@@ -173,7 +211,6 @@ function AccountManagement() {
                         name="password"
                         label="Mot de passe"
                         type="password"
-                      //  id="password"
                         autoComplete="new-password"
                         />
                       </Grid>
@@ -200,9 +237,10 @@ function AccountManagement() {
                             autoComplete="given-name"
                             name="firstName"
                             fullWidth
-                          //  id="firstName"
                             label="Prénom"
                             autoFocus
+                            value={kidAddUsernameValue}
+                            onChange={(e)=> setKidAddUsernameValue(e.target.value)}
                           />
                       </Grid>
                   </Box>
@@ -213,14 +251,17 @@ function AccountManagement() {
                         name="password"
                         label="Mot de passe"
                         type="password"
-                      //  id="password"
                         autoComplete="new-password"
+                        value={kidAddPasswordValue}
+                        onChange={(e)=> setKidAddPasswordValue(e.target.value)}
                         />
                       </Grid>
                   </Box>
                 </Box>
               </Card>
-              <Validate />
+             
+                <Validate handleSubmit={handleSubmit}/>
+             
             </Box>
 {/* ***** */}
 
