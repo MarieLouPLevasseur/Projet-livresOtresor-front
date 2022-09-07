@@ -17,7 +17,7 @@ import AccountManagement from '../AccountManagement/AccountManagement'
 import HomeKid from '../HomeKid/HomeKid'
 import Search from '../Search/Search'
 import MyBooks from '../MyBooks/MyBooks'
-import BookConfig from '../BookConfig/BookConfig'
+import BookConfig from '../Book/BookConfig/BookConfig'
 import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
@@ -30,7 +30,6 @@ import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../feat
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
-import NotAllowed from '../NotAllowed/NotAllowed';
 
 function App() {
 
@@ -75,7 +74,6 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        {isLogKid && <Route path="/inscription" element={<NotAllowed />} />}
         {!isLogKid && <Route path="/inscription" element={<Register />} />}
         <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path='/connexion-parent' element={<UserLogin />} />
@@ -91,8 +89,8 @@ function App() {
         <Route path="/recherche" element={<Search />} />
         <Route path="/mes-livres" element={<MyBooks />} />
         <Route path="/recompenses" element={<Rewards />} />
-        <Route path="/recherche/voir-livre/:identifier" element={<Book />} />
-        <Route path="/mes-livres/voir-livre/:id" element={<BookConfig />} />
+        <Route path="/recherche/voir-livre" element={<Book />} />
+        <Route path="/mes-livres/voir-livre" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />

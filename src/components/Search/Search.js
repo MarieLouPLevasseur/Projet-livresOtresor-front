@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -94,9 +93,7 @@ function Search() {
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
-              <Link to={`/recherche/voir-livre/${data.volumeInfo.industryIdentifiers[0].identifier}`}>
-                <Button size="small">Voir le livre</Button>
-              </Link>
+              <Button size="small">Voir le livre</Button>
             </CardActions>
           </Card>
         ))

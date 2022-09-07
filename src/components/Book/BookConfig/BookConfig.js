@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import axios from 'axios';
-
+import React from 'react'
 import { Typography, Box, Button, Card, Rating, TextField, Grid } from '@mui/material';
+
+import { NavLink } from "react-router-dom";
+import HomeIcon from '@mui/icons-material/Home';
+import SearchIcon from '@mui/icons-material/Search';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import FormControl from "@mui/material/FormControl";
@@ -13,66 +16,118 @@ import MenuItem from "@mui/material/MenuItem";
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
+import FormLabel from '@mui/material/FormLabel';
 
-import BookMenu from '../Book/BookMenu/BookMenu';
-import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
-import Loading from '../Loading/Loading';
 
 import './BookConfig.scss'
+import Cover from '../../../assets/img/defaultCover.jpg'
+
+const theme = createTheme({
+  palette:{
+    primary:{
+      main: '#4462A5',
+    }
+  },
+});
+
 
 function BookConfig() {
-  
-  // UseParams
-  const { id } = useParams();
-  console.log(id,'id');
-
-  // Redux-toolkit state import
-  const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const kidId = useSelector((state) => state.kid.id);
-
-  // Local States
-  const [Book, setBook] = useState([]);
-  const [loadingBook, setLoadingBook] = useState(true);
-
-  // Api Calls
-  const apiEndpointProgress = `/api/v1/kids/${kidId}/books/${id}`
-
-  useEffect(() => {
-    if(kidId){
-    axios.get(apiUrl + apiEndpointProgress, {headers : {
-      'Authorization': `Bearer ${token}`
-    }
-    })
-    .then((response) => {
-      console.log(response.data);
-      setBook(response.data);
-      setLoadingBook(false)
-    })
-    .catch((error) => {
-      console.log('Erreur !', error);
-    });
-  }}, [kidId]);
-
-  if (loadingBook) {
-    return <Loading/>
-  }  
   return (
     <div>
-        <Box sx={{display:'flex', justifyContent:'center', alignItems:'center',  padding:'20px', flexDirection:{xs:'column', sd:'column', md:'column'}, width:'80%', margin:'auto'}}>
-          <BookMenu sx={{ display: { xs: 'none', sm: 'block' } }}/>
-          <Typography component="h1" variant="h3" sx={{fontFamily:'montserrat', color:'#4462A5', mt:'20px', marginBottom:'20px', marginLeft:{md:'-70px'} }}>
-            {Book[0].book.title}
-          </Typography>    
-            <Box sx={{display:'flex', justifyContent:'center', width:'100%'}}>
-              <BookIconeMenu sx={{ display: { xs: 'block', sm: 'none' } }} />
+      <Typography component="h1" variant="h3" sx={{fontFamily:'montserrat', color:'#4462A5', mt:'20px', marginBottom:'20px', marginLeft:{md:'-70px'} }}>
+        Titre du livre
+      </Typography>
+      <Box sx={{display:'flex', justifyContent:'center', alignItems:'center',  padding:'20px', flexDirection:{xs:'column', sd:'column', md:'column'}, width:'80%', margin:'auto'}}>
+          <Box className='bookMenu' sx={{ display: { xs: 'none', sm: 'block' } }}>
+              <Box sx={{ flexGrow: 1, display:'flex', flexDirection: 'column', maxWidth : '200px', display:{ xs: 'none', sm: 'block' }, marginLeft:'-300px'}}>
+                {/* injection d'une Box pour responsive */}
+                <Box display={'flex'} >
+                    <Button
+                      className='button'
+                      sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px'}}
+                    >
+                      <NavLink
+                        className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                        style={{ textDecoration: 'none'}}
+                        to='/profil/enfant'
+                      >
+                        Accueil
+                      </NavLink>
+                    </Button>
+                    <Button
+                      className='button'
+                      sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px' }}
+                    >
+                      <NavLink
+                        className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                        style={{ textDecoration: 'none'}}
+                        to='/mes-livres'
+                      >
+                        Mes livres
+                      </NavLink>
+                    </Button>
+                </Box>
+                <Box sx={{mt:'-12px'}} display={'flex'}>
+                    <Button
+                      className='button'
+                      sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px'}}
+                    >
+                      <NavLink
+                        className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                        style={{ textDecoration: 'none'}}
+                        to='/recompenses'
+                      >
+                        Mes récompenses
+                      </NavLink>
+                    </Button>
+                    <Button
+                      className='button'
+                      sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px'}}
+                    >
+                      <NavLink
+                        className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
+                        style={{ textDecoration: 'none'}}
+                        to='/recherche'
+                      >
+                        Recherche de livres
+                      </NavLink>
+                    </Button>
+                </Box>
+              </Box>
+          </Box>
+      </Box>
+      <Box sx={{display:'flex', width:'100%'}}>
+        <Box className='bookIconeMenu'>
+            <ThemeProvider theme={theme}>
+              <div>
+                <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                    <Box sx={{display:'flex', flexDirection:'column'}} >
+                        <Button>
+                          <HomeIcon sx={{fontSize:'50px'}} />
+                        </Button>
+                        <Button>
+                          <MenuBookIcon sx={{fontSize:'50px'}} />
+                        </Button>
+                        <Button>
+                          <EmojiEventsIcon sx={{fontSize:'50px'}} />
+                        </Button>
+                        <Button>
+                        <SearchIcon sx={{fontSize:'50px'}} />
+                        </Button>
+                    </Box>
+                </Box>
+              </div>
+          </ThemeProvider>
+        </Box>
+        <Box className='boxBook'>
+            <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, width:'100%'}}>
               <Box 
                 component="img"
                 alt="Couverture d'un livre"
-                src={Book[0].book.cover}
+                src={Cover}
                 sx={{
                   height: 300,
-                  width: 250,
+                  width: 300,
                   maxHeight: { xs: 200, md: 300 },
                   maxWidth: { xs: 200, md: 300 },
                   marginLeft: 20,
@@ -82,27 +137,28 @@ function BookConfig() {
                   // marginTop: 8
                 }}
               />
-              <Box sx={{width:{xs:'100%', md:'50%'}, textAlign: 'center'}}>
-                <Typography sx={{ mt: 3,mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-                  Ecrit par
+              <Box sx={{width:{xs:'100%', md:'50%', marginLeft:'-45px', marginTop:'-45px'}, textAlign: 'center'}}>
+                <Typography sx={{ mt: 8, fontFamily: 'Montserrat', fontWeight: 500 }}>
+                  Livre le plus récent ajouté
                 </Typography>
-                <Typography sx={{ mt: 1,mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-                {Book[0].book.authors[0].name}
+                <Typography sx={{ mt: 3,mb: 3, fontFamily: 'Montserrat', fontWeight: 500 }}>
+                  le 29/08/2022
                 </Typography>
-                <Typography sx={{ mt: 3,mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-                  Aux éditions
+                <Typography sx={{ mt: 3,mb: 3, fontFamily: 'Montserrat', fontWeight: 500 }}>
+                  Auteur
                 </Typography>
-                <Typography sx={{ mt: 1,mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-                {Book[0].book.publisher}
+                <Typography sx={{ mt: 3,mb: 3, fontFamily: 'Montserrat', fontWeight: 500 }}>
+                  Editeur
                 </Typography>
                 {/* <Rating name="read-only" precision={0.5} value={4.5} readOnly /> */}
                 <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom:'30px'}}>
-                "{Book[0].book.description}"
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque congue sem ante, vitae vestibulum nisi consectetur eget. Maecenas luctus fermentum commodo. Maecenas id mauris maximus, dapibus ante eu, elementum nulla. Sed elit velit, venenatis quis est ac, porttitor dignissim magna. Integer non lectus sit amet ante elementum fringilla. Ut in varius leo."
                 </Typography>
               </Box>
           </Box>
 
         </Box>
+      </Box>
 
     {/* ******************************************espace formulaire******************************* */}
       <Box sx={{marginBottom:'30px'}}>
@@ -173,9 +229,9 @@ function BookConfig() {
                           label="category"
                           
                         >
-                          <MenuItem >Ten</MenuItem>
-                          <MenuItem >Twenty</MenuItem>
-                          <MenuItem >Thirty</MenuItem>
+                          <MenuItem value={10}>Ten</MenuItem>
+                          <MenuItem value={20}>Twenty</MenuItem>
+                          <MenuItem value={30}>Thirty</MenuItem>
                         </Select>
                     </FormControl>
                   </Box>

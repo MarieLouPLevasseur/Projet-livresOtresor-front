@@ -7,7 +7,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import {  Link } from 'react-router-dom';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons';
@@ -53,7 +52,7 @@ function MyBooks() {
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
   const token = useSelector((state) => state.kid.token);
-  const kidId = useSelector((state) => state.kid.id)
+  const id = useSelector((state) => state.kid.id)
 
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
@@ -68,13 +67,13 @@ function MyBooks() {
   };
 
   // Api Calls
-  const apiEndpointAllBooks = `/api/v1/kids/${kidId}/books`
+  const apiEndpointAllBooks = `/api/v1/kids/${id}/books`
   const apiEndpointCategories = `/api/v1/categories`
-  const apiEndpointAuthors = `/api/v1/kids/${kidId}/books/authors`
+  const apiEndpointAuthors = `/api/v1/kids/${id}/books/authors`
 
   // All Books at first
   useEffect(() => {
-    if(kidId){
+    if(id){
     axios.get(apiUrl + apiEndpointAllBooks, {headers : {
       'Authorization': `Bearer ${token}`
     }
@@ -117,7 +116,7 @@ function MyBooks() {
       console.log('Erreur !', error);
     })
   }
-  }, [kidId]);
+  }, [id]);
   
   // Handle Functions
   const handleChangeRead = () => {
@@ -269,9 +268,7 @@ function MyBooks() {
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
-              <Link to={`/mes-livres/voir-livre/${data.book.id}`}>
-                <Button size="small">Voir le livre</Button>
-              </Link>
+              <Button size="small">Voir le livre</Button>
             </CardActions>
           </Card>
           ))}
