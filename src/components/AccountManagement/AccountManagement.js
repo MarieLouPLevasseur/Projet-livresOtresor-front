@@ -1,10 +1,16 @@
-import React from 'react'
+import React , { useEffect, useState } from 'react'
+
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Avatar from '@mui/material/Avatar';
 import { Box, Typography, TextField, Card, Grid } from '@mui/material';
 import AccountM from './AccountM/AccountM';
 import Validate from './Validate/Validate';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios'
+
+
+import Loading from '../Loading/Loading';
 
 import './AccountManagement.scss';
 
@@ -22,6 +28,50 @@ const theme = createTheme({
 });
 
 function AccountManagement() {
+
+    // Redux-toolkit state import
+  const apiUrl = useSelector((state) => state.api.apiUrl);
+
+  const token = useSelector((state) => state.user.token);
+  const id = useSelector((state) => state.user.userId);
+  const firstname = useSelector((state) => state.user.firstname);
+  const lastname = useSelector((state) => state.user.lastname);
+  const email = useSelector((state) => state.user.email);
+
+  console.log(email);
+
+  // Local States
+  const [KidsValue, setKidsValue] = useState([]);
+  const [loadinKidsValue, setLoadingKidsValue] = useState(true);
+ 
+   // Api Calls
+   const apiEndpointKids = `/api/v1/users/${id}/kids`
+ 
+ 
+   useEffect(() => {
+     if(id){
+     axios.get(apiUrl + apiEndpointKids, {headers : {
+       'Authorization': `Bearer ${token}`
+     }
+     })
+     .then((response) => {
+       console.log(response.data)
+       setKidsValue(response.data);
+        console.log(KidsValue);
+        setLoadingKidsValue(false)
+     })
+     .catch((error) => {
+       console.log('Erreur !', error);
+     })
+ 
+     
+   }
+   }, [id]);
+   
+   if (loadinKidsValue ) {
+     return <Loading/>
+   }
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -45,19 +95,21 @@ function AccountManagement() {
                     <Grid item xs={12} sm={6} >
                         <TextField
                           fullWidth
+                          defaultValue={email}
                           id="email"
-                          label="Email"
+                          label="email"
                           name="email"
                           autoComplete="email"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <TextField
+                          defaultValue={firstname}
                           autoComplete="given-name"
                           name="firstName"
                           fullWidth
                          // id="firstName"
-                          label="Prénom"
+                          label= "Nom"
                           autoFocus
                         />
                       </Grid>
@@ -67,6 +119,7 @@ function AccountManagement() {
                       <Grid item xs={12} sm={6}>
                         <TextField
                         fullWidth
+                        
                         name="password"
                         label="Mot de passe"
                         type="password"
@@ -78,7 +131,8 @@ function AccountManagement() {
                         <TextField
                           fullWidth
                          // id="lastName"
-                          label="Nom"
+                          defaultValue={lastname}
+                          label= "pseudonyme"
                           name="lastName"
                           autoComplete="family-name"
                         />
@@ -91,22 +145,27 @@ function AccountManagement() {
             <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'300px'}}>
               <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', color:'white', background:'#4462A5'}}>Comptes enfants</Typography>
             </Card>
+{/* KID CARD to edit***** */}
+            {KidsValue.map((e) => (
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
               <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
                 <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', textAlign:'center', Width:'100%', padding:'10px', gap:'10px' }}>
-                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Nom compte enfant</Typography>
+                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> {e.username} </Typography>
                   <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
                       <Grid item xs={12} sm={6}>
                         <TextField
                             autoComplete="given-name"
+                            defaultValue = {e.username}
                             name="firstName"
                             fullWidth
                           //  id="firstName"
-                            label="Prénom"
+                            label="Nom du compte"
                             autoFocus
                           />
                       </Grid>
                   </Box>
+                     
+
                   <Box sx={{display:'flex', justifyContent:'space-around', Width:'100%', marginBottom:'20px', mt:'18px'}}>
                       <Grid item xs={12} sm={6}>
                         <TextField
@@ -123,41 +182,15 @@ function AccountManagement() {
               </Card>
               <AccountM />
             </Box>
-            <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
-              <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
-              <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', textAlign:'center', Width:'100%', padding:'10px', gap:'10px' }}>
-                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Nom compte enfant</Typography>
-                  <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
-                      <Grid item xs={12} sm={6}>
-                        <TextField
-                            autoComplete="given-name"
-                            name="firstName"
-                            fullWidth
-                          //  id="firstName"
-                            label="Prénom"
-                            autoFocus
-                          />
-                      </Grid>
-                  </Box>
-                  <Box sx={{display:'flex', justifyContent:'space-around', Width:'100%', marginBottom:'20px', mt:'18px'}}>
-                      <Grid item xs={12} sm={6}>
-                        <TextField
-                        fullWidth
-                        name="password"
-                        label="Mot de passe"
-                        type="password"
-                      //  id="password"
-                        autoComplete="new-password"
-                        />
-                      </Grid> 
-                  </Box>
-                </Box>
-              </Card>
-              <AccountM />
-            </Box>
+             ))}
+{/* ***** */}
+
+          
             <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'300px'}}>
               <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', color:'white', background:'#4462A5'}}>Créer un nouveau profil</Typography>
             </Card>
+
+{/* KID CARD to add ***** */}
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
               <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
               <Box sx={{display:'flex', flexDirection:'column', justifyContent:'flex-start', Width:'100%', padding:'10px', gap:'10px' }}>
@@ -189,6 +222,8 @@ function AccountManagement() {
               </Card>
               <Validate />
             </Box>
+{/* ***** */}
+
           </Box>
       </div>
     </ThemeProvider>
