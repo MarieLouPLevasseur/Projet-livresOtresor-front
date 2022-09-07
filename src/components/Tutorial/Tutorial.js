@@ -1,16 +1,10 @@
 import React from 'react'
-import { Box, Rating, Typography, Avatar } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 
-import { useTheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { borders, height, maxHeight } from '@mui/system';
 
 import Rewards from '../../assets/img/Rewards.png'
 import myLibrary from '../../assets/img/myLibrary.png'
@@ -22,11 +16,11 @@ function Tutorial() {
   return (
     <div>
       
-    <Box sx={{m:10,  width: {xs:"100%", lg: "70%"}, m:'auto'}}>
       <HomeCarousel />
-      <Typography sx={{ mt: 3, mb: 3, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 40, letterSpacing: 2, color: '#4462A5' }}>
-          Tutoriel
-      </Typography>
+        <Box sx={{m:10,  width: {xs:"100%", lg: "70%"}, m:'auto'}}>
+          <Typography sx={{ mt: 3, mb: 3, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 40, letterSpacing: 2, color: '#4462A5' }}>
+              Tutoriel
+          </Typography>
 
     {/* Image à droite */}
       <Card sx={{display: 'flex',
