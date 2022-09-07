@@ -26,6 +26,7 @@ const pages = [
   {name:"Enfant", path:"/connexion-enfant"},
   {name:"Parents", path:"/connexion-parent"},
 ];
+
 const userSettings = [
   {name:'Profil', path:"/profil/utilisateur"},
   {name:'Compte', path:"/profil/utilisateur/compte"},
@@ -34,6 +35,7 @@ const userSettings = [
 const kidSettings = [
   {name:'Ma page', path:"/profil/enfant"},
   {name:'Mes livres', path:"/mes-livres"},
+
 ];
 
 const Navbar = () => {
