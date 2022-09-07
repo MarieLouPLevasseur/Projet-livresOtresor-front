@@ -56,7 +56,7 @@ function AccountManagement() {
                           autoComplete="given-name"
                           name="firstName"
                           fullWidth
-                          id="firstName"
+                         // id="firstName"
                           label="Prénom"
                           autoFocus
                         />
@@ -77,7 +77,7 @@ function AccountManagement() {
                       <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
-                          id="lastName"
+                         // id="lastName"
                           label="Nom"
                           name="lastName"
                           autoComplete="family-name"
@@ -101,7 +101,7 @@ function AccountManagement() {
                             autoComplete="given-name"
                             name="firstName"
                             fullWidth
-                            id="firstName"
+                          //  id="firstName"
                             label="Prénom"
                             autoFocus
                           />
@@ -114,7 +114,7 @@ function AccountManagement() {
                         name="password"
                         label="Mot de passe"
                         type="password"
-                        id="password"
+                      //  id="password"
                         autoComplete="new-password"
                         />
                       </Grid>
@@ -133,7 +133,7 @@ function AccountManagement() {
                             autoComplete="given-name"
                             name="firstName"
                             fullWidth
-                            id="firstName"
+                          //  id="firstName"
                             label="Prénom"
                             autoFocus
                           />
@@ -146,7 +146,7 @@ function AccountManagement() {
                         name="password"
                         label="Mot de passe"
                         type="password"
-                        id="password"
+                      //  id="password"
                         autoComplete="new-password"
                         />
                       </Grid> 
@@ -167,7 +167,7 @@ function AccountManagement() {
                             autoComplete="given-name"
                             name="firstName"
                             fullWidth
-                            id="firstName"
+                          //  id="firstName"
                             label="Prénom"
                             autoFocus
                           />
@@ -180,7 +180,7 @@ function AccountManagement() {
                         name="password"
                         label="Mot de passe"
                         type="password"
-                        id="password"
+                      //  id="password"
                         autoComplete="new-password"
                         />
                       </Grid>

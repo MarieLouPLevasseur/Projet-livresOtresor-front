@@ -27,7 +27,7 @@ const pages = [
   {name:"Parents", path:"/connexion-parent"},
 ];
 const settings = [
-  {name:'Profil', path:"/profil"},
+  {name:'Profil', path:"/profil/utilisateur"},
   {name:'Compte', path:"/"},
 ];
 

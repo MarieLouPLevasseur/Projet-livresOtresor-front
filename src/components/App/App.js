@@ -24,8 +24,9 @@ import Footer from '../Footer/Footer'
 import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
-import { userLogin } from '../../features/login/userSlice';
+import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername, userLastname, userLogin } from '../../features/login/userSlice';
 import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../features/login/kidSlice';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
@@ -39,13 +40,27 @@ function App() {
 
   useEffect(() => {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
+    const loggedUserKids = JSON.parse(localStorage.getItem('userKids'));
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
     const progressKid = JSON.parse(localStorage.getItem('kidProgress'));
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
+
+  // set user data only
+      dispatch(userId(loggedUser.id));
+      dispatch(userFirstname(loggedUser.firstname));
+      dispatch(userLastname(loggedUser.lastname));
+
+  // set kid user data only
+      dispatch(userKidAvatar(loggedUserKids.avatar));
+      dispatch(userKidUsername(loggedUserKids.username));
+      dispatch(userKidId(loggedUserKids.kidId));
+
+  // set kid data if connected directly only
+
     } else if (loggedKid) {
       dispatch(kidLogin(loggedKid.token));
-      dispatch(kidId(loggedKid.id));
+      dispatch(kidId(loggedKid.kidId));
       dispatch(kidUsername(loggedKid.username));
       dispatch(kidAvatar(loggedKid.profile_avatar));
       dispatch(kidProgress(progressKid.progress));
@@ -53,7 +68,6 @@ function App() {
   },[]);
 
   const notForKids = isLogUser || !isLogKid;
-  // const isLog = isLogUser || isLogKid;
 
   return (
     <div className="App">

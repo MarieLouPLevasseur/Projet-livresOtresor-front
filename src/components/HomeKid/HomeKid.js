@@ -12,16 +12,53 @@ import Loading from '../Loading/Loading';
 import './HomeKid.scss';
 
 function HomeKid() {
+ 
+    // Redux-toolkit state import
+      const apiUrl = useSelector((state) => state.api.apiUrl);
 
-  // Redux-toolkit state import
-  const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const username = useSelector((state) => state.kid.username);
-  const avatar = useSelector((state) => state.kid.avatar);
-  const id = useSelector((state) => state.kid.id);
+
+    // Set datas if User or Kid
+    const isLogUser = useSelector((state) => state.user.isLogUser);
+    const isLogKid = useSelector((state) => state.kid.isLogKid);
+  
+    console.log(isLogUser);
+    console.log(isLogKid);
+
+  // set token
+    const token = useSelector(state => {
+      if(isLogUser) {
+          return state.user.token
+      }
+      return state.kid.token;
+     })
+
+  // set username
+    const username = useSelector(state => {
+      if(isLogUser) {
+          return state.user.kidUsername
+      }
+      return state.kid.username;
+     })
+
+  // set avatar
+    const avatar = useSelector(state => {
+      if(isLogUser) {
+          return state.user.kidAvatar
+      }
+      return state.kid.avatar;
+     })
+  
+  // set id
+    const id = useSelector(state => {
+      if(isLogUser) {
+          return state.user.kidId
+      }
+      return state.kid.id;
+     })
+
   const progress = useSelector((state) => state.kid.progress)
-
   const dispatch = useDispatch();
+
 
   // Local States
   const [lastBookValue, setLastBookValue] = useState("");
