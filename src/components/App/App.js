@@ -62,9 +62,9 @@ function App() {
 
     } else if (loggedKid) {
       dispatch(kidLogin(loggedKid.token));
-      dispatch(kidId(loggedKid.kidId));
+      dispatch(kidId(loggedKid.id));
       dispatch(kidUsername(loggedKid.username));
-      dispatch(kidAvatar(loggedKid.profile_avatar));
+      dispatch(kidAvatar(loggedKid.profil_avatar));
       dispatch(kidProgress(progressKid.progress));
     }
   },[]);
@@ -76,7 +76,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        {isLogKid && <Route path="/inscription" element={<NotAllowed />} />}
+        {/* {isLogKid && <Route path="/inscription" element={<NotAllowed />} />} */}
         {!isLogKid && <Route path="/inscription" element={<Register />} />}
         <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path='/connexion-parent' element={<UserLogin />} />
@@ -86,7 +86,8 @@ function App() {
         <Route path="/faq" element={<Faq />} />
         <Route path="/cookies" element={<Cookies />} />
         <Route path="/a-propos" element={<About />} />
-        {notForKids && <Route path="/profil/utilisateur" element={<HomeUser />} />}
+        {isLogUser && <Route path="/profil/utilisateur" element={<HomeUser />} />}
+        {isLogKid && <Route path="/profil/utilisateur" element={<NotAllowed />} />}
         <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />
         <Route path="/profil/enfant" element={<HomeKid />} />
         <Route path="/recherche" element={<Search />} />

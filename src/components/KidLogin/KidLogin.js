@@ -105,7 +105,7 @@ export default function KidLogin() {
       console.log(id, username, profil_avatar);
       localStorage.setItem('kid', JSON.stringify({
         token,
-        kidId,
+        id,
         username,
         profil_avatar,
       }));
