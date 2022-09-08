@@ -214,7 +214,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
         >
           {diplomasList.map((image) => (
             <ImageListItem key={image.id}>
-              <img src={image.url} alt='diplome' />
+              <img className="diplomaImage" src={image.url} alt='diplome' />
             </ImageListItem>
           ))}
         </ImageList>
