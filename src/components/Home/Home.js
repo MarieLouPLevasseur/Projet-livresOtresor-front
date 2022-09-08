@@ -63,7 +63,7 @@ function Home() {
           maxWidth: { xs: 300, md: 400 },
         }}
         />
-      <Typography className='paragraphe' sx={{maxWidth: '50%' ,lineHeight: '30px', fontWeight: 300,fontSize: 22, letterSpacing:'2px'}}>
+      <Typography className='paragraphe' sx={{maxWidth:{xs:'100%', md:'50%'} ,lineHeight: '30px', fontWeight: 300,fontSize: 22, letterSpacing:'2px', margin:'auto'}}>
         Aider les jeunes enfants dans l’accompagnement à la lecture par la motivation.
         Permettre aux plus grands d’y stocker facilement et d’y répertorier leurs listes d’envie à venir comme leurs livres lus.
       </Typography>
@@ -71,8 +71,8 @@ function Home() {
       <Typography sx={{ mt: 3, mb: 3, fontFamily: 'Montserrat', textDecoration: 'underline', fontWeight: 500, fontSize: 30, letterSpacing: 2, color: '#4462A5' }}>
         Mais encore ?
       </Typography>
-      <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: '35px' } }}>
-        <Typography className='paragraphe' sx={{maxWidth: '50%' ,lineHeight: '30px', fontWeight: 300,fontSize: 22, letterSpacing:'2px'}}>
+      <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: '35px'}  }}>
+        <Typography className='paragraphe' sx={{maxWidth:{xs:'100%', md:'50%'} ,lineHeight: '30px', fontWeight: 300,fontSize: 22, letterSpacing:'2px', margin:'auto'}}>
           Plus de doublons dans leur collection, vous pourrez désormais plus facilement vous y retrouver vous aussi.
           La gestion de la bibliothèque a volontairement été simplifiée pour une utilisation plus fluide pour les jeunes enfants. Il ne reste plus qu’à prendre possession de votre nouvel espace.
         </Typography>
