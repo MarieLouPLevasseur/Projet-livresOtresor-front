@@ -32,9 +32,9 @@ export default function Footer() {
 
   const isLogKid = useSelector((state) => state.kid.isLogKid);
   const { pathname } = useLocation();
-  if (!isLogKid){
+  // if (!isLogKid){
     if (pathname === "/connexion-parent" || pathname === "/connexion-enfant" || pathname === "/inscription") return null;
-  }
+  // }
   return (
       <Box
         className="footer"
