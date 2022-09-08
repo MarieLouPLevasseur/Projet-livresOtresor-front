@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { Box, Typography, Avatar } from '@mui/material'
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
+
+import { kidAvatar } from '../../features/login/kidSlice';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons'
@@ -19,10 +21,41 @@ function Rewards() {
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const avatar = useSelector((state) => state.kid.avatar);
-  const id = useSelector((state) => state.kid.id);
   const progress = useSelector((state) => state.kid.progress);
+
+  // **********************
+ // Set datas if User or Kid
+ const isLogUser = useSelector((state) => state.user.isLogUser);
+ const isLogKid = useSelector((state) => state.kid.isLogKid);
+
+ console.log(isLogUser);
+ console.log(isLogKid);
+
+  // set token
+  const token = useSelector(state => {
+    if(isLogUser) {
+        return state.user.token
+    }
+    return state.kid.token;
+    })
+
+
+  // set avatar
+  const avatar = useSelector(state => {
+    if(isLogUser) {
+        return state.user.kidAvatar
+    }
+    return state.kid.avatar;
+    })
+
+  // set id
+  const id = useSelector(state => {
+    if(isLogUser) {
+        return state.user.kidId
+    }
+    return state.kid.id;
+    })
+  // ************************
 
   // Local States
   const [avatarsList, setAvatarsList] = useState([]);
@@ -33,7 +66,21 @@ function Rewards() {
   // Api Calls
   const apiEndpointAvatars = `/api/v1/kids/${id}/avatars`
   const apiEndpointDiplomas = `/api/v1/kids/${id}/diplomas`
+  const apiEndpointSetAvatar = `/api/v1/kids/${id}/avatar`
+ 
 
+// *******************
+// Controlled components
+const [currentAvatarToSetValue, setCurrentAvatarToSetValue] = useState("");
+
+// Error states
+const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+
+
+// ***********************
+
+  // Call list of Avatars
   useEffect(() => {
     if(id){
     axios.get(apiUrl + apiEndpointAvatars, {headers : {
@@ -49,6 +96,7 @@ function Rewards() {
       console.log('Erreur !', error);
     })
 
+    // Call list of Diplomas
     axios.get(apiUrl + apiEndpointDiplomas, {headers : {
       'Authorization': `Bearer ${token}`
     }
@@ -64,9 +112,53 @@ function Rewards() {
   }
   }, [id]);
 
+  // ***************Set Datas for set new avatar for the Kid**************************
+
+ // Api Call
+ const patchApi = (routeApi ,data) => {
+  axios.patch(routeApi , data, {headers : {
+    'Authorization': `Bearer ${token}`
+  },
+  })
+  .then(function (response) {
+   
+   
+  })
+  // })
+  .catch(function (error) {
+    console.log(error);
+    setAlertErrorLogin(true)
+  });
+}
+
+  const dispatch = useDispatch();
+
+   const handleClick = (url) => {
+     setCurrentAvatarToSetValue(url);
+     console.log(url);
+
+
+
+    // onChange={()=>{setCurrentAvatarToSetValue()}}
+      const newAvatarToset = {
+        profile_avatar: currentAvatarToSetValue,
+      };
+
+
+      // ! la valeur de currentAvatarToSetValue est vide problème sur le on click à terminer
+      console.log(currentAvatarToSetValue);
+       const newAvatarTosetJson = JSON.stringify(newAvatarToset);
+     patchApi(apiUrl + apiEndpointSetAvatar,newAvatarTosetJson);
+
+      dispatch (kidAvatar(url));
+   };
+// **************************************************************
+
   if (loadingAvatarsList || loadingDiplomasList) {
     return <Loading/>
   }
+
+  
   return (
     <div className='homeKid'>
       <HomeCarousel />
@@ -101,9 +193,10 @@ function Rewards() {
             gridAutoColumns: "minmax(150px, 1fr)"
           }}
         >
+        
           {avatarsList.map((image) => (
             <ImageListItem key={image.id}>
-              <img src={image.url} alt='avatar' />
+              <img className='avatarImage' src={image.url} alt='avatar'  onClick={(e)=> {handleClick(e.target.src)}} />
             </ImageListItem>
           ))}
         </ImageList>
@@ -121,7 +214,7 @@ function Rewards() {
         >
           {diplomasList.map((image) => (
             <ImageListItem key={image.id}>
-              <img src={image.url} alt='diplome' />
+              <img className="diplomaImage" src={image.url} alt='diplome' />
             </ImageListItem>
           ))}
         </ImageList>

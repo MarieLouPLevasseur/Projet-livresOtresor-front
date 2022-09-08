@@ -94,7 +94,7 @@ function Search() {
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
-              <Link to={`/recherche/voir-livre/${data.volumeInfo.industryIdentifiers[0].identifier}`}>
+              <Link to={`/recherche/voir-livre/${data.volumeInfo.industryIdentifiers[0].identifier}`} style={{textDecoration:'none'}}>
                 <Button size="small">Voir le livre</Button>
               </Link>
             </CardActions>

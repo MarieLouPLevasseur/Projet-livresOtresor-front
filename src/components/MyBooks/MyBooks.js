@@ -52,8 +52,31 @@ function MyBooks() {
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const kidId = useSelector((state) => state.kid.id)
+
+  // *************************
+ // Set datas if User or Kid
+ const isLogUser = useSelector((state) => state.user.isLogUser);
+ const isLogKid = useSelector((state) => state.kid.isLogKid);
+
+ console.log(isLogUser);
+ console.log(isLogKid);
+
+// set token
+ const token = useSelector(state => {
+   if(isLogUser) {
+       return state.user.token
+   }
+   return state.kid.token;
+  })
+
+// set id
+ const kidId = useSelector(state => {
+   if(isLogUser) {
+       return state.user.kidId
+   }
+   return state.kid.id;
+  })
+  // *************************
 
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
@@ -136,27 +159,35 @@ function MyBooks() {
 
   const handleChangeCategory = (event) => {
     setCategory(event.target.value);
+
+    if (category){
+      setCardsFilter(Cards.filter((book) => book.category.name === category));
+    }
   };
 
   const handleChangeAuthor = (event) => {
     setAuthor(event.target.value);
+
+    if (author){
+      setCardsFilter(Cards.filter((book) => book.book.authors[0].name === author));
+    }
   };
 
   const handleChangeCollection = (event) => {
     setCollection(event.target.value);
   };
 
-  useEffect(() => {
-  if (category){
-    setCardsFilter(CardsFilter.filter((book) => book.category.name === category));
-  }
-  if (author){
-    setCardsFilter(CardsFilter.filter((book) => book.book.authors[0].name === author));
-  }
-  return () => {
-    setCardsFilter(Cards);
-  };
-  }, [category, author]);
+  // useEffect(() => {
+  // if (category){
+  //   setCardsFilter(Cards.filter((book) => book.category.name === category));
+  // }
+  // if (author){
+  //   setCardsFilter(Cards.filter((book) => book.book.authors[0].name === author));
+  // }
+  // return () => {
+  //   setCardsFilter(Cards);
+  // };
+  // }, [category, author]);
 
   useEffect(() => {
     setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
@@ -269,7 +300,7 @@ function MyBooks() {
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
-              <Link to={`/mes-livres/voir-livre/${data.book.id}`}>
+              <Link to={`/mes-livres/voir-livre/${data.book.id}`} style ={{textDecoration: 'none'}}>
                 <Button size="small">Voir le livre</Button>
               </Link>
             </CardActions>

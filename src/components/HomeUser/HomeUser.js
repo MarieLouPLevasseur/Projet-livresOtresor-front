@@ -62,7 +62,7 @@ function HomeUser() {
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Compte personnel de: {firstname} {lastname}</Typography>
         <Account />
       </Card>
-      <Link to = "/profil/utilisateur/compte">
+      <Link to = "/profil/utilisateur/compte" style ={{textDecoration: 'none'}}>
 
         <Button className='button'sx={{marginBottom: '30px'}}>
           <Typography sx={{fontSize: '1.4rem', padding:'20px', background:'#4462A5', color:'white', letterSpacing:'1px', fontFamily: 'montserrat'}}>Ajouter un compte</Typography>
