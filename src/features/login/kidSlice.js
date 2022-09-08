@@ -35,6 +35,7 @@ export const kidSlice = createSlice({
       state.id = ""
       state.username = ""
       state.avatar = ""
+      state.progress = []
     },
   }
 })
