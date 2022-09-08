@@ -100,7 +100,6 @@ function AccountManagement() {
    const apiEndpoint = `/api/v1/users/${id}/kids`
   
    const handleSubmit = () => {
-    //  event.preventDefault();
      
       const profilUser = {
         username: kidAddUsernameValue,
