@@ -87,9 +87,10 @@ export default function KidLogin() {
   useEffect(() => {
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
     if (loggedKid) {
+      // setTimeout(() => {
       navigate("/profil/enfant");
-    }
-  });
+    // }, 1000)
+  }});
 
   // Api Call
   const postApi = (routeApi ,data) => {
@@ -100,18 +101,18 @@ export default function KidLogin() {
     .then(function (response) {
       console.log(response.data);
       const { token } = response.data;
-      const { id, username, profile_avatar } = response.data.user;
-      console.log(id, username, profile_avatar);
+      const { id, username, profil_avatar } = response.data.user;
+      console.log(id, username, profil_avatar);
       localStorage.setItem('kid', JSON.stringify({
         token,
-        id,
+        kidId,
         username,
-        profile_avatar,
+        profil_avatar,
       }));
       dispatch(kidLogin(token))
       dispatch(kidId(id))
       dispatch(kidUsername(username))
-      dispatch(kidAvatar(profile_avatar))
+      dispatch(kidAvatar(profil_avatar))
     })
     .catch(function (error) {
       console.log(error);

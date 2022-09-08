@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -26,9 +26,16 @@ const pages = [
   {name:"Enfant", path:"/connexion-enfant"},
   {name:"Parents", path:"/connexion-parent"},
 ];
-const settings = [
-  {name:'Profil', path:"/profil"},
-  {name:'Compte', path:"/"},
+
+const userSettings = [
+  {name:'Profil', path:"/profil/utilisateur"},
+  {name:'Compte', path:"/profil/utilisateur/compte"},
+];
+
+const kidSettings = [
+  {name:'Ma page', path:"/profil/enfant"},
+  {name:'Mes livres', path:"/mes-livres"},
+
 ];
 
 const Navbar = () => {
@@ -39,8 +46,8 @@ const Navbar = () => {
 
   const dispatch = useDispatch()
 
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -211,13 +218,20 @@ const Navbar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {isLogUser &&(userSettings.map((setting) => (
                 <Link to={setting.path} key={setting.name} style={{ textDecoration: 'none', color: 'black'}}>
                   <MenuItem onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
                 </Link>
-              ))}
+              )))} 
+              {isLogKid &&(kidSettings.map((setting) => (
+                <Link to={setting.path} key={setting.name} style={{ textDecoration: 'none', color: 'black'}}>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting.name}</Typography>
+                  </MenuItem>
+                </Link>
+              )))}              
               <Link to="/" style={{ textDecoration: 'none', color: 'black'}}>
                 <MenuItem onClick={handleLogout}>
                   <Typography textAlign="center">Déconnexion</Typography>

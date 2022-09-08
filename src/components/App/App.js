@@ -17,18 +17,20 @@ import AccountManagement from '../AccountManagement/AccountManagement'
 import HomeKid from '../HomeKid/HomeKid'
 import Search from '../Search/Search'
 import MyBooks from '../MyBooks/MyBooks'
-import BookConfig from '../Book/BookConfig/BookConfig'
+import BookConfig from '../BookConfig/BookConfig'
 import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
 import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
-import { userLogin } from '../../features/login/userSlice';
-import { kidAvatar, kidId, kidLogin, kidUsername } from '../../features/login/kidSlice';
+import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
+import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../features/login/kidSlice';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
+import NotAllowed from '../NotAllowed/NotAllowed';
 
 function App() {
 
@@ -39,25 +41,42 @@ function App() {
 
   useEffect(() => {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
+    const loggedUserKids = JSON.parse(localStorage.getItem('userKids'));
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
+    const progressKid = JSON.parse(localStorage.getItem('kidProgress'));
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
+
+  // set user data only
+      dispatch(userId(loggedUser.id));
+      dispatch(userFirstname(loggedUser.firstname));
+      dispatch(userLastname(loggedUser.lastname));
+      dispatch(userEmail(loggedUser.email));
+
+  // set kid user data only
+      dispatch(userKidAvatar(loggedUserKids.avatar));
+      dispatch(userKidUsername(loggedUserKids.username));
+      dispatch(userKidId(loggedUserKids.kidId));
+
+  // set kid data if connected directly only
+
     } else if (loggedKid) {
       dispatch(kidLogin(loggedKid.token));
-      dispatch(kidId(loggedKid.id));
+      dispatch(kidId(loggedKid.kidId));
       dispatch(kidUsername(loggedKid.username));
       dispatch(kidAvatar(loggedKid.profile_avatar));
+      dispatch(kidProgress(progressKid.progress));
     }
   },[]);
 
   const notForKids = isLogUser || !isLogKid;
-  // const isLog = isLogUser || isLogKid;
 
   return (
     <div className="App">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        {isLogKid && <Route path="/inscription" element={<NotAllowed />} />}
         {!isLogKid && <Route path="/inscription" element={<Register />} />}
         <Route path="/connexion-enfant" element={<KidLogin />} />
         <Route path='/connexion-parent' element={<UserLogin />} />
@@ -73,8 +92,8 @@ function App() {
         <Route path="/recherche" element={<Search />} />
         <Route path="/mes-livres" element={<MyBooks />} />
         <Route path="/recompenses" element={<Rewards />} />
-        <Route path="/recherche/voir-livre" element={<Book />} />
-        <Route path="/mes-livres-voir-livre" element={<BookConfig />} />
+        <Route path="/recherche/voir-livre/:identifier" element={<Book />} />
+        <Route path="/mes-livres/voir-livre/:id" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />

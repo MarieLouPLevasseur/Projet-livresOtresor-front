@@ -6,6 +6,7 @@ const initialState = {
   id: "",
   username: "",
   avatar: "",
+  progress: [],
 }
 
 export const kidSlice = createSlice({
@@ -25,16 +26,20 @@ export const kidSlice = createSlice({
     kidAvatar: (state, action) => {
       state.avatar = action.payload
     },
+    kidProgress: (state, action) => {
+      state.progress = action.payload
+    },
     kidLogout: (state) => {
       state.isLogKid = false
       state.token = ""
       state.id = ""
       state.username = ""
       state.avatar = ""
+      state.progress = []
     },
   }
 })
 
-export const { kidLogin, kidLogout, kidId, kidUsername, kidAvatar } = kidSlice.actions
+export const { kidLogin, kidLogout, kidId, kidUsername, kidAvatar, kidProgress } = kidSlice.actions
 
 export default kidSlice.reducer

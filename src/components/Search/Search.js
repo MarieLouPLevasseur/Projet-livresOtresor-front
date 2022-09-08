@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -29,7 +30,7 @@ function Search() {
   
   // Local state
   const [Cards, setCards] = useState([]);
-  const [Loading, setLoading] = useState(true)
+  const [LoadingCards, setLoadingCards] = useState(false)
   const [Search, setSearch] = useState('');
   const [itemToSearch, setItemToSearch] = useState('');
 
@@ -48,21 +49,22 @@ function Search() {
   // Api Call
     useEffect(() => {
       if(itemToSearch){
+      setLoadingCards(true)
       axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 40 } })
       .then((response) => {
-        console.log(response.data)
         setCards(response.data.items);
+        setLoadingCards(false);
       })
       .catch((error) => {
         console.log('Erreur !', error);
       })
-      .finally(()=> {
-        setLoading(false);
-      });
     }}, [itemToSearch]);
 
     console.log(Cards)
 
+  if(LoadingCards){
+    return <Loading />
+  }
   return (
     <ThemeProvider theme={theme}>
     <div>
@@ -73,8 +75,8 @@ function Search() {
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
       <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml:'3%' }}>
-        <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch}/>
-        {!Loading && (
+        <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} setLoadingCards={setLoadingCards}/>
+        {!LoadingCards && (
         _DATA.currentData().map((data) => (
           <Card key={data.id} sx={{ display: "flex", width: "100%", height: "50%", mb: 1.5 }}>
             <CardMedia
@@ -92,7 +94,9 @@ function Search() {
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
-              <Button size="small">Voir le livre</Button>
+              <Link to={`/recherche/voir-livre/${data.volumeInfo.industryIdentifiers[0].identifier}`} style={{textDecoration:'none'}}>
+                <Button size="small">Voir le livre</Button>
+              </Link>
             </CardActions>
           </Card>
         ))
