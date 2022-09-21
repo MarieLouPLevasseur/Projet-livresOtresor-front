@@ -1,0 +1,38 @@
+
+.titre1 {
+  font-size: 3rem !important;
+}
+
+.titre2 {
+  font-size: 1.8rem !important;
+}
+
+
+// *****************RESPONSIVE ************************/
+@media  screen and (max-width: 900px) {
+  .faq {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .boxaccor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .boxaccor2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .titre1 {
+    font-size: 1.8rem !important;
+  }
+  .titre2 {
+    font-size: 1.1rem !important;
+  }
+}
