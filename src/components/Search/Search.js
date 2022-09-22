@@ -51,7 +51,6 @@ function Search() {
     useEffect(() => {
       if(itemToSearch){
       setLoadingCards(true)
-      // axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 40 } })
       axios.get(`https://api2.isbndb.com/books/${itemToSearch}`,
       
       {
