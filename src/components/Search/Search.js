@@ -37,16 +37,7 @@ function Search() {
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
   const PER_PAGE = 4;
-  const config =  { params: { maxResults: 40 },
-                    headers : { Accept: '/',
-                                Authorization: '48454_3adb165117c5b979bbc75eb560814297'}
-                  };
-
-// const config = { headers:{
-                  //     header1: value1,
-                  //     header2: value2
-                  //   }
-                  // };
+  
 
   const count = Math.ceil(Cards.length / PER_PAGE);
   const _DATA = usePagination(Cards, PER_PAGE);
@@ -62,19 +53,17 @@ function Search() {
       setLoadingCards(true)
       // axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 40 } })
       axios.get(`https://api2.isbndb.com/books/${itemToSearch}`,
-      // { params: { maxResults: 40 }
-      // },
+      
       {
         headers : { 'Accept': '/',
                     'Authorization': '48454_3adb165117c5b979bbc75eb560814297'}
-      // {config}
       })
       
 
       .then((response) => {
         setCards(response.data.books);
         setLoadingCards(false);
-        console.log(response.data.books, 'items');
+console.log(response.data.book.isbn, "test isbn search")
       })
       .catch((error) => {
         console.log('Erreur !', error);
@@ -82,7 +71,6 @@ function Search() {
     }}, [itemToSearch]);
 
     console.log(Cards)
-
   if(LoadingCards){
     return <Loading />
   }
