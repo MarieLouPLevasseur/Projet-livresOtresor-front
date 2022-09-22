@@ -37,6 +37,16 @@ function Search() {
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
   const PER_PAGE = 4;
+  const config =  { params: { maxResults: 40 },
+                    headers : { Accept: '/',
+                                Authorization: '48454_3adb165117c5b979bbc75eb560814297'}
+                  };
+
+// const config = { headers:{
+                  //     header1: value1,
+                  //     header2: value2
+                  //   }
+                  // };
 
   const count = Math.ceil(Cards.length / PER_PAGE);
   const _DATA = usePagination(Cards, PER_PAGE);
@@ -50,10 +60,21 @@ function Search() {
     useEffect(() => {
       if(itemToSearch){
       setLoadingCards(true)
-      axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 40 } })
+      // axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 40 } })
+      axios.get(`https://api2.isbndb.com/books/${itemToSearch}`,
+      // { params: { maxResults: 40 }
+      // },
+      {
+        headers : { 'Accept': '/',
+                    'Authorization': '48454_3adb165117c5b979bbc75eb560814297'}
+      // {config}
+      })
+      
+
       .then((response) => {
-        setCards(response.data.items);
+        setCards(response.data.books);
         setLoadingCards(false);
+        console.log(response.data.books, 'items');
       })
       .catch((error) => {
         console.log('Erreur !', error);
@@ -82,19 +103,19 @@ function Search() {
             <CardMedia
               sx={{ width: '15%', height: '100%' }}
               component="img"
-              image={ImgCard}
+              image={data.image ? data.image :{ImgCard} }
               alt="Book Cover"
             />
             <CardContent sx={{width: '80%'}}>
               <Typography gutterBottom variant="h5" component="div">
-                {data.volumeInfo.title}
+                {data.title}
               </Typography>
               <Typography sx={{ fontStyle: 'italic', maxLines: 4 }} variant="body2" color="text.secondary">
-                {data.volumeInfo.description == null ? "Aucune décription n'est disponible pour ce livre" : data.volumeInfo.description.length > 500 ? `${data.volumeInfo.description.substring(0, 500)}...` : data.volumeInfo.description}
+                {data.synopsis == null ? "Aucune description n'est disponible pour ce livre" : data.synopsis.length > 500 ? `${data.synopsis.substring(0, 500)}...` : data.synopsis}
               </Typography>
             </CardContent>
             <CardActions sx={{ width: '10%' }}>
-              <Link to={`/recherche/voir-livre/${data.volumeInfo.industryIdentifiers[0].identifier}`} style={{textDecoration:'none'}}>
+              <Link to={`/recherche/voir-livre/${data.isbn13}`} style={{textDecoration:'none'}}>
                 <Button size="small">Voir le livre</Button>
               </Link>
             </CardActions>
