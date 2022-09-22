@@ -68,17 +68,6 @@ function BookConfig() {
   const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
 
 
-
-  // Login Form
-  
-    // const [formValue, setformValue] = React.useState({
-    //   collectionId: '',
-    //   collectionName: '',
-    //   comment: '',
-    //   is_read:'',
-    //   categoryId:'',
-    //   rating:''
-    // });
   console.log(Book, "valeur de Book");
 
   useEffect(() => {
@@ -270,7 +259,7 @@ const handleSubmitForm = (event) => {
                   Catégorie: {Book[0].category.name ? Book[0].category.name : "je n'ai pas encore choisi de catégorie"}
                 </Typography>
                 <Typography sx={{ mt: 3,mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-                  Collection: {Book[0].series.name ? Book[0].series.name : "je n'ai pas encore choisi de collection"}
+                  Collection: {Book[0].series ? Book[0].series.name : "je n'ai pas encore choisi de collection"}
                 </Typography>
                
               </Box>

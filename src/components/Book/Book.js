@@ -21,6 +21,7 @@ function Book() {
   const [Book, setBook] = useState([]);
   const [loadingBook, setLoadingBook] = useState(true);
 
+
   // Api Calls
   useEffect(() => {
     axios.get(`https://api2.isbndb.com/book/${identifier}`,
@@ -31,13 +32,14 @@ function Book() {
     .then((response) => {
       console.log(response.data, 'response. data');
       setBook(response.data.book);
-      console.log(Book, 'Book setter');
       setLoadingBook(false)
     })
     .catch((error) => {
       console.log('Erreur !', error);
     });
   },[])
+
+
 
   if (loadingBook) {
     return <Loading />
@@ -54,7 +56,7 @@ function Book() {
             <BookIconeMenu sx={{ display: { xs: 'block', sm: 'none' } }} />
             <BoxBook Book={Book}/>
           </Box>
-          <BookButton />
+          <BookButton Book={Book}/>
       </Box>
     </div>
   )
