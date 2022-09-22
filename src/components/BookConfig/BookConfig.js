@@ -35,6 +35,7 @@ function BookConfig() {
   const [Book, setBook] = useState([]);
   const [loadingBook, setLoadingBook] = useState(true);
   const [LoadingCategories, setLoadingCategories] = useState(true);
+  const [LoadingCollections, setLoadingCollections] = useState(true);
   const [CardsFilter, setCardsFilter] = useState([]);
   const [LoadingCards, setLoadingCards] = useState(true);
   const [Cards, setCards] = useState([]);
@@ -42,12 +43,14 @@ function BookConfig() {
 
   // Local Select State
   const [category, setCategory] = useState("");
+  const [collection, setCollection] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
-
+  const [collectionsList, setCollectionsList] = useState([]);
 
   // Api Calls
   const apiEndpointProgress = `/api/v1/kids/${kidId}/books/${id}`
   const apiEndpointCategories = `/api/v1/categories`
+  const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
 
   useEffect(() => {
     if(kidId){
@@ -58,6 +61,10 @@ function BookConfig() {
     .then((response) => {
       console.log(response.data);
       setBook(response.data);
+      setCardsFilter(response.data);
+      setCards(response.data);
+      setLoadingCards(false);
+
       setLoadingBook(false)
 
     })
@@ -74,9 +81,22 @@ function BookConfig() {
       console.log(response.data)
       setCategoriesList(response.data)
       setLoadingCategories(false);
-      setCards(response.data);
-      setCardsFilter(response.data);
-      setLoadingCards(false);
+     
+
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    });
+    // call API for Collections 
+    axios.get(apiUrl + apiEndpointCollections, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      console.log(response.data)
+      setCollectionsList(response.data)
+      setLoadingCollections(false);
+     
 
     })
     .catch((error) => {
@@ -91,7 +111,14 @@ function BookConfig() {
         setCardsFilter(Cards.filter((data) => data.name === category));
       }
     };
-  if (loadingBook || LoadingCategories ||LoadingCards) {
+
+    const handleChangeCollection = (event) => {
+      setCollection(event.target.value);
+      if (collection){
+        setCardsFilter(Cards.filter((data) => data.name === collection));
+      }
+    };
+  if (loadingBook || LoadingCategories ||LoadingCards || LoadingCollections) {
     return <Loading/>
   }  
   return (
@@ -165,17 +192,19 @@ function BookConfig() {
                   <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5', width:'auto', marginLeft:{md:'500px'}}}>Je choisis une collection :</Typography>
                     {/* <Grid item xs={12} sm={6}> */}
                     <FormControl>
-                      <InputLabel id="demo-simple-select-collection">collection à dynamiser</InputLabel>
+                      <InputLabel id="demo-simple-select-collection">choisi ta collection</InputLabel>
                         <Select
                           sx={{width:{xs:'225px', md:'228px'}}}
                           labelId="demo-simple-select-collection"
                           id="demo-simple-collection"
                           label="collection"
-                          
+                          value={collection}
+                          onChange={handleChangeCollection}
+
                         >
-                          <MenuItem >test 1</MenuItem>
-                          <MenuItem >test 2</MenuItem>
-                          <MenuItem >test 3</MenuItem>
+                        {collectionsList.map((data)=> (
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                  ))};
                         </Select>
                     </FormControl>
                   </Box>
@@ -187,9 +216,9 @@ function BookConfig() {
                         <Grid item xs={12} sm={6}>
                           <TextField
                               autoComplete="given-name"
-                              name="firstName"
+                              name="collectionName"
                               fullWidth
-                              id="firstName"
+                              id="collectionName"
                               label="Nouvelle collection du livre"
                               autoFocus
                             />
@@ -230,9 +259,9 @@ function BookConfig() {
                         <Grid item xs={12} sm={12}>
                           <TextField
                               autoComplete="given-name"
-                              name="firstName"
+                              name="comment"
                               fullWidth
-                              id="fi"
+                              id="comment"
                               label="Les petites notes personnelles"
                               autoFocus
                               width='100%'
@@ -253,7 +282,7 @@ function BookConfig() {
                       sx={{display:'flex', flexDirection:{xs:'column', md:'row'}}}
                     >
                       <FormControlLabel value="read" control={<Radio />} label="Que j'ai lu" />
-                      <FormControlLabel value="urge" control={<Radio />} label="Dont j'ai envie" />
+                      <FormControlLabel value="wish" control={<Radio />} label="Dont j'ai envie" />
                     </RadioGroup>
                   </FormControl>
                 </Box>
