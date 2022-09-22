@@ -34,9 +34,20 @@ function BookConfig() {
   // Local States
   const [Book, setBook] = useState([]);
   const [loadingBook, setLoadingBook] = useState(true);
+  const [LoadingCategories, setLoadingCategories] = useState(true);
+  const [CardsFilter, setCardsFilter] = useState([]);
+  const [LoadingCards, setLoadingCards] = useState(true);
+  const [Cards, setCards] = useState([]);
+
+
+  // Local Select State
+  const [category, setCategory] = useState("");
+  const [categoriesList, setCategoriesList] = useState([]);
+
 
   // Api Calls
   const apiEndpointProgress = `/api/v1/kids/${kidId}/books/${id}`
+  const apiEndpointCategories = `/api/v1/categories`
 
   useEffect(() => {
     if(kidId){
@@ -48,13 +59,39 @@ function BookConfig() {
       console.log(response.data);
       setBook(response.data);
       setLoadingBook(false)
+
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    });
+
+ // call API for Categories 
+    axios.get(apiUrl + apiEndpointCategories, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      console.log(response.data)
+      setCategoriesList(response.data)
+      setLoadingCategories(false);
+      setCards(response.data);
+      setCardsFilter(response.data);
+      setLoadingCards(false);
+
     })
     .catch((error) => {
       console.log('Erreur !', error);
     });
   }}, [kidId]);
 
-  if (loadingBook) {
+
+    const handleChangeCategory = (event) => {
+      setCategory(event.target.value);
+      if (category){
+        setCardsFilter(Cards.filter((data) => data.name === category));
+      }
+    };
+  if (loadingBook || LoadingCategories ||LoadingCards) {
     return <Loading/>
   }  
   return (
@@ -108,6 +145,9 @@ function BookConfig() {
       <Box sx={{marginBottom:'30px'}}>
         <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'85%', margin:'auto'}}>
             <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>Je peux choisir d'ajouter ou modifier des informations</Typography>
+
+            {/* ------------- RATING ----------------------------- */}
+
             <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', alignItems:'center'}}>
               <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5', marginRight:{md:'50px'}}}>J'ajoute une note :</Typography>
               <Box sx={{flexDirection:{xs:'column', md:'row'} , marginRight:{md:'600px'}}}>
@@ -117,9 +157,32 @@ function BookConfig() {
               </Box>
             </Box>
             <hr className='barre'/>
+            {/* -----------COLLECTION SECTION --------------------------- */}
+            {/* select collection by list */}
             <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
+
+            <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center', marginTop:'20px', width:'100%'}}>
+                  <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5', width:'auto', marginLeft:{md:'500px'}}}>Je choisis une collection :</Typography>
+                    {/* <Grid item xs={12} sm={6}> */}
+                    <FormControl>
+                      <InputLabel id="demo-simple-select-collection">collection à dynamiser</InputLabel>
+                        <Select
+                          sx={{width:{xs:'225px', md:'228px'}}}
+                          labelId="demo-simple-select-collection"
+                          id="demo-simple-collection"
+                          label="collection"
+                          
+                        >
+                          <MenuItem >test 1</MenuItem>
+                          <MenuItem >test 2</MenuItem>
+                          <MenuItem >test 3</MenuItem>
+                        </Select>
+                    </FormControl>
+                  </Box>
+           
+              {/* Create a new collection name */}
               <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', textAlign:'center', Width:'100%', padding:'10px', gap:'10px' }}>
-                  <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Nom de la collection</Typography>
+                  <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat', color:'#4462A5'}}> ou je crée une nouvelle collection</Typography>
                     <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
                         <Grid item xs={12} sm={6}>
                           <TextField
@@ -127,37 +190,14 @@ function BookConfig() {
                               name="firstName"
                               fullWidth
                               id="firstName"
-                              label="Collection du livre"
+                              label="Nouvelle collection du livre"
                               autoFocus
                             />
                         </Grid>
                     </Box>
-                  <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Le numéro de tome</Typography>
-                    <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                              autoComplete="given-name"
-                              name="firstName"
-                              fullWidth
-                              id="firstName"
-                              label="N° de tome"
-                              autoFocus
-                            />
-                        </Grid>
-                    </Box>
-                  <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Sous-titre</Typography>
-                    <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                              autoComplete="given-name"
-                              name="firstName"
-                              fullWidth
-                              id="firstName"
-                              label="Sous-titre"
-                              autoFocus
-                            />
-                        </Grid>
-                    </Box>
+
+              {/* ------------- CATEGORY ----------------------------- */}
+                  
               </Box>
                 <hr className='barre'/>
                 {/* <FormControl sx={{ width: '20%' }}> */}
@@ -170,16 +210,20 @@ function BookConfig() {
                           sx={{width:{xs:'225px', md:'228px'}}}
                           labelId="demo-simple-select-category"
                           id="demo-simple-category"
+                          value={category}
                           label="category"
+                          onChange={handleChangeCategory}
+
                           
                         >
-                          <MenuItem >Ten</MenuItem>
-                          <MenuItem >Twenty</MenuItem>
-                          <MenuItem >Thirty</MenuItem>
+                           {categoriesList.map((data)=> (
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                  ))};
                         </Select>
                     </FormControl>
                   </Box>
-             
+                {/* ------------- COMMENTS ----------------------------- */}
+
                 <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center'}}>
                   <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>J'ajoute un commentaire :</Typography>
                   <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, Width:'100%', justifyContent:'space-around', mt:'18px', margin:'auto' }}>
@@ -196,6 +240,9 @@ function BookConfig() {
                         </Grid>
                     </Box>
                 </Box>
+{console.log(category)}
+                {/* ------------- READ OR WISHED ----------------------------- */}
+
                 <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'center', alignItems:'center'}}>
                   <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>C'est un livre :</Typography>
                   <FormControl>
@@ -210,6 +257,8 @@ function BookConfig() {
                     </RadioGroup>
                   </FormControl>
                 </Box>
+            {/* ------------- SEND datas ----------------------------- */}
+
             <Box sx={{margin:'30px'}}>
                 <Button
                 className='button'
