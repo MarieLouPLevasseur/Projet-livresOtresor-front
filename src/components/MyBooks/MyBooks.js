@@ -38,6 +38,7 @@ function MyBooks() {
   const [LoadingCards, setLoadingCards] = useState(true);
   const [LoadingCategories, setLoadingCategories] = useState(true);
   const [LoadingAuthors, setLoadingAuthors] = useState(true);
+  const [LoadingCollections, setLoadingCollections] = useState(true);
 
   // Local Select State
   const [category, setCategory] = useState("");
@@ -45,6 +46,7 @@ function MyBooks() {
   const [author, setAuthor] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [collection, setCollection] = useState("");
+  const [collectionList, setCollectionList] = useState("");
 
   // Local Search State
   const [Search, setSearch] = useState('');
@@ -94,7 +96,8 @@ function MyBooks() {
   const apiEndpointAllBooks = `/api/v1/kids/${kidId}/books`
   const apiEndpointCategories = `/api/v1/categories`
   const apiEndpointAuthors = `/api/v1/kids/${kidId}/books/authors`
-
+  const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
+  
   // All Books at first
   useEffect(() => {
     if(kidId){
@@ -126,6 +129,20 @@ function MyBooks() {
       console.log('Erreur !', error);
     })
 
+    // call API for Collections
+    axios.get(apiUrl + apiEndpointCollections, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      console.log(response.data)
+      setCollectionList(response.data)
+      setLoadingCollections(false);
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    })
+
     // call API for Authors
     axios.get(apiUrl + apiEndpointAuthors, {headers : {
       'Authorization': `Bearer ${token}`
@@ -140,6 +157,8 @@ function MyBooks() {
       console.log('Erreur !', error);
     })
   }
+
+  
   }, [kidId]);
   
   // Handle Functions
@@ -165,6 +184,7 @@ function MyBooks() {
     }
   };
 
+
   const handleChangeAuthor = (event) => {
     setAuthor(event.target.value);
 
@@ -175,6 +195,10 @@ function MyBooks() {
 
   const handleChangeCollection = (event) => {
     setCollection(event.target.value);
+
+    if (collection){
+      setCardsFilter(Cards.filter((book) => book.collection.name === collection));
+    }
   };
 
   // useEffect(() => {
@@ -193,7 +217,7 @@ function MyBooks() {
     setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
   }, [itemToSearch]);
 
-  if (LoadingCards || LoadingCategories || LoadingAuthors) {
+  if (LoadingCards || LoadingCategories || LoadingAuthors || LoadingCollections) {
     return <Loading />
   }
   return (
@@ -248,9 +272,11 @@ function MyBooks() {
                   label="collection"
                   onChange={handleChangeCollection}
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+
+                {collectionList.map((data)=> (
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                  ))};
+
                 </Select>
               </FormControl>
             </Box>
