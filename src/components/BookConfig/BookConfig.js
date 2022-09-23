@@ -200,8 +200,8 @@ const handleSubmitForm = (event) => {
             "is_read": isReadValue,
             "comment": commentValue,
             // "rating": 1.5 ,
-            // "category": {
-            //         "id":   categoryIdValue},
+            "category": {
+                    "id":   categoryIdValue},
 
             // "series": {
             //         "name": collectionNameValue,
