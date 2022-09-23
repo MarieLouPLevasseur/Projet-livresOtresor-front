@@ -148,7 +148,8 @@ console.log(bookkidId, "value current bookkid id")
 
     const handleChangeCollection = (event) => {
       setCollection(event.target.value);
-      
+      setCollectionId(event.target.value.id);
+
       if (collection){
         setCardsFilter(Cards.filter((data) => data.name === collection));
       }
@@ -165,39 +166,59 @@ console.log(bookkidId, "value current bookkid id")
         setIsRead(false);
       }
     };
-// ------  HANDLE SUBMIT FORM ------------------
-const handleSubmitForm = (event) => {
-  event.preventDefault();
-  if (isReadValue === "" ) {
-    setAlertErrorSubmit(true);
-  } else {
-  const loginFormData = {
-    comment: commentValue,
-    // rating: ratingValue,
-    is_read: isReadValue
-  }
-    // TODO Trouver un moyen d'indenté en JSON la série +id ou name idem pour catégorie id
-    // TODO Trouver le passage de la valeur rating pour la transmettre
-    // TODO Remettre les valeurs par issu de la base par défaut dans les champs is_read par défaut (fait précédemment mais impossible de changé la valeur ensuite...)
-    // ? Les valeurs isRead et comment, sont transmis correctement
-    // category: id: categoryIdValue,
-    // series : name : collectionIdValue
 
-    // API Call to send data
-    const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
-
-  const loginFormDataJson = JSON.stringify(loginFormData);
-  patchApi(apiUrl + apiEndpointSubmitBookChange,loginFormDataJson);
-  }
-};
 
 
 // ---------------------------
   if (loadingBook || LoadingCategories ||LoadingCards || LoadingCollections) {
     return <Loading/>
   }  
-// {console.log(Book.id, "current Bookkid value" )
-// }
+
+
+// ------  HANDLE SUBMIT FORM ------------------
+const handleSubmitForm = (event) => {
+  event.preventDefault();
+  if (isReadValue === "" ) {
+    setAlertErrorSubmit(true);
+  } else {
+// ----------------
+// "comment": "huhuhuhuhuhuhuhou",
+//     "rating": 1.5 ,
+//     "is_read": true,
+// 	"category": {
+// 					"id": 40
+// 					},
+// 	"series": {
+// 						"name": "oui-oui"
+
+// 				}	
+
+
+// ---------------
+
+  const  loginFormData = {
+            "is_read": isReadValue,
+            "comment": commentValue,
+            // "rating": 1.5 ,
+            // "category": {
+            //         "id":   categoryIdValue},
+
+            // "series": {
+            //         "name": collectionNameValue,
+            //         "id":   collectionIdValue}
+ 
+  }
+    // TODO Trouver le passage de la valeur rating pour la transmettre
+    // TODO Remettre les valeurs par issu de la base par défaut dans les champs is_read par défaut (fait précédemment mais impossible de changé la valeur ensuite...)
+    // ? Les valeurs isRead et comment, sont transmis correctement
+
+    // API Call to send data
+    const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
+
+  // const loginFormDataJson = JSON.stringify(loginFormData);
+  patchApi(apiUrl + apiEndpointSubmitBookChange,loginFormData);
+  }
+};
   return (
     <div>
         <Box sx={{display:'flex', justifyContent:'center', alignItems:'center',  padding:'20px', flexDirection:{xs:'column', sd:'column', md:'column'}, width:'80%', margin:'auto'}}>
@@ -285,6 +306,7 @@ const handleSubmitForm = (event) => {
             <hr className='barre'/>
             {/* -----------COLLECTION SECTION --------------------------- */}
             {/* select collection by list */}
+{console.log(collectionIdValue, "current collection Id value")};
 
             <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
 
@@ -301,8 +323,9 @@ const handleSubmitForm = (event) => {
                           label="collection"
                           value={collection}
                           onChange={handleChangeCollection}
-
+// TODO rajouter une valeur de champ Vide valeur à 0 pour ne pas cumuler un champs rempli et un champ sélectionné
                         >
+                          {/* <MenuItem value=""> </MenuItem> */}
                         {collectionsList.map((data)=> (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
                   ))};
@@ -397,8 +420,6 @@ const handleSubmitForm = (event) => {
                       name="controlled-radio-buttons-group"
                       sx={{display:'flex', flexDirection:{xs:'column', md:'row'}}}
                     >
-{/* {console.log(Book[0].is_read, "is_read value")} */}
-{/* TODO ne correspond pas à la valeur par défaut du bouton is_read pour l'instant, sinon impossible de faire un choix différent apres) */}
                       <FormControlLabel 
                             value="true" 
                             name="is_read"
@@ -407,6 +428,7 @@ const handleSubmitForm = (event) => {
                             // checked={Book[0].is_read === true ? selected : false}
                             // checked={selected === "read"}
                             onChange={handleChangeRadioButton}
+                            //TODO ne correspond pas à la valeur par défaut du bouton is_read pour l'instant, sinon impossible de faire un choix différent apres)
                           />
                       <FormControlLabel 
                             value="false"
@@ -416,6 +438,8 @@ const handleSubmitForm = (event) => {
                             // checked={Book[0].is_read === false ? selected : false}
                             // checked={ selected === "wish"}
                             onChange={handleChangeRadioButton}
+                            //TODO ne correspond pas à la valeur par défaut du bouton is_read pour l'instant, sinon impossible de faire un choix différent apres)
+
                           />
                     </RadioGroup>
                   </FormControl>
