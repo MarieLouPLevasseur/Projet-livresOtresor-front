@@ -8,31 +8,6 @@ import './BookButton.scss'
 
 
 
-
-// valeurs à transmettres: modele JSON
-// "book": {
-     
-//   "isbn": "1008935557778",
-//   "title": "Je teste",
-//   "description": "Je test la description test encore",
-//   "publisher": "Editeur test encore ",
-//   "cover":"http//:blablabla.jpeg",
-//   "authors": [
-//     {
-      
-//       "name": "Madelyn Sawayn"
-//     },
-//      {
-      
-//       "name": "Jackson Jacobi"
-//     }
-//   ]
-// }
-// -------------
-
-
-
-
 /**
  * Set Button structure button to add a book
  * 
@@ -53,7 +28,7 @@ function BookButton(Book) {
   const apiEndpointCreateBook = `/api/v1/kids/${kidId}/books`
 
 
- // call API for Submit form 
+ //---- call API for Submit form  -------
 
  const postApi = (routeApi ,data) => {
   axios.post(routeApi , data, {headers : {
@@ -77,30 +52,19 @@ function BookButton(Book) {
       setAlertErrorSubmit(true);
     } else {
       const loginFormData = {
-        "book":{
         "is_read":     isRead,
+        "book":{
         "isbn" :       Book.Book.isbn13,
         "cover":       Book.Book.image,
         "publisher":   Book.Book.publisher,
         "description": Book.Book.synopsis,
         "title":       Book.Book.title,
         "authors":     [{"name": Book.Book.authors[0]}],
-        //  TODO Tests pour le bon formatage des données en cours à poursuivre
-        // "authors": [
-        //   //     {
-                
-        //   //       "name": "Madelyn Sawayn"
-        //   //     },
-        //   //      {
-                
-        //   //       "name": "Jackson Jacobi"
-        //   //     }
-        //   //   ]
+        
       }
     }
-      console.log(isRead, "TEST de submit")
   
-  // const loginFormDataJson = JSON.stringify(loginFormData);
+      // TODO il faudra mettre une pop up pour signalé si bien enregistré ou si erreur (ex doublon) + redirection
   postApi(apiUrl + apiEndpointCreateBook,loginFormData);
   }
 };

@@ -58,8 +58,8 @@ function MyBooks() {
  const isLogUser = useSelector((state) => state.user.isLogUser);
  const isLogKid = useSelector((state) => state.kid.isLogKid);
 
- console.log(isLogUser);
- console.log(isLogKid);
+ console.log(isLogUser, "User is logged");
+ console.log(isLogKid, "Kid is logged");
 
 // set token
  const token = useSelector(state => {
@@ -224,13 +224,13 @@ function MyBooks() {
                 </Select>
               </FormControl>
               <FormControl sx={{ width: '20%'}}>
-                <InputLabel id="demo-simple-select-category">Auteur</InputLabel>
+                <InputLabel id="demo-simple-select-author">Auteur</InputLabel>
                 <Select
                   sx={{ width: "80%" }}
-                  labelId="demo-simple-select-category"
-                  id="demo-simple-category"
+                  labelId="demo-simple-select-author"
+                  id="demo-simple-author"
                   value={author}
-                  label="category"
+                  label="author"
                   onChange={handleChangeAuthor}
                 >
                   {authorsList.map((data)=> (
@@ -239,7 +239,7 @@ function MyBooks() {
                 </Select>
               </FormControl>
               <FormControl sx={{ width: '20%'}}>
-                <InputLabel id="demo-simple-select-category">Collection</InputLabel>
+                <InputLabel id="demo-simple-select-collection">Collection</InputLabel>
                 <Select
                   sx={{ width: "80%" }}
                   labelId="demo-simple-select-collection"
