@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
@@ -13,6 +13,9 @@ import MenuItem from "@mui/material/MenuItem";
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 
 import BookMenu from '../Book/BookMenu/BookMenu';
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
@@ -60,6 +63,8 @@ function BookConfig() {
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+  const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
+  const [alertErrorSubmitIsRead, setAlertErrorSubmitIsRead] = useState(false);
   
 
   // Api Calls
@@ -67,6 +72,8 @@ function BookConfig() {
   const apiEndpointCategories = `/api/v1/categories`
   const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
 
+  // Refresh when update is good
+  // const navigate = useNavigate();
 
   console.log(Book, "valeur de Book");
 
@@ -123,6 +130,16 @@ console.log(bookkidId, "value current bookkid id")
     });
   }}, [kidId]);
 
+
+  // TODO Redirect when success or Refresh  page
+  // useEffect(() => {
+  //   if (alertSuccesSubmit) {
+  //     setTimeout(() => {
+  //       navigate(`/mes-livres/voir-livre/${id}` )
+  //     }, 2000);
+  //   }
+  // });
+
     // call API for Submit form 
 
   const patchApi = (routeApi ,data) => {
@@ -132,11 +149,18 @@ console.log(bookkidId, "value current bookkid id")
 
     },
     })
+    .then(function (response) {
+      console.log(response);
+      setAlertSuccesSubmit(true);
+    })
     .catch(function (error) {
       console.log(error);
       setAlertErrorLogin(true)
     });
   }
+
+  
+
 // -----HANDLE CHANGE on form fields ----------
     const handleChangeCategory = (event) => {
       setCategory(event.target.value);
@@ -179,38 +203,28 @@ console.log(bookkidId, "value current bookkid id")
 const handleSubmitForm = (event) => {
   event.preventDefault();
   if (isReadValue === "" ) {
-    setAlertErrorSubmit(true);
+    setAlertErrorSubmitIsRead(true);
+
   } else {
-// ----------------
-// "comment": "huhuhuhuhuhuhuhou",
-//     "rating": 1.5 ,
-//     "is_read": true,
-// 	"category": {
-// 					"id": 40
-// 					},
-// 	"series": {
-// 						"name": "oui-oui"
-
-// 				}	
-
-
-// ---------------
-
+// ?  TEST Si la valeur est nulle on la remplace par la valeur déjà connu en BDD Sinon on met la nouvelle
   const  loginFormData = {
-            "is_read": isReadValue,
-            "comment": commentValue,
+            "is_read": isReadValue  !== "" ? isReadValue : Book.is_read,
+            "comment": commentValue !== "" ? commentValue : Book.comment,
             // "rating": 1.5 ,
-            "category": {
-                    "id":   categoryIdValue},
+            "category": {"id": + categoryIdValue !== "" ?categoryIdValue : Book.category.name},
 
-            // "series": {
-            //         "name": collectionNameValue,
-            //         "id":   collectionIdValue}
+            // "series": collectionIdValue   !== "" ? "id:"+collectionIdValue : ""
+                      // collectionNameValue !== "" ? "name"+collectionNameValue : ""
  
   }
+  // ? Les valeurs isRead, category et comment, sont transmis correctement s'ils sont les 3 indiqués : si une des valeurs n'est pas données, ca bug
     // TODO Trouver le passage de la valeur rating pour la transmettre
-    // TODO Remettre les valeurs par issu de la base par défaut dans les champs is_read par défaut (fait précédemment mais impossible de changé la valeur ensuite...)
-    // ? Les valeurs isRead et comment, sont transmis correctement
+    // TODO Remettre les valeurs par issu de la base par défaut dans les champs is_read par défaut (fait précédemment mais impossible de changer la valeur ensuite...)
+    //* TODO Trouver le moyen de combiner les éléments entre eux: si un champs n'est pas rempli, sa valeur de clé ne soit pas être transmise, autrement le back l'interpère comme un champs vide et rejette la valeur
+          //* Voir éventuellement si le back peut y changer quelque chose
+          //* sinon le plus simple serait de fragmenter avec des boutons différents, les soumissions (mais lourd pour l'enfant)
+          //* systeme de if peut etre?
+
 
     // API Call to send data
     const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
@@ -263,8 +277,10 @@ const handleSubmitForm = (event) => {
                 </Typography>
               </Box>
 
-{/* Personnal information on book from the kid */}
+{/* ************** Personnal information on book from the kid **************************/}
+
               <Box sx={{width:{xs:'100%', md:'50%'}, textAlign: 'center'}}>
+
               <Rating name="read-only" precision={0.5} value={Book[0].rating} readOnly />
 
                 <Typography sx={{ mt: 3,mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
@@ -290,6 +306,51 @@ const handleSubmitForm = (event) => {
 
     {/* ******************************************espace formulaire******************************* */}
       <Box sx={{marginBottom:'30px'}} >
+{/* ------- Alert if Errors------------ */}
+<Snackbar
+        open={alertErrorSubmit}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Une erreur s'est produit lors de l'envoi du formulaire : Merci de remplir de recommencer
+        </MuiAlert>
+      </Snackbar>
+<Snackbar
+        open={alertErrorSubmitIsRead}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Tu dois indiquer si le livre a été lu
+        </MuiAlert>
+  </Snackbar>
+{/* Validation ok */}
+      <Snackbar
+        open={alertSuccesSubmit}
+        autoHideDuration={6000}
+        onClose={() => setAlertSuccesSubmit(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Les informations ont bien été modifiées !
+        </MuiAlert>
+      </Snackbar>
+{/* ------------------------ */}
         <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'85%', margin:'auto'}}>
             <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'#4462A5'}}>Je peux choisir d'ajouter ou modifier des informations</Typography>
 
