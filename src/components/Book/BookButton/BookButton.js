@@ -72,7 +72,7 @@ function BookButton(Book) {
 
   const handleClickAddButton = (isRead, Book) => {
 
-    console.log(Book, "test Book on add Button");
+    console.log(isRead, "test isread on add Button");
    
     if (isRead === "" ) {
       setAlertErrorSubmit(true);
@@ -141,13 +141,15 @@ function BookButton(Book) {
 
             sx={{ my: 2, color: 'white', background:'#4462A5' , fontFamily:'Montserrat', width:'100%'}}
           >
-                Ajouter à ma liste d'envie
+                Ajouter à mes livres lus
+
           </Button>
           <Button className="buttonBookAdd"  onClick={(e) => handleClickAddButton(false,Book)}
 
             sx={{ my: 2, color: 'white',fontFamily:'Montserrat', background:'#4462A5', width:'100%' }}
           >
-                Ajouter à mes livres lus
+                Ajouter à ma liste d'envie
+
           </Button>
         </Box>
     </div>
