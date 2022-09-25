@@ -57,7 +57,7 @@ function BookConfig() {
   const [collectionNameValue, setCollectionName] = useState("");
   const [commentValue, setComment] = useState("");
   const [isReadValue, setIsRead] = useState("");
-  const [categoryIdValue, setCategoryId] = useState("");
+  const [categoryIdValue, setCategoryId] = useState(0);
   const [ratingValue, setRating] = useState("");
 
   // Error states
@@ -68,7 +68,7 @@ function BookConfig() {
 
 
   // Api Calls
-  const apiEndpointProgress = `/api/v1/kids/${kidId}/books/${id}`
+  const apiEndpointBook = `/api/v1/kids/${kidId}/books/${id}`
   const apiEndpointCategories = `/api/v1/categories`
   const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
 
@@ -79,13 +79,13 @@ function BookConfig() {
 
   useEffect(() => {
     if (kidId) {
-      axios.get(apiUrl + apiEndpointProgress, {
+      axios.get(apiUrl + apiEndpointBook, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       })
         .then((response) => {
-          console.log(response.data);
+          console.log(response.data, " Book datas");
           setBook(response.data);
           setCardsFilter(response.data);
           setCards(response.data);
@@ -93,6 +93,8 @@ function BookConfig() {
           setBookkidId(response.data[0].id)
           console.log(bookkidId, "value current bookkid id")
           setLoadingBook(false)
+          setIsRead(response.data[0].is_read)
+          console.log(response.data[0].is_read, "is read Data on book")
 
         })
         .catch((error) => {
@@ -209,11 +211,13 @@ function BookConfig() {
     event.preventDefault();
     if (isReadValue === "") {
       setAlertErrorSubmitIsRead(true);
-
+console.log(categoryIdValue, "category id value in handlesubmit form")
+console.log(isReadValue, "is read value in handlesubmit form")
+console.log(commentValue, "comment value in handlesubmit form")
     } else {
       // ?  TEST Si la valeur est nulle on la remplace par la valeur déjà connu en BDD Sinon on met la nouvelle
       const loginFormData = {
-        "is_read": isReadValue !== "" ? isReadValue : Book.is_read,
+        "is_read": isReadValue,
         "comment": commentValue !== "" ? commentValue : Book.comment,
         // "rating": 1.5 ,
         "category": { "id": + categoryIdValue !== "" ? categoryIdValue : Book.category.id },
@@ -222,7 +226,7 @@ function BookConfig() {
         // collectionNameValue !== "" ? "name"+collectionNameValue : ""
 
       }
-      // ? Les valeurs isRead, category et comment, sont transmis correctement s'ils sont les 3 indiqués : si une des valeurs n'est pas données, ca bug
+      // ? Les valeurs isRead, category et comment, sont transmis correctement 
       // TODO Trouver le passage de la valeur rating pour la transmettre
       // TODO Remettre les valeurs par issu de la base par défaut dans les champs is_read par défaut (fait précédemment mais impossible de changer la valeur ensuite...)
       //* TODO Trouver le moyen de combiner les éléments entre eux: si un champs n'est pas rempli, sa valeur de clé ne soit pas être transmise, autrement le back l'interpère comme un champs vide et rejette la valeur
@@ -447,6 +451,8 @@ function BookConfig() {
 
 
               >
+                <MenuItem key={0} value={0}> Pas de catégorie </MenuItem>
+
                 {categoriesList.map((data) => (
                   <MenuItem key={data.id} value={data.id}>{data.name}</MenuItem>
                 ))}
