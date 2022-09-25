@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 
@@ -43,7 +43,6 @@ function BookConfig() {
   const [LoadingCards, setLoadingCards] = useState(true);
   const [Cards, setCards] = useState([]);
 
-
   // Local Select State
   const [category, setCategory] = useState("");
   const [collection, setCollection] = useState("");
@@ -53,8 +52,8 @@ function BookConfig() {
   const [bookkidId, setBookkidId] = useState(true);
 
   // Local Form State
-  const [collectionIdValue, setCollectionId] = useState("");
-  const [collectionNameValue, setCollectionName] = useState("");
+  // const [collectionIdValue, setCollectionIdValue] = useState(0);
+  const [collectionNameValue, setCollectionNameValue] = useState("");
   const [commentValue, setComment] = useState("");
   const [isReadValue, setIsRead] = useState("");
   const [categoryIdValue, setCategoryId] = useState(0);
@@ -72,9 +71,6 @@ function BookConfig() {
   const apiEndpointCategories = `/api/v1/categories`
   const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
 
-  // Refresh when update is good
-  // const navigate = useNavigate();
-
   console.log(Book, "valeur de Book");
 
   useEffect(() => {
@@ -90,11 +86,18 @@ function BookConfig() {
           setCardsFilter(response.data);
           setCards(response.data);
           setLoadingCards(false);
+          setLoadingBook(false)
+
           setBookkidId(response.data[0].id)
           console.log(bookkidId, "value current bookkid id")
-          setLoadingBook(false)
+          
           setIsRead(response.data[0].is_read)
           console.log(response.data[0].is_read, "is read Data on book")
+
+          if(response.data[0].series !== null){
+            setCollectionNameValue(response.data[0].series.name)
+          }
+          console.log(collectionNameValue, "collection Id value on book")
 
         })
         .catch((error) => {
@@ -109,7 +112,7 @@ function BookConfig() {
       })
         .then((response) => {
           console.log(response.data)
-          setCategoriesList(response.data)
+          setCategoriesList(response.data, "categorie list data")
           setLoadingCategories(false);
 
 
@@ -124,7 +127,7 @@ function BookConfig() {
         }
       })
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data, "collection List data")
           setCollectionsList(response.data)
           setLoadingCollections(false);
 
@@ -138,13 +141,7 @@ function BookConfig() {
 
 
   // TODO Redirect when success or Refresh  page
-  // useEffect(() => {
-  //   if (alertSuccesSubmit) {
-  //     setTimeout(() => {
-  //       navigate(`/mes-livres/voir-livre/${id}` )
-  //     }, 2000);
-  //   }
-  // });
+ 
 
   // call API for Submit form 
 
@@ -178,8 +175,8 @@ function BookConfig() {
   };
 
   const handleChangeCollection = (event) => {
-    setCollection(event.target.value);
-    setCollectionId(event.target.value.id);
+    setCollection(event.target.value, "data collection on handlechange");
+    setCollectionNameValue(event.target.value);
 
     if (collection) {
       setCardsFilter(Cards.filter((data) => data.name === collection));
@@ -215,30 +212,19 @@ console.log(categoryIdValue, "category id value in handlesubmit form")
 console.log(isReadValue, "is read value in handlesubmit form")
 console.log(commentValue, "comment value in handlesubmit form")
     } else {
-      // ?  TEST Si la valeur est nulle on la remplace par la valeur déjà connu en BDD Sinon on met la nouvelle
       const loginFormData = {
         "is_read": isReadValue,
         "comment": commentValue !== "" ? commentValue : Book.comment,
         // "rating": 1.5 ,
         "category": { "id": + categoryIdValue !== "" ? categoryIdValue : Book.category.id },
-
-        // "series": collectionIdValue   !== "" ? "id:"+collectionIdValue : ""
-        // collectionNameValue !== "" ? "name"+collectionNameValue : ""
-
+        "series": { "name": + collectionNameValue !== "" ? collectionNameValue : Book.series.name },
       }
-      // ? Les valeurs isRead, category et comment, sont transmis correctement 
+      // ? Les valeurs isRead, category, collection et comment, sont transmis correctement 
       // TODO Trouver le passage de la valeur rating pour la transmettre
-      // TODO Remettre les valeurs par issu de la base par défaut dans les champs is_read par défaut (fait précédemment mais impossible de changer la valeur ensuite...)
-      //* TODO Trouver le moyen de combiner les éléments entre eux: si un champs n'est pas rempli, sa valeur de clé ne soit pas être transmise, autrement le back l'interpère comme un champs vide et rejette la valeur
-      //* Voir éventuellement si le back peut y changer quelque chose
-      //* sinon le plus simple serait de fragmenter avec des boutons différents, les soumissions (mais lourd pour l'enfant)
-      //* systeme de if peut etre?
-
 
       // API Call to send data
       const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
 
-      // const loginFormDataJson = JSON.stringify(loginFormData);
       patchApi(apiUrl + apiEndpointSubmitBookChange, loginFormData);
     }
   };
@@ -381,8 +367,9 @@ console.log(commentValue, "comment value in handlesubmit form")
           </Box>
           <hr className='barre' />
           {/* -----------COLLECTION SECTION --------------------------- */}
-          {/* select collection by list */}
-          {console.log(collectionIdValue, "current collection Id value")};
+          
+          {/* select collection by list (id) */}
+          {console.log(collectionNameValue, "current collection List value")};
 
           <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
 
@@ -399,9 +386,10 @@ console.log(commentValue, "comment value in handlesubmit form")
                 label="collection"
                 value={collection}
                 onChange={handleChangeCollection}
-              // TODO rajouter une valeur de champ Vide valeur à 0 pour ne pas cumuler un champs rempli et un champ sélectionné
+                // TODO Actuellement si un élément de liste + un élément champs sont rempli, le dernier rempli écrase la valeur du précédent mais visuellement les 2 sont présents
+                //  TODO il faudra trouver un moyen que si un sélectionné, l'autre se remettre à 0 par défaut
               >
-                {/* <MenuItem value=""> </MenuItem> */}
+                <MenuItem key={0} value=""> Pas de collection </MenuItem>
                 {collectionsList.map((data) => (
                   <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
                 ))}
@@ -418,12 +406,12 @@ console.log(commentValue, "comment value in handlesubmit form")
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="collectionId"
+                  name="collectionName"
                   fullWidth
                   id="collectionName"
                   label="Nouvelle collection du livre"
                   autoFocus
-                  onChange={(e) => setCollectionName(e.target.value)}
+                  onChange={(e) => setCollectionNameValue(e.target.value)}
 
                 />
               </Grid>
