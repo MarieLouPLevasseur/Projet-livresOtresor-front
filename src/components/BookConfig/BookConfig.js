@@ -57,7 +57,7 @@ function BookConfig() {
   const [commentValue, setComment] = useState("");
   const [isReadValue, setIsRead] = useState("");
   const [categoryIdValue, setCategoryId] = useState(0);
-  const [ratingValue, setRating] = useState("");
+  const [ratingValue, setRatingValue] = useState(0);
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
@@ -96,6 +96,11 @@ function BookConfig() {
 
           if(response.data[0].series !== null){
             setCollectionNameValue(response.data[0].series.name)
+          }
+          console.log(collectionNameValue, "collection Id value on book")
+
+          if(response.data[0].rating !== null){
+            setRatingValue(response.data[0].rating)
           }
           console.log(collectionNameValue, "collection Id value on book")
 
@@ -182,6 +187,14 @@ function BookConfig() {
       setCardsFilter(Cards.filter((data) => data.name === collection));
     }
   };
+  const handleChangeRating = (event) => {
+    setRatingValue(event.target.value, "data rating on handlechange");
+    // setCollectionNameValue(event.target.value);
+
+    if (collection) {
+      setCardsFilter(Cards.filter((data) => data.name === collection));
+    }
+  };
 
   const handleChangeRadioButton = event => {
 
@@ -208,19 +221,16 @@ function BookConfig() {
     event.preventDefault();
     if (isReadValue === "") {
       setAlertErrorSubmitIsRead(true);
-console.log(categoryIdValue, "category id value in handlesubmit form")
-console.log(isReadValue, "is read value in handlesubmit form")
-console.log(commentValue, "comment value in handlesubmit form")
+
     } else {
       const loginFormData = {
         "is_read": isReadValue,
         "comment": commentValue !== "" ? commentValue : Book.comment,
+        "rating" : ratingValue  !== 0 ? parseFloat(ratingValue)   : Book.rating,
         // "rating": 1.5 ,
         "category": { "id": + categoryIdValue !== "" ? categoryIdValue : Book.category.id },
         "series": { "name": + collectionNameValue !== "" ? collectionNameValue : Book.series.name },
       }
-      // ? Les valeurs isRead, category, collection et comment, sont transmis correctement 
-      // TODO Trouver le passage de la valeur rating pour la transmettre
 
       // API Call to send data
       const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
@@ -356,12 +366,18 @@ console.log(commentValue, "comment value in handlesubmit form")
           <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Je peux choisir d'ajouter ou modifier des informations</Typography>
 
           {/* ------------- RATING ----------------------------- */}
+    {console.log(ratingValue, "current rating value")};
 
           <Box sx={{ display: {xs: 'flex', sd:'flex'} , flexDirection: { xs: 'column', md: 'column'}, justifyContent: 'space-around', alignItems: 'center'  }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin:{sx:'auto', sd:'auto', md:'none'} , color: '#4462A5', marginRight: { md: '50px' } }}>J'ajoute une note :</Typography>
             <Box sx={{ flexDirection: { xs: 'column', md: 'row' }, margin:{ md:'auto'}}}>
               <ThumbDownIcon />
-              <Rating />
+              <Rating 
+              name="simple-controlled"
+              value={ratingValue}
+              onChange={handleChangeRating}
+
+              />
               <ThumbUpIcon />
             </Box>
           </Box>
