@@ -7,7 +7,7 @@ import './BookMenu.scss'
 
 function BookMenu() {
   return (
-    <Box sx={{ flexGrow: 1, display:'flex', flexDirection: 'column', maxWidth : '200px', display:{ xs: 'none', sm: 'block' }, marginLeft:'-300px'}}>
+    <Box sx={{ flexGrow: 1, flexDirection: 'column', maxWidth : '200px', display:{ xs: 'none', sm: 'block' }, marginLeft:'-300px'}}>
       {/* injection d'une Box pour responsive */}
       <Box display={'flex'} >
           <Button

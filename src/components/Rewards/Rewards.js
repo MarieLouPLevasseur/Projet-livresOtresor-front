@@ -145,7 +145,6 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
       };
 
 
-      // ! la valeur de currentAvatarToSetValue est vide problème sur le on click à terminer
       console.log(currentAvatarToSetValue);
        const newAvatarTosetJson = JSON.stringify(newAvatarToset);
      patchApi(apiUrl + apiEndpointSetAvatar,newAvatarTosetJson);

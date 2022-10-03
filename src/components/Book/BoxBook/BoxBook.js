@@ -10,7 +10,7 @@ function BoxBook({ Book }) {
         <Box 
           component="img"
           alt="Couverture d'un livre"
-          src={Cover}
+          src={Book.image ? Book.image : Cover}
           sx={{
             height: 300,
             width: 250,
@@ -28,17 +28,17 @@ function BoxBook({ Book }) {
             Ecrit par
           </Typography>
           <Typography sx={{ mt: 1,mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-          {Book.items[0].volumeInfo.authors}
+          {Book.authors}
           </Typography>
           <Typography sx={{ mt: 3,mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
             Aux éditions
           </Typography>
           <Typography sx={{ mt: 1,mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-          {Book.items[0].volumeInfo.publisher}
+          {Book.publisher}
           </Typography>
           {/* <Rating name="read-only" precision={0.5} value={4.5} readOnly /> */}
           <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom:'30px'}}>
-          "{Book.items[0].volumeInfo.description}"
+          "{Book.synopsis}"
           </Typography>
         </Box>
         </Box>
