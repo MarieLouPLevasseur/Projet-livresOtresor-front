@@ -38,6 +38,7 @@ function MyBooks() {
   const [LoadingCards, setLoadingCards] = useState(true);
   const [LoadingCategories, setLoadingCategories] = useState(true);
   const [LoadingAuthors, setLoadingAuthors] = useState(true);
+  const [LoadingCollections, setLoadingCollections] = useState(true);
 
   // Local Select State
   const [category, setCategory] = useState("");
@@ -45,6 +46,7 @@ function MyBooks() {
   const [author, setAuthor] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [collection, setCollection] = useState("");
+  const [collectionList, setCollectionList] = useState("");
 
   // Local Search State
   const [Search, setSearch] = useState('');
@@ -58,8 +60,8 @@ function MyBooks() {
  const isLogUser = useSelector((state) => state.user.isLogUser);
  const isLogKid = useSelector((state) => state.kid.isLogKid);
 
- console.log(isLogUser);
- console.log(isLogKid);
+//  console.log(isLogUser, "User is logged");
+//  console.log(isLogKid, "Kid is logged");
 
 // set token
  const token = useSelector(state => {
@@ -94,7 +96,8 @@ function MyBooks() {
   const apiEndpointAllBooks = `/api/v1/kids/${kidId}/books`
   const apiEndpointCategories = `/api/v1/categories`
   const apiEndpointAuthors = `/api/v1/kids/${kidId}/books/authors`
-
+  const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
+  
   // All Books at first
   useEffect(() => {
     if(kidId){
@@ -103,7 +106,7 @@ function MyBooks() {
     }
     })
     .then((response) => {
-      console.log(response.data.data)
+      console.log(response.data.data, "Cards")
       setCards(response.data.data);
       setCardsFilter(response.data.data);
       setLoadingCards(false);
@@ -118,9 +121,24 @@ function MyBooks() {
     }
     })
     .then((response) => {
-      console.log(response.data)
+      console.log(response.data, "categoriesList data")
       setCategoriesList(response.data)
       setLoadingCategories(false);
+    })
+    .catch((error) => {
+      console.log('Erreur !', error);
+    })
+
+    // call API for Collections
+    axios.get(apiUrl + apiEndpointCollections, {headers : {
+      'Authorization': `Bearer ${token}`
+    }
+    })
+    .then((response) => {
+      // console.log(response.data)
+      setCollectionList(response.data)
+      console.log(response.data, "collectionsList data")
+      setLoadingCollections(false);
     })
     .catch((error) => {
       console.log('Erreur !', error);
@@ -132,7 +150,7 @@ function MyBooks() {
     }
     })
     .then((response) => {
-      console.log(response.data)
+      console.log(response.data, "authorsList data")
       setAuthorsList(response.data.authors)
       setLoadingAuthors(false);
     })
@@ -140,6 +158,8 @@ function MyBooks() {
       console.log('Erreur !', error);
     })
   }
+
+  
   }, [kidId]);
   
   // Handle Functions
@@ -159,22 +179,40 @@ function MyBooks() {
 
   const handleChangeCategory = (event) => {
     setCategory(event.target.value);
+  // ! Bug ne rend pas les bonnes catégories dans le filtre
+    // ! après test il semble que le filtres projette les résultats de la sélection précédente (il y a un phénomène de décalage ): 
+      // ! ex: je sélectionne "Non-classé", rien ne se passe, je sélectionne "Aventure" les cartes de "non-classée son dispatchées" si je clique sur un 3e item dans la liste j'aurai la liste "Aventure"
 
     if (category){
-      setCardsFilter(Cards.filter((book) => book.category.name === category));
+      
+      // setCardsFilter(Cards.filter((book) => book.category.name == category));
+      let categoryFiltered = Cards.filter((books)=> {
+        return books.category.name == {category};
+      });
+      setCardsFilter(categoryFiltered);
     }
   };
 
+
   const handleChangeAuthor = (event) => {
     setAuthor(event.target.value);
+      // ! Bug ne rend pas les bons auteurs dans le filtre
 
     if (author){
-      setCardsFilter(Cards.filter((book) => book.book.authors[0].name === author));
+      setCardsFilter(Cards.filter((book) => book.book.authors[0].name == author));
     }
   };
 
   const handleChangeCollection = (event) => {
     setCollection(event.target.value);
+
+    if (collection){
+      // ! Bug ne rend pas les bonnes collections dans le filtre
+      // setCardsFilter(Cards.filter((book) => book.series.name === collection));
+      // return()=>{
+      setCardsFilter(Cards.filter((book) => book.series !== null ? book.series.name == collection: null == collection));
+      // }
+    }
   };
 
   // useEffect(() => {
@@ -193,12 +231,14 @@ function MyBooks() {
     setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
   }, [itemToSearch]);
 
-  if (LoadingCards || LoadingCategories || LoadingAuthors) {
+  if (LoadingCards || LoadingCategories || LoadingAuthors || LoadingCollections) {
     return <Loading />
   }
   return (
+
     <ThemeProvider theme={theme}>
     <div>
+
       <HomeCarousel />
       <Typography sx={{ mt: 3, mb: 3, fontWeight: 700, fontSize: 40, letterSpacing: 2, color: '#4462A5' }}>
         Mes livres
@@ -218,28 +258,32 @@ function MyBooks() {
                   label="category"
                   onChange={handleChangeCategory}
                 >
+      {console.log(category, " current category value selected")}
+
                   {categoriesList.map((data)=> (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
                   ))};
                 </Select>
               </FormControl>
               <FormControl sx={{ width: '20%'}}>
-                <InputLabel id="demo-simple-select-category">Auteur</InputLabel>
+                <InputLabel id="demo-simple-select-author">Auteur</InputLabel>
                 <Select
                   sx={{ width: "80%" }}
-                  labelId="demo-simple-select-category"
-                  id="demo-simple-category"
+                  labelId="demo-simple-select-author"
+                  id="demo-simple-author"
                   value={author}
-                  label="category"
+                  label="author"
                   onChange={handleChangeAuthor}
                 >
+      {console.log(author, " current author value selected")}
+
                   {authorsList.map((data)=> (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
                   ))};
                 </Select>
               </FormControl>
               <FormControl sx={{ width: '20%'}}>
-                <InputLabel id="demo-simple-select-category">Collection</InputLabel>
+                <InputLabel id="demo-simple-select-collection">Collection</InputLabel>
                 <Select
                   sx={{ width: "80%" }}
                   labelId="demo-simple-select-collection"
@@ -247,10 +291,14 @@ function MyBooks() {
                   value={collection}
                   label="collection"
                   onChange={handleChangeCollection}
+                  
                 >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
+    {console.log(collection, " current collection value selected")}
+
+                {collectionList.map((data)=> (
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                  ))};
+
                 </Select>
               </FormControl>
             </Box>
@@ -291,6 +339,8 @@ function MyBooks() {
               image={data.book.cover}
               alt="Book Cover"
             />
+    {console.log(CardsFilter, " current Cards filtered")}
+
             <CardContent sx={{width: '80%'}}>
               <Typography gutterBottom variant="h5" component="div">
                 {data.book.title}
