@@ -7,7 +7,8 @@ import './HomeKidButtons.scss'
 
 export default function HomeKidButtons() {
   return (
-    <Box sx={{ flexGrow: 1, display:'flex', flexDirection: 'column', maxWidth : '15%'}}>
+    // display:{ xs: 'none', sm: 'block' }
+    <Box sx={{ flexGrow: 1, display:{xs:'none',sm:'flex'}, flexDirection: 'column', maxWidth : '15%', }}>
       <Button
         className='button'
         sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5}}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -15,19 +15,37 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 
 import BookMenu from '../Book/BookMenu/BookMenu';
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
 import Loading from '../Loading/Loading';
+import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
+import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons';
+
 
 import './BookConfig.scss'
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#4462A5',
+    }
+  },
+  typography: {
+    fontFamily: [
+      'Montserrat'
+    ]
+  }
+});
 
 function BookConfig() {
 
   // UseParams
   const { id } = useParams();
-  console.log({id}, 'id book');
+  console.log({ id }, 'id book');
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
@@ -104,11 +122,11 @@ function BookConfig() {
           setcurrentComment(response.data[0].comment);
 
           setBookkidId(response.data[0].id)
-          console.log({bookkidId}, "value current bookkid id")
+          console.log({ bookkidId }, "value current bookkid id")
 
           // setIsRead(response.data[0].is_read)
           setCurrentIsRead(response.data[0].is_read)
-          console.log({currentIsRead}, "is read Data on book")
+          console.log({ currentIsRead }, "is read Data on book")
 
           if (response.data[0].series !== null) {
             setCollectionNameValue(response.data[0].series.name);
@@ -117,7 +135,7 @@ function BookConfig() {
           else {
             setCurrentCollection("je n'ai pas encore choisi de collection");
           }
-          console.log({currentCollection}, "collection value on book")
+          console.log({ currentCollection }, "collection value on book")
 
           if (response.data[0].category.length !== 0) {
             setCurrentCategory(response.data[0].category.name);
@@ -130,7 +148,7 @@ function BookConfig() {
             // setRatingValue(response.data[0].rating);
             setCurrentRating(response.data[0].rating);
           }
-          console.log({ratingValue}, "rating value on book")
+          console.log({ ratingValue }, "rating value on book")
 
         })
         .catch((error) => {
@@ -176,7 +194,7 @@ function BookConfig() {
     }
   }, [kidId]);
 
- 
+
   //TODO clean form after submission
 
   // call API for Submit form
@@ -195,7 +213,7 @@ function BookConfig() {
 
         //reset Form after submit
         // OK
-        setCollection ("");
+        setCollection("");
         setRatingValue(0);
         commentInput.current.value = "";
         setCategory("");
@@ -233,7 +251,7 @@ function BookConfig() {
     console.log("*********HandlechangeCollectionList*****************")
     setCollection(event.target.value);
     setCollectionNameValue(event.target.value);
-    console.log({collection}, "data collection and collectionNamevalue on handlechange")
+    console.log({ collection }, "data collection and collectionNamevalue on handlechange")
 
 
     if (collection) {
@@ -245,11 +263,11 @@ function BookConfig() {
     console.log("*********handleChangeNewCollectionName*****************")
     //erase list selected
     setCollection("");
-       if (collection) {
+    if (collection) {
       setCardsFilter(Cards.filter((data) => data.name === collection));
     }
   };
-  
+
 
   const handleChangeRating = (event) => {
     console.log("*********HandlechangeRating*****************")
@@ -268,7 +286,7 @@ function BookConfig() {
       setIsRead(true);
       setSelectedRead(true);
       setSelectedWish(false);
-      
+
     }
     if (event.target.value == "false") {
       setIsRead(false);
@@ -292,7 +310,7 @@ function BookConfig() {
     if (currentIsRead === "") {
       setAlertErrorSubmitIsRead(true);
 
-    } 
+    }
     // TODO condition ne fonctionne pas car même valeur pour list ou nouvelle collection
     // else if(collectionNameValue.toString.length < 2){
     //   setAlertErrorSubmitCollection(true);
@@ -308,18 +326,17 @@ function BookConfig() {
         "series": { "name": + collectionNameValue !== "je n'ai pas encore choisi de collection" ? collectionNameValue : Book.series.name },
       }
       setcurrentComment(commentValue !== "" ? commentValue : currentComment);
-      if (category.name !== undefined){
-      setCurrentCategory(categoryIdValue !== 0 ? category.name : currentCategory)
+      if (category.name !== undefined) {
+        setCurrentCategory(categoryIdValue !== 0 ? category.name : currentCategory)
       }
 
-      // Update current data on view
-   
+      // Update current data on view  
 
       setCurrentRating(ratingValue !== 0 ? parseFloat(ratingValue) : currentRating);
-      if(collectionNameValue.replace(/\s/g,'') !== ""){
+      if (collectionNameValue.replace(/\s/g, '') !== "") {
         setCurrentCollection(collectionNameValue)
       }
-      else{
+      else {
         setCurrentCollection(currentCollection)
       }
       setCurrentIsRead(isReadValue !== "" ? isReadValue : currentIsRead);
@@ -332,315 +349,328 @@ function BookConfig() {
   };
 
   return (
-    <div>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignSelf: 'center', alignItems: { xs: 'center' }, padding: '20px', flexDirection: { xs: 'column', sd: 'column', md: 'column' }, width: '80%', margin: 'auto' }}>
+    <ThemeProvider theme={theme}>
+
+      <div>
+
+        <HomeCarousel />
         <Box className="icone-menu" sx={{ position: 'relative' }} >
 
           <BookIconeMenu sx={{ marginLeft: { xs: '5px', sm: '5px' }, display: { xs: 'block', sm: 'none' }, position: { xs: 'fixed', md: 'fixed' } }} />
         </Box>
-
-        <BookMenu sx={{ display: { xs: 'none', sm: 'block' } }} />
         <Typography component="h1" variant="h3" sx={{ fontFamily: 'montserrat', color: '#4462A5', mt: '20px', marginBottom: '20px', marginLeft: { md: '-70px' } }}>
           {Book[0].book.title}
         </Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%', flexDirection: { xs: 'column', sm: 'column' }, margin: 'auto' }}>
+        <Box sx={{ display: 'flex' }}>
+          <HomeKidButtons />
 
-          <Box
-            component="img"
-            alt="Couverture d'un livre"
-            src={Book[0].book.cover}
-            sx={{
-              height: 300,
-              width: 250,
-              maxHeight: { xs: 200, md: 300 },
-              maxWidth: { xs: 200, md: 300 },
-              margin: { sx: 'auto', sd: 'auto', md: 'auto' },
-              alignItems: { sd: 'row' },
-              alignSelf: 'center'
-            }}
-          />
+          <Box sx={{ display: 'flex', padding: '20px', flexDirection: { xs: 'column', sd: 'row', md: 'row' }, width: '80%', margin: 'auto',ml:{md:10} }}>
 
-          <Box sx={{ width: { xs: '100%', md: '50%', sd: '30%' }, textAlign: 'center', margin: 'auto' }}>
-            <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Ecrit par
-            </Typography>
-            <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-              {Book[0].book.authors[0].name}
-            </Typography>
-            <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Aux éditions
-            </Typography>
-            <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-              {Book[0].book.publisher}
-            </Typography>
-            <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom: '30px' }}>
-              "{Book[0].book.description}"
-            </Typography>
-          </Box>
 
-          {/* ************** Personnal information on book from the kid **************************/}
-          {console.log({currentCategory}, "category value on book")}
+            {/* <BookMenu sx={{ display: { xs: 'none', sm: 'block' } }} /> */}
+            {/* <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%', flexDirection: { xs: 'column', sm: 'column' }, margin: 'auto' }}> */}
+            {/* <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml:'3%' }}> */}
 
-          <Box sx={{ width: { xs: '100%', md: '50%' }, textAlign: 'center', margin: 'auto' }}>
+            <Box
+              component="img"
+              alt="Couverture d'un livre"
+              src={Book[0].book.cover}
+              sx={{
+                height: 300,
+                width: 250,
+                maxHeight: { xs: 200, md: 300 },
+                maxWidth: { xs: 200, md: 300 },
+                margin: { sx: 'auto', sd: 'auto', md: 'auto' },
+                alignItems: { sd: 'row' },
+                alignSelf: 'center',
+                
+              }}
+            />
+            <Box sx={{ display: 'flex', alignItems: 'start', width: '70%', flexDirection: { xs: 'column', sm: 'row' }, margin: 'auto' }}>
 
-            <Rating name="read-only" precision={0.5} value={currentRating} readOnly />
-
-            <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Mes commentaires:
-            </Typography>
-            <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-              {currentComment}
-            </Typography>
-            <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Est-ce que j'ai lu ce livre: {currentIsRead == true ? "oui" : "non, pas encore"}
-            </Typography>
-            <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Catégorie: {currentCategory}
-            </Typography>
-            <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Collection: {currentCollection}
-            </Typography>
+              <Box sx={{ width: { xs: '100%', md: '50%', sd: '30%' }, textAlign: 'center', margin: 'auto' }}>
+                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+                  Ecrit par
+                </Typography>
+                <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
+                  {Book[0].book.authors[0].name}
+                </Typography>
+                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+                  Aux éditions
+                </Typography>
+                <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
+                  {Book[0].book.publisher}
+                </Typography>
+                <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom: '30px' }}>
+                  "{Book[0].book.description}"
+                </Typography>
+              </Box>
+            </Box>
 
           </Box>
         </Box>
+            {/* ************** Personnal information on book from the kid **************************/}
+            {console.log({ currentCategory }, "category value on book")}
+        <Box sx={{ width: { xs: '100%', md: '50%' }, textAlign: 'center', margin: 'auto' }}>
 
-      </Box>
+          <Rating name="read-only" precision={0.5} value={currentRating} readOnly />
 
-      {/* ******************************************espace formulaire******************************* */}
-      {/* ------- Alert if Errors------------ */}
-      <Snackbar
-        open={alertErrorSubmitCollection}
-        autoHideDuration={6000}
-        onClose={() => setAlertErrorSubmitCollection(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+            Mes commentaires:
+          </Typography>
+          <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
+            {currentComment}
+          </Typography>
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+            Est-ce que j'ai lu ce livre: {currentIsRead == true ? "oui" : "non, pas encore"}
+          </Typography>
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+            Catégorie: {currentCategory}
+          </Typography>
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+            Collection: {currentCollection}
+          </Typography>
+
+
+        </Box>
+
+        {/* ******************************************espace formulaire******************************* */}
+        {/* ------- Alert if Errors------------ */}
+        <Snackbar
+          open={alertErrorSubmitCollection}
+          autoHideDuration={6000}
+          onClose={() => setAlertErrorSubmitCollection(false)}
         >
-          Le nom de la collection est trop court
-        </MuiAlert>
-      </Snackbar>
-      <Snackbar
-        open={alertErrorSubmit}
-        autoHideDuration={6000}
-        onClose={() => setAlertErrorSubmit(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Le nom de la collection est trop court
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar
+          open={alertErrorSubmit}
+          autoHideDuration={6000}
+          onClose={() => setAlertErrorSubmit(false)}
         >
-          Une erreur s'est produit lors de l'envoi du formulaire : Merci de remplir de recommencer
-        </MuiAlert>
-      </Snackbar>
-      <Snackbar
-        open={alertErrorSubmitIsRead}
-        autoHideDuration={6000}
-        onClose={() => setAlertErrorSubmit(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Une erreur s'est produit lors de l'envoi du formulaire : Merci de remplir de recommencer
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar
+          open={alertErrorSubmitIsRead}
+          autoHideDuration={6000}
+          onClose={() => setAlertErrorSubmit(false)}
         >
-          Tu dois indiquer si le livre a été lu
-        </MuiAlert>
-      </Snackbar>
-      {/* Validation ok */}
-      <Snackbar
-        open={alertSuccesSubmit}
-        autoHideDuration={6000}
-        onClose={() => setAlertSuccesSubmit(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="success"
-          sx={{ width: "100%" }}
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Tu dois indiquer si le livre a été lu
+          </MuiAlert>
+        </Snackbar>
+        {/* Validation ok */}
+        <Snackbar
+          open={alertSuccesSubmit}
+          autoHideDuration={6000}
+          onClose={() => setAlertSuccesSubmit(false)}
         >
-          Les informations ont bien été modifiées !
-        </MuiAlert>
-      </Snackbar>
-      {/* ------------------------ */}
-      <Box sx={{ marginBottom: '30px' }} >
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Les informations ont bien été modifiées !
+          </MuiAlert>
+        </Snackbar>
+        {/* ------------------------ */}
+        <Box sx={{ marginBottom: '30px' }} >
 
-        <Card variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '85%', margin: 'auto' }}>
-          <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Je peux choisir d'ajouter ou modifier des informations</Typography>
+          <Card variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '85%', margin: 'auto' }}>
+            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Je peux choisir d'ajouter ou modifier des informations</Typography>
 
-      {/* ------------- RATING ----------------------------- */}
-          {console.log({ratingValue}, "current rating value")}
+            {/* ------------- RATING ----------------------------- */}
+            {console.log({ ratingValue }, "current rating value")}
 
-          <Box sx={{ display: { xs: 'flex', sd: 'flex' }, flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', alignItems: 'center' }}>
-            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', marginRight: { md: '50px' } }}>J'ajoute une note :</Typography>
-            <Box sx={{ flexDirection: { xs: 'column', md: 'row' }, margin: { md: 'auto' } }}>
-              <ThumbDownIcon />
-              <Rating
-                name="simple-controlled"
-                value={ratingValue}
-                onChange={handleChangeRating}
-
-              />
-              <ThumbUpIcon />
-            </Box>
-          </Box>
-          <hr className='barre' />
-          {/* -----------COLLECTION SECTION --------------------------- */}
-
-          {/* select collection by list (id) */}
-
-          <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
-
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
-            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', width: 'auto' }}>Je choisis une collection :</Typography>
-            <FormControl>
-              <InputLabel id="demo-simple-select-collection">Choisi une collection</InputLabel>
-              <Select
-                sx={{ width: { xs: '225px', md: '228px' } }}
-                labelId="demo-simple-select-collection"
-                id="demo-simple-collection"
-                name="collectionId"
-                label="collection"
-                value={collection}
-                onChange={handleChangeCollectionList}
-              // TODO Actuellement si un élément de liste + un élément champs sont rempli, le dernier rempli écrase la valeur du précédent mais visuellement les 2 sont présents
-              // ? pour la nouvelle catégorie=> remet la liste à 0
-              //  TODO il faudra trouver un moyen d'effacer le texte de la nouvelle collection si élément liste sélectionné
-              >
-                <MenuItem key={0} value=""> Pas de collection </MenuItem>
-                {collectionsList.map((data) => (
-                  <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-
-          {/* Create a new collection name */}
-          {console.log({collectionNameValue}, "current collection Name")}
-
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', textAlign: 'center', Width: '100%', padding: '10px', gap: '10px' }}>
-            <Typography sx={{ fontSize: '1.4rem', padding: '30px', fontFamily: 'montserrat', color: '#4462A5' }}> ou je crée une nouvelle collection</Typography>
-            <Box sx={{ display: 'flex', Width: '100%', justifyContent: 'space-around', mt: '18px' }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="collectionName"
-                  fullWidth
-                  id="collectionName"
-                  label="Nouvelle collection du livre"
-                  autoFocus
-                  // value={newCollectionValue}
-                  type="text"
-                  ref={collectionNameInput}
-                  // onChange={(e) => setCollectionNameValue(e.target.value)}
-                  onChange={e => { setCollectionNameValue(e.target.value); handleChangeNewCollectionName() }}
-
+            <Box sx={{ display: { xs: 'flex', sd: 'flex' }, flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', marginRight: { md: '50px' } }}>J'ajoute une note :</Typography>
+              <Box sx={{ flexDirection: { xs: 'column', md: 'row' }, margin: { md: 'auto' } }}>
+                <ThumbDownIcon />
+                <Rating
+                  name="simple-controlled"
+                  value={ratingValue}
+                  onChange={handleChangeRating}
 
                 />
-              </Grid>
+                <ThumbUpIcon />
+              </Box>
+            </Box>
+            <hr className='barre' />
+            {/* -----------COLLECTION SECTION --------------------------- */}
+
+            {/* select collection by list (id) */}
+
+            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
+
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
+              <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', width: 'auto' }}>Je choisis une collection :</Typography>
+              <FormControl>
+                <InputLabel id="demo-simple-select-collection">Choisi une collection</InputLabel>
+                <Select
+                  sx={{ width: { xs: '225px', md: '228px' } }}
+                  labelId="demo-simple-select-collection"
+                  id="demo-simple-collection"
+                  name="collectionId"
+                  label="collection"
+                  value={collection}
+                  onChange={handleChangeCollectionList}
+                // TODO Actuellement si un élément de liste + un élément champs sont rempli, le dernier rempli écrase la valeur du précédent mais visuellement les 2 sont présents
+                // ? pour la nouvelle catégorie=> remet la liste à 0
+                //  TODO il faudra trouver un moyen d'effacer le texte de la nouvelle collection si élément liste sélectionné
+                >
+                  <MenuItem key={0} value=""> Pas de collection </MenuItem>
+                  {collectionsList.map((data) => (
+                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
 
-            {/* ------------- CATEGORY ----------------------------- */}
-            {console.log({categoryIdValue}, "id current category")}
+            {/* Create a new collection name */}
+            {console.log({ collectionNameValue }, "current collection Name")}
 
-          </Box>
-          <hr className='barre' />
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
-            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', width: 'auto' }}>J'ajoute une catégorie :</Typography>
-            <FormControl>
-              <InputLabel id="demo-simple-select-category">Choisi une catégorie</InputLabel>
-              <Select
-                sx={{ width: { xs: '225px', md: '228px' } }}
-                labelId="demo-simple-select-category"
-                id="demo-simple-category"
-                value={category}
-                label="category"
-                name='categoryId'
-                onChange={handleChangeCategory}
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', textAlign: 'center', Width: '100%', padding: '10px', gap: '10px' }}>
+              <Typography sx={{ fontSize: '1.4rem', padding: '30px', fontFamily: 'montserrat', color: '#4462A5' }}> ou je crée une nouvelle collection</Typography>
+              <Box sx={{ display: 'flex', Width: '100%', justifyContent: 'space-around', mt: '18px' }}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    autoComplete="given-name"
+                    name="collectionName"
+                    fullWidth
+                    id="collectionName"
+                    label="Nouvelle collection du livre"
+                    autoFocus
+                    // value={newCollectionValue}
+                    type="text"
+                    ref={collectionNameInput}
+                    // onChange={(e) => setCollectionNameValue(e.target.value)}
+                    onChange={e => { setCollectionNameValue(e.target.value); handleChangeNewCollectionName() }}
 
 
-              >
-                <MenuItem key={0} value={0}> Pas de catégorie </MenuItem>
+                  />
+                </Grid>
+              </Box>
 
-                {categoriesList.map((data) => (
-                  <MenuItem key={data.id} value={data}>{data.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          {/* ------------- COMMENTS ----------------------------- */}
-          {console.log({commentValue}, "current comment Value")}
+              {/* ------------- CATEGORY ----------------------------- */}
+              {console.log({ categoryIdValue }, "id current category")}
 
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
-            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>J'ajoute un commentaire :</Typography>
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, Width: '100%', justifyContent: 'space-around', mt: '18px', margin: 'auto' }}>
-              <Grid item xs={12} sm={12}>
-                <TextareaAutosize
-                  minRows={7}
-                  autoComplete="current-comment"
-                  name="comment"
-                  id="comment"
-                  label="Les petites notes personnelles"
-                  autoFocus
-                  style={{ width: 450 }}
-                  type="text" ref={commentInput}
-                  onChange={(e) => setComment(e.target.value)}
-                />
-              </Grid>
             </Box>
-          </Box>
+            <hr className='barre' />
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
+              <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', width: 'auto' }}>J'ajoute une catégorie :</Typography>
+              <FormControl>
+                <InputLabel id="demo-simple-select-category">Choisi une catégorie</InputLabel>
+                <Select
+                  sx={{ width: { xs: '225px', md: '228px' } }}
+                  labelId="demo-simple-select-category"
+                  id="demo-simple-category"
+                  value={category}
+                  label="category"
+                  name='categoryId'
+                  onChange={handleChangeCategory}
 
-          {/* ------------- READ OR WISHED ----------------------------- */}
-          {console.log({isReadValue}, "current isRead Value")}
 
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
-            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>C'est un livre :</Typography>
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-                sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
+                >
+                  <MenuItem key={0} value={0}> Pas de catégorie </MenuItem>
+
+                  {categoriesList.map((data) => (
+                    <MenuItem key={data.id} value={data}>{data.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            {/* ------------- COMMENTS ----------------------------- */}
+            {console.log({ commentValue }, "current comment Value")}
+
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>J'ajoute un commentaire :</Typography>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, Width: '100%', justifyContent: 'space-around', mt: '18px', margin: 'auto' }}>
+                <Grid item xs={12} sm={12}>
+                  <TextareaAutosize
+                    minRows={7}
+                    autoComplete="current-comment"
+                    name="comment"
+                    id="comment"
+                    label="Les petites notes personnelles"
+                    autoFocus
+                    style={{ width: 450 }}
+                    type="text" ref={commentInput}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                </Grid>
+              </Box>
+            </Box>
+
+            {/* ------------- READ OR WISHED ----------------------------- */}
+            {console.log({ isReadValue }, "current isRead Value")}
+
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>C'est un livre :</Typography>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-controlled-radio-buttons-group"
+                  name="controlled-radio-buttons-group"
+                  sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}
+                >
+                  <FormControlLabel
+                    value="true"
+                    name="is_read"
+                    control={<Radio />}
+                    label="Que j'ai lu"
+                    checked={selectedRead}
+                    onChange={handleChangeRadioButton}
+                  />
+                  <FormControlLabel
+                    value="false"
+                    name="is_read"
+                    control={<Radio />}
+                    label="Dont j'ai envie"
+                    checked={selectedWish}
+                    onChange={handleChangeRadioButton}
+
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Box>
+            {/* ------------- SEND datas ----------------------------- */}
+
+            <Box sx={{ margin: '30px' }} onClick={handleSubmitForm}>
+              <Button
+                type='submit'
+                className='button'
+                sx={{ my: 2, color: 'red', fontFamily: 'Montserrat', display: 'block', ml: 5, minWidth: '200px', margin: 'auto' }}
               >
-                <FormControlLabel
-                  value="true"
-                  name="is_read"
-                  control={<Radio />}
-                  label="Que j'ai lu"
-                  checked={selectedRead}
-                  onChange={handleChangeRadioButton}
-                />
-                <FormControlLabel
-                  value="false"
-                  name="is_read"
-                  control={<Radio />}
-                  label="Dont j'ai envie"
-                  checked={selectedWish}
-                  onChange={handleChangeRadioButton}
-
-                />
-              </RadioGroup>
-            </FormControl>
-          </Box>
-          {/* ------------- SEND datas ----------------------------- */}
-
-          <Box sx={{ margin: '30px' }} onClick={handleSubmitForm}>
-            <Button
-              type='submit'
-              className='button'
-              sx={{ my: 2, color: 'red', fontFamily: 'Montserrat', display: 'block', ml: 5, minWidth: '200px', margin: 'auto' }}
-            >
-              Enregistrer les modifications
-            </Button>
-          </Box>
-        </Card>
-      </Box>
+                Enregistrer les modifications
+              </Button>
+            </Box>
+          </Card>
+        </Box>
 
 
-    </div>
+      </div>
+    </ThemeProvider>
+
   )
 }
 
