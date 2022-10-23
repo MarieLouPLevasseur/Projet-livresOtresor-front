@@ -69,7 +69,7 @@ function BookConfig() {
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
-  const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+  // const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
   const [alertErrorSubmitIsRead, setAlertErrorSubmitIsRead] = useState(false);
   const [alertErrorSubmitCollection, setAlertErrorSubmitCollection] = useState(false);
@@ -83,8 +83,6 @@ function BookConfig() {
   // Selection of textArea in form
   const collectionNameInput = useRef(null)
   const commentInput = useRef(null)
-
-  // console.log(Book, "valeur de Book");
 
   useEffect(() => {
     if (kidId) {
@@ -214,7 +212,7 @@ function BookConfig() {
       })
       .catch(function (error) {
         console.log(error);
-        setAlertErrorLogin(true)
+        setAlertErrorSubmit(true)
       });
   }
 
@@ -231,16 +229,27 @@ function BookConfig() {
     }
   };
 
-  const handleChangeCollection = (event) => {
-    console.log("*********HandlechangeCollection*****************")
-
-    setCollection(event.target.value, "data collection on handlechange");
+  const handleChangeCollectionList = (event) => {
+    console.log("*********HandlechangeCollectionList*****************")
+    setCollection(event.target.value);
     setCollectionNameValue(event.target.value);
+    console.log({collection}, "data collection and collectionNamevalue on handlechange")
+
 
     if (collection) {
       setCardsFilter(Cards.filter((data) => data.name === collection));
     }
   };
+
+  const handleChangeNewCollectionName = (event) => {
+    console.log("*********handleChangeNewCollectionName*****************")
+    //erase list selected
+    setCollection("");
+       if (collection) {
+      setCardsFilter(Cards.filter((data) => data.name === collection));
+    }
+  };
+  
 
   const handleChangeRating = (event) => {
     console.log("*********HandlechangeRating*****************")
@@ -280,7 +289,7 @@ function BookConfig() {
   // ------  HANDLE SUBMIT FORM ------------------
   const handleSubmitForm = (event) => {
     event.preventDefault();
-    if (isReadValue === "") {
+    if (currentIsRead === "") {
       setAlertErrorSubmitIsRead(true);
 
     } 
@@ -463,7 +472,7 @@ function BookConfig() {
         <Card variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '85%', margin: 'auto' }}>
           <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Je peux choisir d'ajouter ou modifier des informations</Typography>
 
-          {/* ------------- RATING ----------------------------- */}
+      {/* ------------- RATING ----------------------------- */}
           {console.log({ratingValue}, "current rating value")}
 
           <Box sx={{ display: { xs: 'flex', sd: 'flex' }, flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', alignItems: 'center' }}>
@@ -497,9 +506,10 @@ function BookConfig() {
                 name="collectionId"
                 label="collection"
                 value={collection}
-                onChange={handleChangeCollection}
+                onChange={handleChangeCollectionList}
               // TODO Actuellement si un élément de liste + un élément champs sont rempli, le dernier rempli écrase la valeur du précédent mais visuellement les 2 sont présents
-              //  TODO il faudra trouver un moyen que si un sélectionné, l'autre se remettre à 0 par défaut
+              // ? pour la nouvelle catégorie=> remet la liste à 0
+              //  TODO il faudra trouver un moyen d'effacer le texte de la nouvelle collection si élément liste sélectionné
               >
                 <MenuItem key={0} value=""> Pas de collection </MenuItem>
                 {collectionsList.map((data) => (
@@ -524,8 +534,11 @@ function BookConfig() {
                   label="Nouvelle collection du livre"
                   autoFocus
                   // value={newCollectionValue}
-                  type="text" ref={collectionNameInput}
-                  onChange={(e) => setCollectionNameValue(e.target.value)}
+                  type="text"
+                  ref={collectionNameInput}
+                  // onChange={(e) => setCollectionNameValue(e.target.value)}
+                  onChange={e => { setCollectionNameValue(e.target.value); handleChangeNewCollectionName() }}
+
 
                 />
               </Grid>
