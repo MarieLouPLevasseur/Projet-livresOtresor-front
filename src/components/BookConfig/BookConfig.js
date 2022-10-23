@@ -47,6 +47,7 @@ function BookConfig() {
   const [currentCategory, setCurrentCategory] = useState("");
   const [currentRating, setCurrentRating] = useState(0);
   const [currentCollection, setCurrentCollection] = useState("");
+  const [currentIsRead, setCurrentIsRead] = useState("");
 
 
   // Local Select State
@@ -55,7 +56,8 @@ function BookConfig() {
   // const [newCollectionValue, setNewCollectionValue] = useState("");
   const [categoriesList, setCategoriesList] = useState([]);
   const [collectionsList, setCollectionsList] = useState([]);
-  const [selected, setSelected] = useState(true);
+  const [selectedRead, setSelectedRead] = useState(false);
+  const [selectedWish, setSelectedWish] = useState(false);
   const [bookkidId, setBookkidId] = useState(true);
 
   // Local Form State
@@ -106,8 +108,9 @@ function BookConfig() {
           setBookkidId(response.data[0].id)
           console.log({bookkidId}, "value current bookkid id")
 
-          setIsRead(response.data[0].is_read)
-          console.log({isReadValue}, "is read Data on book")
+          // setIsRead(response.data[0].is_read)
+          setCurrentIsRead(response.data[0].is_read)
+          console.log({currentIsRead}, "is read Data on book")
 
           if (response.data[0].series !== null) {
             setCollectionNameValue(response.data[0].series.name);
@@ -198,10 +201,11 @@ function BookConfig() {
         setRatingValue(0);
         commentInput.current.value = "";
         setCategory("");
+        setSelectedRead(false);
+        setSelectedWish(false);
 
         //TODO Reset TextArea : new Collection 
-        //TODO Reset IsRead button sélection
-        // ! meme format que comment mais ne disparait pas 
+        // ! meme format que comment mais ne disparait pas ??
         collectionNameInput.current.value = "";
         // setCollectionNameValue("");
         // setNewCollectionValue("");
@@ -240,7 +244,8 @@ function BookConfig() {
 
   const handleChangeRating = (event) => {
     console.log("*********HandlechangeRating*****************")
-    setRatingValue(event.target.value, "data rating on handlechange");
+    console.log(event.target.value, "data rating on handlechange")
+    setRatingValue(event.target.value);
 
     if (collection) {
       setCardsFilter(Cards.filter((data) => data.name === collection));
@@ -250,13 +255,17 @@ function BookConfig() {
   const handleChangeRadioButton = event => {
     console.log("*********HandleChangeRadioButton*****************")
 
-    setSelected(event.target.value);
-
     if (event.target.value == "true") {
       setIsRead(true);
+      setSelectedRead(true);
+      setSelectedWish(false);
+      
     }
     if (event.target.value == "false") {
       setIsRead(false);
+      setSelectedWish(true);
+      setSelectedRead(false);
+
     }
   };
 
@@ -283,7 +292,7 @@ function BookConfig() {
     else {
       console.log("*********HandleSubmitForm*****************")
       const loginFormData = {
-        "is_read": isReadValue,
+        "is_read": isReadValue !== "" ? isReadValue : currentIsRead,
         "comment": commentValue !== "" ? commentValue : Book.comment,
         "rating": ratingValue !== 0 ? parseFloat(ratingValue) : Book.rating,
         "category": { "id": + categoryIdValue !== "" ? categoryIdValue : Book.category.id },
@@ -304,7 +313,7 @@ function BookConfig() {
       else{
         setCurrentCollection(currentCollection)
       }
-      setIsRead(isReadValue);
+      setCurrentIsRead(isReadValue !== "" ? isReadValue : currentIsRead);
 
       // API Call to send data
       const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
@@ -375,7 +384,7 @@ function BookConfig() {
               {currentComment}
             </Typography>
             <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-              Est-ce que j'ai lu ce livre: {isReadValue == true ? "oui" : "non, pas encore"}
+              Est-ce que j'ai lu ce livre: {currentIsRead == true ? "oui" : "non, pas encore"}
             </Typography>
             <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
               Catégorie: {currentCategory}
@@ -474,7 +483,6 @@ function BookConfig() {
           {/* -----------COLLECTION SECTION --------------------------- */}
 
           {/* select collection by list (id) */}
-          {/* {console.log({collectionNameValue}, "current collection List value")} */}
 
           <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
 
@@ -528,10 +536,8 @@ function BookConfig() {
 
           </Box>
           <hr className='barre' />
-          {/* <FormControl sx={{ width: '20%' }}> */}
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'center', alignItems: 'center', marginTop: '20px', width: '100%' }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', width: 'auto' }}>J'ajoute une catégorie :</Typography>
-            {/* <Grid item xs={12} sm={6}> */}
             <FormControl>
               <InputLabel id="demo-simple-select-category">Choisi une catégorie</InputLabel>
               <Select
@@ -581,7 +587,6 @@ function BookConfig() {
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>C'est un livre :</Typography>
             <FormControl>
-              {/* <FormLabel id="demo-controlled-radio-buttons-group">Gender</FormLabel> */}
               <RadioGroup
                 aria-labelledby="demo-controlled-radio-buttons-group"
                 name="controlled-radio-buttons-group"
@@ -592,20 +597,16 @@ function BookConfig() {
                   name="is_read"
                   control={<Radio />}
                   label="Que j'ai lu"
-                  // checked={Book[0].is_read === true ? selected : false}
-                  // checked={selected === "read"}
+                  checked={selectedRead}
                   onChange={handleChangeRadioButton}
-                //TODO désactivé le select apres un handle
                 />
                 <FormControlLabel
                   value="false"
                   name="is_read"
                   control={<Radio />}
                   label="Dont j'ai envie"
-                  // checked={Book[0].is_read === false ? selected : false}
-                  // checked={ selected === "wish"}
+                  checked={selectedWish}
                   onChange={handleChangeRadioButton}
-                //TODO désactivé le select apres un handle
 
                 />
               </RadioGroup>
