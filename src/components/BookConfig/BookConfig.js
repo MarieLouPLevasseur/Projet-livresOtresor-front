@@ -2,6 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { confirmAlert } from 'react-confirm-alert'; 
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+
+import { useNavigate } from 'react-router-dom';
+
+
 
 import { Typography, Box, Button, Card, Rating, TextField, Grid, TextareaAutosize } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
@@ -28,24 +34,27 @@ import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons';
 
 import './BookConfig.scss'
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#4462A5',
-    }
-  },
-  typography: {
-    fontFamily: [
-      'Montserrat'
-    ]
-  }
-});
+// const theme = createTheme({
+//   palette: {
+//     primary: {
+//       // main: '#4462A5',
+//     }
+//   },
+//   typography: {
+//     fontFamily: [
+//       'Montserrat'
+//     ]
+//   }
+// });
 
 function BookConfig() {
 
   // UseParams
   const { id } = useParams();
   console.log({ id }, 'id book');
+
+  //Use Navigate
+  const navigate = useNavigate();
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
@@ -87,20 +96,26 @@ function BookConfig() {
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
-  // const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
   const [alertErrorSubmitIsRead, setAlertErrorSubmitIsRead] = useState(false);
   const [alertErrorSubmitCollection, setAlertErrorSubmitCollection] = useState(false);
+  const [alertErrorSubmitDelete, setAlertErrorSubmitDelete] = useState(false);
+  const [alertSuccesSubmitDelete, setAlertSuccesSubmitDelete] = useState(false);
+  const [alertSuccesSubmitDeleteCanceled, setAlertSuccesSubmitDeleteCanceled] = useState(false);
 
 
   // Api Calls
   const apiEndpointBook = `/api/v1/kids/${kidId}/books/${id}`
   const apiEndpointCategories = `/api/v1/categories`
   const apiEndpointCollections = `/api/v1/kids/${kidId}/bookkids/series`
+  const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
+  const apiEndpointDeleteBook = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
 
   // Selection of textArea in form
   const collectionNameInput = useRef(null)
   const commentInput = useRef(null)
+
+  
 
   useEffect(() => {
     if (kidId) {
@@ -223,9 +238,6 @@ function BookConfig() {
         //TODO Reset TextArea : new Collection 
         // ! meme format que comment mais ne disparait pas ??
         collectionNameInput.current.value = "";
-        // setCollectionNameValue("");
-        // setNewCollectionValue("");
-
 
       })
       .catch(function (error) {
@@ -233,6 +245,31 @@ function BookConfig() {
         setAlertErrorSubmit(true)
       });
   }
+  // call API for Delete Book
+
+  const deleteApi = (routeApi) => {
+    axios.delete(apiUrl+apiEndpointDeleteBook, {
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
+  
+      },
+    })
+      .then(function (response) {
+        console.log(response, "réponse");
+        setAlertSuccesSubmitDelete(true);
+  
+        // TODO mettre un délai pour voir le message de confirmation s'afficher avant redirection
+        setTimeout(() => navigate('/profil/enfant'),3000);
+  
+  
+      })
+      .catch(function (error) {
+        console.log(error,"erreur");
+        setAlertErrorSubmitDelete(true)
+      });
+  }
+
 
 
 
@@ -341,15 +378,38 @@ function BookConfig() {
       }
       setCurrentIsRead(isReadValue !== "" ? isReadValue : currentIsRead);
 
-      // API Call to send data
-      const apiEndpointSubmitBookChange = `/api/v1/kids/${kidId}/bookkids/${bookkidId}`
-
       patchApi(apiUrl + apiEndpointSubmitBookChange, loginFormData);
     }
   };
 
+  
+
+   // ------  HANDLE DELETE BOOK ------------------
+
+   const handleSubmitToDelete = () => {
+   
+
+      confirmAlert({
+        title: 'Suppression du livre',
+        message: 'Es-tu sûr de vouloir supprimer ce livre? Si tu cliques "oui", tu ne pourras plus revenir en arrière, il sera supprimé".',
+        buttons: [
+          {
+            label: 'Oui je suis sûr',
+            onClick: () => deleteApi()
+          },
+          {
+            label: 'Non je le conserve',
+            onClick: () => setAlertSuccesSubmitDeleteCanceled(true)
+            //juste on ferme la fenêtre
+          }
+        ]
+      });
+    
+  };
+  
+
   return (
-    <ThemeProvider theme={theme}>
+    // <ThemeProvider theme={theme}>
 
       <div>
 
@@ -486,6 +546,21 @@ function BookConfig() {
             Tu dois indiquer si le livre a été lu
           </MuiAlert>
         </Snackbar>
+        <Snackbar
+          open={alertErrorSubmitDelete}
+          autoHideDuration={6000}
+          onClose={() => setAlertErrorSubmitDelete(false)}
+        >
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            Une erreur s'est produit, le livre n'a pas été supprimé
+          </MuiAlert>
+        </Snackbar>
+       
         {/* Validation ok */}
         <Snackbar
           open={alertSuccesSubmit}
@@ -499,6 +574,34 @@ function BookConfig() {
             sx={{ width: "100%" }}
           >
             Les informations ont bien été modifiées !
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar
+          open={alertSuccesSubmitDelete}
+          autoHideDuration={6000}
+          onClose={() => setAlertSuccesSubmitDelete(false)}
+        >
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Le livre a bien été supprimé
+          </MuiAlert>
+        </Snackbar>
+        <Snackbar
+          open={alertSuccesSubmitDeleteCanceled}
+          autoHideDuration={6000}
+          onClose={() => setAlertSuccesSubmitDeleteCanceled(false)}
+        >
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Le livre a été conservé
           </MuiAlert>
         </Snackbar>
         {/* ------------------------ */}
@@ -664,9 +767,22 @@ function BookConfig() {
               <Button
                 type='submit'
                 className='button'
-                sx={{ my: 2, color: 'red', fontFamily: 'Montserrat', display: 'block', ml: 5, minWidth: '200px', margin: 'auto' }}
+                sx={{ my: 2, fontFamily: 'Montserrat', display: 'block', ml: 5, minWidth: '200px', margin: 'auto' }}
               >
                 Enregistrer les modifications
+              </Button>
+            </Box>
+            <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}> OU </Typography>
+
+            <Box sx={{ margin: '30px' }} onClick={handleSubmitToDelete}
+            
+            >
+              <Button
+                type='submit'
+                className='deleteButton'
+                sx={{ my: 2, background:'red', color:'white', fontFamily: 'Montserrat', display: 'block', ml: 5, minWidth: '200px', margin: 'auto',  }}
+              >
+                Supprimer le livre
               </Button>
             </Box>
           </Card>
@@ -674,7 +790,7 @@ function BookConfig() {
 
 
       </div>
-    </ThemeProvider>
+    // </ThemeProvider>
 
   )
 }
