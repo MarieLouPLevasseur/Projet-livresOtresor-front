@@ -27,7 +27,7 @@ function BookConfig() {
 
   // UseParams
   const { id } = useParams();
-  console.log(id, 'id');
+  console.log({id}, 'id book');
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
@@ -70,6 +70,7 @@ function BookConfig() {
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
   const [alertErrorSubmitIsRead, setAlertErrorSubmitIsRead] = useState(false);
+  const [alertErrorSubmitCollection, setAlertErrorSubmitCollection] = useState(false);
 
 
   // Api Calls
@@ -81,7 +82,7 @@ function BookConfig() {
   const collectionNameInput = useRef(null)
   const commentInput = useRef(null)
 
-  console.log(Book, "valeur de Book");
+  // console.log(Book, "valeur de Book");
 
   useEffect(() => {
     if (kidId) {
@@ -93,8 +94,8 @@ function BookConfig() {
         .then((response) => {
           console.log("*********UseEffect*****************")
 
-          console.log(response.data, " Book datas");
           setBook(response.data);
+          console.log(response.data, " Book datas");
           setCardsFilter(response.data);
           setCards(response.data);
           setLoadingCards(false);
@@ -103,10 +104,10 @@ function BookConfig() {
           setcurrentComment(response.data[0].comment);
 
           setBookkidId(response.data[0].id)
-          console.log(response.data[0].id, "value current bookkid id")
+          console.log({bookkidId}, "value current bookkid id")
 
           setIsRead(response.data[0].is_read)
-          console.log(response.data[0].is_read, "is read Data on book")
+          console.log({isReadValue}, "is read Data on book")
 
           if (response.data[0].series !== null) {
             setCollectionNameValue(response.data[0].series.name);
@@ -115,7 +116,7 @@ function BookConfig() {
           else {
             setCurrentCollection("je n'ai pas encore choisi de collection");
           }
-          console.log(collectionNameValue, "collection value on book")
+          console.log({currentCollection}, "collection value on book")
 
           if (response.data[0].category.length !== 0) {
             setCurrentCategory(response.data[0].category.name);
@@ -128,7 +129,7 @@ function BookConfig() {
             // setRatingValue(response.data[0].rating);
             setCurrentRating(response.data[0].rating);
           }
-          console.log(ratingValue, "rating value on book")
+          console.log({ratingValue}, "rating value on book")
 
         })
         .catch((error) => {
@@ -142,6 +143,8 @@ function BookConfig() {
         }
       })
         .then((response) => {
+          console.log("*********QueryListCategories*****************")
+
           console.log(response.data)
           setCategoriesList(response.data, "categorie list data")
           setLoadingCategories(false);
@@ -158,6 +161,8 @@ function BookConfig() {
         }
       })
         .then((response) => {
+          console.log("*********QueryListCollections*****************")
+
           console.log(response.data, "collection List data")
           setCollectionsList(response.data)
           setLoadingCollections(false);
@@ -184,7 +189,7 @@ function BookConfig() {
       },
     })
       .then(function (response) {
-        console.log(response);
+        console.log(response, "réponse envoi données");
         setAlertSuccesSubmit(true);
 
         //reset Form after submit
@@ -232,6 +237,7 @@ function BookConfig() {
       setCardsFilter(Cards.filter((data) => data.name === collection));
     }
   };
+
   const handleChangeRating = (event) => {
     console.log("*********HandlechangeRating*****************")
     setRatingValue(event.target.value, "data rating on handlechange");
@@ -268,7 +274,13 @@ function BookConfig() {
     if (isReadValue === "") {
       setAlertErrorSubmitIsRead(true);
 
-    } else {
+    } 
+    // TODO condition ne fonctionne pas car même valeur pour list ou nouvelle collection
+    // else if(collectionNameValue.toString.length < 2){
+    //   setAlertErrorSubmitCollection(true);
+
+    // }
+    else {
       console.log("*********HandleSubmitForm*****************")
       const loginFormData = {
         "is_read": isReadValue,
@@ -282,14 +294,16 @@ function BookConfig() {
       setCurrentCategory(categoryIdValue !== 0 ? category.name : currentCategory)
       }
 
-      // console.log(categoryIdValue, 'valeur categoryIdValue dans handle submit')
-      // console.log(currentCategory, 'valeur currentCategory dans handle submit')
-      // console.log(category, 'valeur category dans handle submit')
-      // console.log(category.name, 'valeur categoryName dans handle submit')
-
       // Update current data on view
+   
+
       setCurrentRating(ratingValue !== 0 ? parseFloat(ratingValue) : currentRating);
-      setCurrentCollection(collectionNameValue !== "" ? collectionNameValue : currentCollection)
+      if(collectionNameValue.replace(/\s/g,'') !== ""){
+        setCurrentCollection(collectionNameValue)
+      }
+      else{
+        setCurrentCollection(currentCollection)
+      }
       setIsRead(isReadValue);
 
       // API Call to send data
@@ -348,7 +362,7 @@ function BookConfig() {
           </Box>
 
           {/* ************** Personnal information on book from the kid **************************/}
-          {console.log(currentCategory, "category value on book")}
+          {console.log({currentCategory}, "category value on book")}
 
           <Box sx={{ width: { xs: '100%', md: '50%' }, textAlign: 'center', margin: 'auto' }}>
 
@@ -377,6 +391,20 @@ function BookConfig() {
 
       {/* ******************************************espace formulaire******************************* */}
       {/* ------- Alert if Errors------------ */}
+      <Snackbar
+        open={alertErrorSubmitCollection}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorSubmitCollection(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Le nom de la collection est trop court
+        </MuiAlert>
+      </Snackbar>
       <Snackbar
         open={alertErrorSubmit}
         autoHideDuration={6000}
@@ -427,7 +455,7 @@ function BookConfig() {
           <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Je peux choisir d'ajouter ou modifier des informations</Typography>
 
           {/* ------------- RATING ----------------------------- */}
-          {console.log(ratingValue, "current rating value")}
+          {console.log({ratingValue}, "current rating value")}
 
           <Box sx={{ display: { xs: 'flex', sd: 'flex' }, flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: { sx: 'auto', sd: 'auto', md: 'none' }, color: '#4462A5', marginRight: { md: '50px' } }}>J'ajoute une note :</Typography>
@@ -446,7 +474,7 @@ function BookConfig() {
           {/* -----------COLLECTION SECTION --------------------------- */}
 
           {/* select collection by list (id) */}
-          {console.log(collectionNameValue, "current collection List value")}
+          {/* {console.log({collectionNameValue}, "current collection List value")} */}
 
           <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>Si ce livre fait partie d'une série de livres, je peux l'ajouter à la collection</Typography>
 
@@ -474,7 +502,7 @@ function BookConfig() {
           </Box>
 
           {/* Create a new collection name */}
-          {console.log(collectionNameValue, "current collection Name")}
+          {console.log({collectionNameValue}, "current collection Name")}
 
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'column' }, justifyContent: 'space-around', textAlign: 'center', Width: '100%', padding: '10px', gap: '10px' }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '30px', fontFamily: 'montserrat', color: '#4462A5' }}> ou je crée une nouvelle collection</Typography>
@@ -496,7 +524,7 @@ function BookConfig() {
             </Box>
 
             {/* ------------- CATEGORY ----------------------------- */}
-            {console.log(categoryIdValue, "id current category")}
+            {console.log({categoryIdValue}, "id current category")}
 
           </Box>
           <hr className='barre' />
@@ -526,7 +554,7 @@ function BookConfig() {
             </FormControl>
           </Box>
           {/* ------------- COMMENTS ----------------------------- */}
-          {console.log(commentValue, "current comment Value")}
+          {console.log({commentValue}, "current comment Value")}
 
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>J'ajoute un commentaire :</Typography>
@@ -548,7 +576,7 @@ function BookConfig() {
           </Box>
 
           {/* ------------- READ OR WISHED ----------------------------- */}
-          {console.log(isReadValue, "current isRead Value")}
+          {console.log({isReadValue}, "current isRead Value")}
 
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row', md: 'column' }, justifyContent: 'center', alignItems: 'center' }}>
             <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: '#4462A5' }}>C'est un livre :</Typography>
