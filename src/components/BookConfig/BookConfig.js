@@ -365,12 +365,7 @@ function BookConfig() {
         <Box sx={{ display: 'flex' }}>
           <HomeKidButtons />
 
-          <Box sx={{ display: 'flex', padding: '20px', flexDirection: { xs: 'column', sd: 'row', md: 'row' }, width: '80%', margin: 'auto',ml:{md:10} }}>
-
-
-            {/* <BookMenu sx={{ display: { xs: 'none', sm: 'block' } }} /> */}
-            {/* <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%', flexDirection: { xs: 'column', sm: 'column' }, margin: 'auto' }}> */}
-            {/* <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml:'3%' }}> */}
+          <Box sx={{ display: 'flex', padding: '20px', flexDirection: { xs: 'column', sd: 'row', md: 'row' }, width: '80%', margin: 'auto', ml:{md:10}, justifyItems:'center' }}>
 
             <Box
               component="img"
@@ -390,17 +385,20 @@ function BookConfig() {
             <Box sx={{ display: 'flex', alignItems: 'start', width: '70%', flexDirection: { xs: 'column', sm: 'row' }, margin: 'auto' }}>
 
               <Box sx={{ width: { xs: '100%', md: '50%', sd: '30%' }, textAlign: 'center', margin: 'auto' }}>
-                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-                  Ecrit par
+                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
+                  Ecrit par:
                 </Typography>
                 <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
                   {Book[0].book.authors[0].name}
                 </Typography>
-                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-                  Aux éditions
+                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
+                  Aux éditions:
                 </Typography>
                 <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
                   {Book[0].book.publisher}
+                </Typography>
+                <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
+                 Description:
                 </Typography>
                 <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom: '30px' }}>
                   "{Book[0].book.description}"
@@ -416,20 +414,29 @@ function BookConfig() {
 
           <Rating name="read-only" precision={0.5} value={currentRating} readOnly />
 
-          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
             Mes commentaires:
           </Typography>
           <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
             {currentComment}
           </Typography>
-          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-            Est-ce que j'ai lu ce livre: {currentIsRead == true ? "oui" : "non, pas encore"}
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
+            Est-ce que j'ai lu ce livre: 
           </Typography>
-          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-            Catégorie: {currentCategory}
+          <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
+          {currentIsRead == true ? "oui" : "non, pas encore"}
           </Typography>
-          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
-            Collection: {currentCollection}
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
+            Catégorie: 
+          </Typography>
+          <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
+          {currentCategory}
+          </Typography>
+          <Typography sx={{ mt: 3, mb: 1, fontFamily: 'Montserrat', fontWeight: 700 }}>
+            Collection: 
+          </Typography>
+          <Typography sx={{ mt: 1, mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
+          {currentCollection}
           </Typography>
 
 
@@ -589,8 +596,6 @@ function BookConfig() {
                   label="category"
                   name='categoryId'
                   onChange={handleChangeCategory}
-
-
                 >
                   <MenuItem key={0} value={0}> Pas de catégorie </MenuItem>
 
