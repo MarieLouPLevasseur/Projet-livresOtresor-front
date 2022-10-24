@@ -167,7 +167,7 @@ function HomeKid() {
           </Typography>
           <Rating name="read-only" precision={0.5} value={lastBookValue.rating} readOnly />
           <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic' }}>
-            "{lastBookValue ? lastBookValue.book.description : " Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem LoremLorem Lorem Lorem Lorem Lorem Lorem"}"
+            "{lastBookValue ? lastBookValue.book.description : " Le dernier enregistré apparaitra ici"}"
           </Typography>
         </Box>
       </Box>

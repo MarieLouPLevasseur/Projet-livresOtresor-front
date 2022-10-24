@@ -22,6 +22,8 @@ function ButtonList( {kidId, username, avatar}){
       username,
       avatar
     }));
+    console.log({username}, "valeur username dans le dispatch")
+    console.log({avatar}, "valeur avatar dans le dispatch")
 
     dispatch(userKidId(kidId));
     dispatch(userKidUsername(username));
