@@ -3,3 +3,12 @@
     // border: 5 red solid;
 }
 
+.diplomaImage{
+    max-height: 300px;
+}
+
+.diplomaImage:hover{
+    transform: scale(0.95) !important;
+ 
+}
+

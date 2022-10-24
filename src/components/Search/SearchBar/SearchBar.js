@@ -2,10 +2,11 @@ import React from 'react'
 import { Box, TextField, Button } from '@mui/material'
 
 import './SearchBar.scss'
+import { AirlineSeatLegroomExtraOutlined, Padding } from '@mui/icons-material'
 
 function SearchBar({ search, setSearch, setItemToSearch }) {
   return (
-    <Box
+    <Box 
     component="form"
     onSubmit={(e) => {
       e.preventDefault()
@@ -17,28 +18,33 @@ function SearchBar({ search, setSearch, setItemToSearch }) {
       mb: 5,
       display: 'flex',
       width: '70%',
-      justifyContent: 'center'
+      paddingLeft: {xs:'5em', sm:'9em'},
+      flexDirection:{xs:'column', md: 'row'},
+      alignItems:'center'
     }}
     autoComplete="off"
     >
-    <TextField 
-      value={search}
-      onChange={(event) => {
-        setSearch(event.target.value);
-      }}
-      id="outlined-basic" 
-      label="Recherche..." 
-      variant="outlined"
-      sx={{ width: '70%', mr: 0.5 }}
-    />
-    <Button
-      className="searchButton"
-      type="submit"
-      variant="contained"
-      sx={{ width: '15%' }}
-    >
-      C'est parti !
-    </Button>
+      <TextField 
+        value={search}
+        onChange={(event) => {
+          setSearch(event.target.value);
+        }}
+        id="outlined-basic" 
+        label="Recherche..." 
+        variant="outlined"
+        sx={{ width: '70%', mr: 0.5 }}
+      />
+      <Button
+        className="searchButton"
+        type="submit"
+        variant="contained"
+        sx={{
+          width: {xs: '50%' ,md:'30%'} ,
+          margin: {xs:'15px', md:'auto'},
+        }}
+      >
+        C'est parti !
+      </Button>
     </Box>
   )
 }

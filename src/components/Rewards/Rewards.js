@@ -16,6 +16,8 @@ import Loading from '../Loading/Loading';
 
 import './Rewards.scss'
 import AvatarList from './RewardsList/AvatarList'
+import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
+
 
 function Rewards() {
 
@@ -166,7 +168,8 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
       </Typography>
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
-        <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', mt: 2}}>
+        <BookIconeMenu/>
+        <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', mt: 2 , margin:{xs:'auto'}}}>
           <Avatar
           alt="avatar enfant"
           src={avatar}
@@ -213,7 +216,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
         >
           {diplomasList.map((image) => (
             <ImageListItem key={image.id}>
-              <img className="diplomaImage" src={image.url} alt='diplome' />
+              <img className="diplomaImage" src={image.url} alt='diplome'/>
             </ImageListItem>
           ))}
         </ImageList>

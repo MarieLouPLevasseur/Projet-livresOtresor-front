@@ -12,6 +12,7 @@ import HomeKidProgressBar from './HomeKidProgressBar/HomeKidProgressBar';
 import Loading from '../Loading/Loading';
 import defaultCover from '../../assets/img/defaultCover.jpg'
 import './HomeKid.scss';
+import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
 
 function HomeKid() {
  
@@ -119,7 +120,8 @@ function HomeKid() {
       </Typography>
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
-        <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', mt: 2}}>
+        <BookIconeMenu/>
+        <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', mt: 2, margin:{xs:'auto'}}}>
         <Avatar
         alt="avatar enfant"
         src={avatar}
@@ -134,7 +136,7 @@ function HomeKid() {
           </Typography>
         </Box>
       </Box>
-      <Box sx={{display: 'flex', width: '70%', m:'auto' }}>
+      <Box sx={{display: 'flex', width: '70%', m:{sm:'auto'}, flexDirection:{xs:'column', md:'row'} }}>
       <Link to= {`/mes-livres/voir-livre/${lastBookValueBookkidId}`} >
           <Box 
             component="img"
@@ -146,12 +148,12 @@ function HomeKid() {
               maxHeight: { xs: 200, md: 300 },
               maxWidth: { xs: 200, md: 300 },
               marginLeft: 20,
-              marginBottom: 15,
+              marginBottom:{md:15},
               marginTop: 8,
             }}
           />
         </Link>
-        <Box sx={{width: '50%', textAlign: 'center'}}>
+        <Box sx={{width: '50%', textAlign: 'center', margin:{ sm:'auto'}, marginLeft:{xs:22,sm:22}, marginRight:{md:100}}}>
           <Link to= {`/mes-livres/voir-livre/${lastBookValueBookkidId}`} >
 
               <Typography sx={{ mt: 8, fontFamily: 'Montserrat', fontWeight: 500, textDecoration: 'underline',  }} >
@@ -167,7 +169,7 @@ function HomeKid() {
           </Typography>
           <Rating name="read-only" precision={0.5} value={lastBookValue.rating} readOnly />
           <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic' }}>
-            "{lastBookValue ? lastBookValue.book.description : " Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem LoremLorem Lorem Lorem Lorem Lorem Lorem"}"
+            "{lastBookValue ? lastBookValue.book.description : " Le dernier enregistré apparaitra ici"}"
           </Typography>
         </Box>
       </Box>

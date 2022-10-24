@@ -73,6 +73,7 @@ function HomeUser() {
       <Card className='card' variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', background: '#'}}>
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> Compte enfant : {e.username}  </Typography>
         <ButtonList kidId={e.id} username={e.username} avatar={e.profile_avatar}/>
+
       </Card>
       ))} 
      
