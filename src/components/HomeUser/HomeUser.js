@@ -74,8 +74,6 @@ function HomeUser() {
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> Compte enfant : {e.username}  </Typography>
         <ButtonList kidId={e.id} username={e.username} avatar={e.profile_avatar}/>
 
-        {console.log(e.username, "test valeur username de l'enfant")}
-        {console.log(e.profile_avatar, "test valeur avatar de l'enfant")}
       </Card>
       ))} 
      
