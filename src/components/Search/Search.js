@@ -36,7 +36,7 @@ function Search() {
   const [itemToSearch, setItemToSearch] = useState('');
 
   // State Google API info
-  const [googleSearch, setGoogleSearch] = useState([]);
+  let [googleSearch, setGoogleSearch] = useState([]);
   let ISBNList= [];
 
   // State ISBDN APi info
@@ -123,7 +123,7 @@ function Search() {
 
 console.log({googleSearch}, "informations initiales sur Google Book Api")
 
-let decompte= 0;
+let bookIndex= 0;
 //? POUR CHAQUE OBJET : récupération ISBN =>tableau d'ISBN
 /**
  * 
@@ -131,12 +131,12 @@ let decompte= 0;
  * 
  */
   function isbnList (initialSearchApi){
+    let indexToDelete = [];
     for (let book of googleSearch){
-      console.log("***********book #"+ decompte +"*****************")
-      decompte ++
+      console.log("***********book #"+ bookIndex +"*****************")
       // console.log({book}, "je suis book dans isbnList")
       // CHECK if Key Exist
-      if (book.volumeInfo.industryIdentifiers !==undefined){
+      if (book.volumeInfo.industryIdentifiers !== undefined){
         // (console.log("je ne suis pas ISBN undefined, j'existe!"));
         // SEARCH FOR ISBN 13
           // Check each key
@@ -156,15 +156,34 @@ let decompte= 0;
           
           }
       }
-      
+      if (book.volumeInfo.industryIdentifiers === undefined){
+        //Set off th List of results
+        console.log("oups: industryIdentifier est UNdefined: je n'ai pas d'IBSN")
+        // const Search = googleSearch
+        // console.log(Search, "copy du state Search avant slice")
+        indexToDelete.push(bookIndex);
+        // delete(googleSearch[bookIndex])
+        // console.log(googleSearch, "Après delete")
+        // setGoogleSearch(Search)
+
+      }
+      bookIndex ++
+ 
     }
+      //? Si n'existe pas: effacer l'objet: ne pourra pas être enregistrer en BDD sans cette clé
+
+    console.log ({indexToDelete}, "index à détruire")
+    for (let index in indexToDelete){
+      delete(googleSearch[index])
+      // googleSearch.slice(index)
+    }
+    console.log(googleSearch, "Après delete")
+
+
     return ISBNList;
   }
   console.log(isbnList({googleSearch}), "test list des ISBN");
-
-  //? Si n'existe pas: effacer l'objet: ne pourra pas être enregistrer en BDD sans cette clé
-    // regarder dans chaque objet puis effacer? 
-    // Effacer directement lors de la recherche dans le isbnList?
+ 
 
 //? REQUETE sur API2 avec la liste des ISBN valable récolté =>tableau d'objet API 2
 
