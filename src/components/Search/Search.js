@@ -35,6 +35,13 @@ function Search() {
   const [Search, setSearch] = useState('');
   const [itemToSearch, setItemToSearch] = useState('');
 
+  // State Google API info
+  const [googleSearch, setGoogleSearch] = useState([]);
+  let ISBNList= [];
+
+  // State ISBDN APi info
+
+
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
   const PER_PAGE = 4;
@@ -47,31 +54,137 @@ function Search() {
     setCurrentPage(value);
     _DATA.jump(value);
   };
+// ******************************************
+  // // Api Call
+  // useEffect(() => {
+  //   if (itemToSearch) {
+  //     setLoadingCards(true)
+  //     axios.get(`https://api2.isbndb.com/books/${itemToSearch}`,
 
-  // Api Call
-  useEffect(() => {
-    if (itemToSearch) {
-      setLoadingCards(true)
-      axios.get(`https://api2.isbndb.com/books/${itemToSearch}`,
+  //       {
+  //         headers: {
+  //           'Accept': '/',
+  //           'Authorization': '48454_3adb165117c5b979bbc75eb560814297'
+  //         }
+  //       })
 
-        {
-          headers: {
-            'Accept': '/',
-            'Authorization': '48454_3adb165117c5b979bbc75eb560814297'
+
+  //       .then((response) => {
+  //         setCards(response.data.books);
+  //         setLoadingCards(false);
+  //         console.log(response.data.book.isbn, "test isbn search")
+  //       })
+  //       .catch((error) => {
+  //         console.log('Erreur !', error);
+  //       })
+  //   }
+  // }, [itemToSearch]);
+// ***************************************************************
+// !--------------------------TEST-------------------------------
+//   async function getCharmandar(){
+//     const pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
+
+//     // get list of pokemon
+//     const response = await fetch(pokemonListUrl)
+//     const pokeList = await response.json()
+
+//     // find charmander in the array of pokemon
+//     const charmanderEntry = pokeList.find((poke) => poke.name === "charmandar")
+
+//     // request the charmandar data
+//     const response2 = await fetch(charmanderEntry.url)
+//     const charmander = await response2.json()
+
+//     // use the charmandar data as desired
+// }
+
+// getCharmander()
+
+//? RECHERCHER LE MOT CLE DANS GOOGLE API
+
+ // Api Call
+ useEffect(() => {
+  if (itemToSearch) {
+    setLoadingCards(true)
+    
+    axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 3 } })
+    .then((response) => {
+
+      //? RECUPERER LA LISTE D'INFO => tableau d'objet google
+      setGoogleSearch(response.data.items)
+      
+        })
+  
+      .catch((error) => {
+        console.log('Erreur !', error);
+      })
+  }
+}, [itemToSearch]);
+
+console.log({googleSearch}, "informations initiales sur Google Book Api")
+
+let decompte= 0;
+//? POUR CHAQUE OBJET : récupération ISBN =>tableau d'ISBN
+/**
+ * 
+ * @param {Array} initialSearchApi  Array of objects books get from the first API search
+ * 
+ */
+  function isbnList (initialSearchApi){
+    for (let book of googleSearch){
+      console.log("***********book #"+ decompte +"*****************")
+      decompte ++
+      // console.log({book}, "je suis book dans isbnList")
+      // CHECK if Key Exist
+      if (book.volumeInfo.industryIdentifiers !==undefined){
+        // (console.log("je ne suis pas ISBN undefined, j'existe!"));
+        // SEARCH FOR ISBN 13
+          // Check each key
+          for (let count = 0; count< book.volumeInfo.industryIdentifiers.length; count ++){
+            // console.log("je suis dans la boucle qui compte les types pour l'iSBN")
+            // console.log("-----je teste les count: # ",count)
+
+          
+
+              if( book.volumeInfo.industryIdentifiers[count].type ==="ISBN_13"){
+                // console.log("j'ai bien une clé type = à ISBN13")
+                let isbn13 = book.volumeInfo.industryIdentifiers[count].identifier
+
+                console.log("mon iSBN est le: ", isbn13)
+                ISBNList.push(isbn13);
+              }
+          
           }
-        })
-
-
-        .then((response) => {
-          setCards(response.data.books);
-          setLoadingCards(false);
-          console.log(response.data.book.isbn, "test isbn search")
-        })
-        .catch((error) => {
-          console.log('Erreur !', error);
-        })
+      }
+      
     }
-  }, [itemToSearch]);
+    return ISBNList;
+  }
+  console.log(isbnList({googleSearch}), "test list des ISBN");
+
+  //? Si n'existe pas: effacer l'objet: ne pourra pas être enregistrer en BDD sans cette clé
+    // regarder dans chaque objet puis effacer? 
+    // Effacer directement lors de la recherche dans le isbnList?
+
+//? REQUETE sur API2 avec la liste des ISBN valable récolté =>tableau d'objet API 2
+
+//? COMPARER les valeurs pour créer un livre complet
+
+//? Si tableau de livre complet: affichage
+
+      // setCards(tableau de livres complets);
+      // setLoadingCards(false);
+  
+
+
+
+// if(isbn !==''){
+	// var book_complet={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':'','isPartOf':'','position':''};
+	// var book_g={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':''};
+	// var book_w={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':'','isPartOf':'','position':''};
+	// var book_a={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':''};
+// ! --------------------------------------------------------------
+ 
 
   console.log(Cards)
   if (LoadingCards) {
@@ -100,15 +213,15 @@ function Search() {
                   <CardMedia
                     sx={{ width: { xs: '40%', md: '15%' }, height: '100%' }}
                     component="img"
-                    image={data.image ? data.image : { ImgCard }}
+                    image={data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : { ImgCard }}
                     alt="Book Cover"
                   />
                   <CardContent sx={{ width: '80%' }}>
                     <Typography gutterBottom variant="h5" component="div" >
-                      {data.title}
+                      {data.volumeInfo.title}
                     </Typography>
                     <Typography sx={{ fontStyle: 'italic', maxLines: 4 }} variant="body2" color="text.secondary">
-                      {data.synopsis == null ? "Aucune description n'est disponible pour ce livre" : data.synopsis.length > 500 ? `${data.synopsis.substring(0, 500)}...` : data.synopsis}
+                      {data.volumeInfo.description == null ? "Aucune description n'est disponible pour ce livre" : data.volumeInfo.description.length > 500 ? `${data.volumeInfo.description.substring(0, 500)}...` : data.volumeInfo.description}
                     </Typography>
                   </CardContent>
                   <CardActions sx={{ width: '10%', marginTop: '5px', marginBottom: '30px' }}>
