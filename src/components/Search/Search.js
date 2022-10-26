@@ -36,10 +36,11 @@ function Search() {
   const [itemToSearch, setItemToSearch] = useState('');
 
   // State Google API info
-  let [googleSearch, setGoogleSearch] = useState([]);
+  const [googleSearch, setGoogleSearch] = useState([]);
   let ISBNList= [];
 
   // State ISBDN APi info
+  const ISBNDBSearch =[];
 
 
   // State and data for pagination
@@ -54,6 +55,70 @@ function Search() {
     setCurrentPage(value);
     _DATA.jump(value);
   };
+
+
+  // FUNCTIONS
+
+  /**
+ * 
+ * @param {Array} initialSearchApi  Array of objects books get from the first API search
+ * 
+ */
+   function isbnList (initialSearchApi){
+    let bookIndex= 0;
+    let indexToDelete = [];
+    for (let book of googleSearch){
+      console.log("***********book #"+ bookIndex +"*****************")
+      // console.log({book}, "je suis book dans isbnList")
+      // CHECK if Key Exist
+      if (book.volumeInfo.industryIdentifiers !== undefined){
+        // (console.log("je ne suis pas ISBN undefined, j'existe!"));
+        // SEARCH FOR ISBN 13
+          // Check each key
+          for (let count = 0; count< book.volumeInfo.industryIdentifiers.length; count ++){
+            // console.log("je suis dans la boucle qui compte les types pour l'iSBN")
+            // console.log("-----je teste les count: # ",count)
+
+          
+
+              if( book.volumeInfo.industryIdentifiers[count].type ==="ISBN_13"){
+                // console.log("j'ai bien une clé type = à ISBN13")
+                let isbn13 = book.volumeInfo.industryIdentifiers[count].identifier
+
+                console.log("mon iSBN est le: ", isbn13)
+                ISBNList.push(isbn13);
+              }
+          
+          }
+      }
+      if (book.volumeInfo.industryIdentifiers === undefined){
+        //Set off th List of results
+        console.log("oups: industryIdentifier est UNdefined: je n'ai pas d'IBSN")
+        // const Search = googleSearch
+        // console.log(Search, "copy du state Search avant slice")
+        indexToDelete.push(bookIndex);
+        // delete(googleSearch[bookIndex])
+        // console.log(googleSearch, "Après delete")
+        // setGoogleSearch(Search)
+
+      }
+      bookIndex ++
+ 
+    }
+      //? Si n'existe pas: effacer l'objet: ne pourra pas être enregistré en BDD sans cette clé
+
+    console.log ({indexToDelete}, "index à détruire")
+    for (let index of indexToDelete){
+      delete(googleSearch[index])
+      // googleSearch.slice(index, index)
+    }
+    // googleSearch.filter(function(val){return val});
+
+    console.log(googleSearch, "Après delete")
+
+
+    return ISBNList;
+  }
 // ******************************************
   // // Api Call
   // useEffect(() => {
@@ -102,90 +167,63 @@ function Search() {
 
 //? RECHERCHER LE MOT CLE DANS GOOGLE API
 
- // Api Call
- useEffect(() => {
-  if (itemToSearch) {
-    setLoadingCards(true)
-    
-    axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 3 } })
-    .then((response) => {
+  // Api Call on Google Book
+    useEffect(() => {
+      if (itemToSearch) {
+        setLoadingCards(true)
+        
+        axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 3 } })
+        .then((response) => {
 
-      //? RECUPERER LA LISTE D'INFO => tableau d'objet google
-      setGoogleSearch(response.data.items)
+          //? RECUPERER LA LISTE D'INFO => tableau d'objet google
+          setGoogleSearch(response.data.items)
+          console.log(response.data.items, "informations initiales sur Google Book Api")
+
+            })
       
-        })
-  
-      .catch((error) => {
-        console.log('Erreur !', error);
-      })
-  }
-}, [itemToSearch]);
+          .catch((error) => {
+            console.log('Erreur !', error);
+          })
+      }
+    }, [itemToSearch]);
 
-console.log({googleSearch}, "informations initiales sur Google Book Api")
-
-let bookIndex= 0;
 //? POUR CHAQUE OBJET : récupération ISBN =>tableau d'ISBN
-/**
- * 
- * @param {Array} initialSearchApi  Array of objects books get from the first API search
- * 
- */
-  function isbnList (initialSearchApi){
-    let indexToDelete = [];
-    for (let book of googleSearch){
-      console.log("***********book #"+ bookIndex +"*****************")
-      // console.log({book}, "je suis book dans isbnList")
-      // CHECK if Key Exist
-      if (book.volumeInfo.industryIdentifiers !== undefined){
-        // (console.log("je ne suis pas ISBN undefined, j'existe!"));
-        // SEARCH FOR ISBN 13
-          // Check each key
-          for (let count = 0; count< book.volumeInfo.industryIdentifiers.length; count ++){
-            // console.log("je suis dans la boucle qui compte les types pour l'iSBN")
-            // console.log("-----je teste les count: # ",count)
+  ISBNList = isbnList({googleSearch});
+  console.log({ISBNList}, "test retour isbn list")
 
-          
+//? RECHERCHER sur API2, via la liste ISBN les infos des livres (dont l'image)
 
-              if( book.volumeInfo.industryIdentifiers[count].type ==="ISBN_13"){
-                // console.log("j'ai bien une clé type = à ISBN13")
-                let isbn13 = book.volumeInfo.industryIdentifiers[count].identifier
+  // Api Call on ISBNDB 
+    useEffect(() => {
+      if (googleSearch !== []) {
 
-                console.log("mon iSBN est le: ", isbn13)
-                ISBNList.push(isbn13);
+          for (let isbn of ISBNList){
+            console.log("-----------je suis dans API2----------")
+            console.log("isbn que je cherche: ", isbn)
+          axios.get(`https://api2.isbndb.com/book/${isbn}`,
+
+            {
+              headers: {
+                'Accept': '/',
+                'Authorization': '48454_3adb165117c5b979bbc75eb560814297'
               }
-          
-          }
+            })       
+
+            .then((response) => {
+            
+
+              ISBNDBSearch.push(response.data.book)
+              console.log(response.data.book, "test response API2")
+            })
+            .catch((error) => {
+              console.log('Erreur !', error);
+            })
+        }
       }
-      if (book.volumeInfo.industryIdentifiers === undefined){
-        //Set off th List of results
-        console.log("oups: industryIdentifier est UNdefined: je n'ai pas d'IBSN")
-        // const Search = googleSearch
-        // console.log(Search, "copy du state Search avant slice")
-        indexToDelete.push(bookIndex);
-        // delete(googleSearch[bookIndex])
-        // console.log(googleSearch, "Après delete")
-        // setGoogleSearch(Search)
-
-      }
-      bookIndex ++
+    }, [googleSearch]);
  
-    }
-      //? Si n'existe pas: effacer l'objet: ne pourra pas être enregistrer en BDD sans cette clé
+  console.log(ISBNDBSearch, "resultat ISBNDB Search Api2")
 
-    console.log ({indexToDelete}, "index à détruire")
-    for (let index in indexToDelete){
-      delete(googleSearch[index])
-      // googleSearch.slice(index)
-    }
-    console.log(googleSearch, "Après delete")
-
-
-    return ISBNList;
-  }
-  console.log(isbnList({googleSearch}), "test list des ISBN");
- 
-
-//? REQUETE sur API2 avec la liste des ISBN valable récolté =>tableau d'objet API 2
 
 //? COMPARER les valeurs pour créer un livre complet
 
