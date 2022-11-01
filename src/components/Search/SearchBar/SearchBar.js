@@ -17,10 +17,12 @@ function SearchBar({ search, setSearch, setItemToSearch }) {
       mt: 2,
       mb: 5,
       display: 'flex',
-      width: '70%',
+      width: {sm:'70%', md:'40%'},
       paddingLeft: {xs:'5em', sm:'9em'},
       flexDirection:{xs:'column', md: 'row'},
-      alignItems:'center'
+      alignItems:'center',
+      margin: {md:'auto'}
+      
     }}
     autoComplete="off"
     >
@@ -39,7 +41,7 @@ function SearchBar({ search, setSearch, setItemToSearch }) {
         type="submit"
         variant="contained"
         sx={{
-          width: {xs: '50%' ,md:'30%'} ,
+          width: {xs: '50%' ,md:'20%'} ,
           margin: {xs:'15px', md:'auto'},
         }}
       >

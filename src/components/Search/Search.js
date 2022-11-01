@@ -13,6 +13,7 @@ import ImgCard from '../../assets/img/defaultCover.jpg'
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
 
 import './Search.scss'
+import { toBeEmpty } from '@testing-library/jest-dom/dist/matchers';
 
 const theme = createTheme({
   palette: {
@@ -34,13 +35,16 @@ function Search() {
   const [LoadingCards, setLoadingCards] = useState(false)
   const [Search, setSearch] = useState('');
   const [itemToSearch, setItemToSearch] = useState('');
+  const [completeBookList, setCompleteBookList] = useState([]);
+  
 
   // State Google API info
   const [googleSearch, setGoogleSearch] = useState([]);
-  let ISBNList= [];
 
   // State ISBDN APi info
-  const ISBNDBSearch =[];
+  // let ISBNDBSearch =[];
+  // const [ISBNDBSearch, setISBNDBSearch] = useState([]);
+
 
 
   // State and data for pagination
@@ -58,17 +62,46 @@ function Search() {
 
 
   // FUNCTIONS
+  /**
+   * Search result on Google Book Api with itemToSearch given by user
+   * @param {string} itemToSearch string given by user: key word to search on API
+   */
+   function googleApiBook(itemToSearch){
+    console.log("***********Search On Google APi Book ******************")
+     // Api Call on Google Book
+
+     return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 3 } })
+     .then((response) => {
+
+       //? RECUPERER LA LISTE D'INFO => tableau d'objet google
+       setGoogleSearch(response.data.items)
+       console.log(response.data.items, "informations initiales depuis la fonction 'googleApiBook'")
+      // console.log(Promise.resolve(response.data.items), "test promise.resolve sur les infos google book")
+      //  Promise.resolve(response.data.items)
+      //  return Promise.resolve(response.data.items)
+       return response.data.items
+      // return "je suis la réponse en dur"
+         })
+   
+      //  .catch((error) => {
+      //    console.log(error);
+      //  })
+       
+   }
 
   /**
- * 
- * @param {Array} initialSearchApi  Array of objects books get from the first API search
- * 
+ * Filtered and list good ISBN code to use
+ * @param {Array} resultGoogleApi result of the search on Google Api Book
+ * @return {Array} List of ISBN code book from Search
  */
-   function isbnList (initialSearchApi){
+   function isbnList (resultGoogleApi){
+    console.log("************* ISBN LIST Function***************")
     let bookIndex= 0;
     let indexToDelete = [];
-    for (let book of googleSearch){
-      console.log("***********book #"+ bookIndex +"*****************")
+    let ISBNList= [];
+
+    for (let book of resultGoogleApi){
+      console.log("-------------book # "+ bookIndex +"---------")
       // console.log({book}, "je suis book dans isbnList")
       // CHECK if Key Exist
       if (book.volumeInfo.industryIdentifiers !== undefined){
@@ -109,136 +142,162 @@ function Search() {
 
     console.log ({indexToDelete}, "index à détruire")
     for (let index of indexToDelete){
-      delete(googleSearch[index])
+      delete(resultGoogleApi[index])
       // googleSearch.slice(index, index)
     }
     // googleSearch.filter(function(val){return val});
 
-    console.log(googleSearch, "Après delete")
 
 
     return ISBNList;
   }
-// ******************************************
-  // // Api Call
-  // useEffect(() => {
-  //   if (itemToSearch) {
-  //     setLoadingCards(true)
-  //     axios.get(`https://api2.isbndb.com/books/${itemToSearch}`,
 
-  //       {
-  //         headers: {
-  //           'Accept': '/',
-  //           'Authorization': '48454_3adb165117c5b979bbc75eb560814297'
-  //         }
-  //       })
+    
+  /**
+   * Search result on Google Book Api with list of valid ISBN code
+   * @param {Array} ISBNList list of valid ISBN code
+   * 
+   */
+   async function isbnApi2Book(ISBNList){
+    console.log("************Function isbnApi2Book******************")
+    const isbnApiResult = [];
+        for (let isbn of ISBNList){
+          const booksApi2 = await axios.get(`https://api2.isbndb.com/book/${isbn}`,
+
+              {
+                headers: {
+                  'Accept': '/',
+                  'Authorization': '48454_3adb165117c5b979bbc75eb560814297'
+                }
+              }
+          )   
+          .then(result => {
+            // setAnswer(result);
+            // setISBNDBSearch(result);
+            isbnApiResult.push(result)
+
+            console.log(result, "Réponse dans Api 2");
+          })
+          
+        }
+        return isbnApiResult
+        
+  }
+
+  /**
+ * 
+ * @param {Array} googleSearchInfo informations of books from initial Search from Google Api Books
+ * @param {Array} ISBNDBSearchInfo informations of books from second Search from ISBNDB Api 
+ * @return {Object}
+ */
+   function completeBook(googleSearch, ISBNDBSearchInfo){
+    console.log("************* Complete Book **********************")
+    // Set incomplete Book for Google info
+      const googleBook={title:'', isbn:'', cover:'', authors: [{name:''}], 'description':'', publisher:''};
+
+    // Set incomplete Book for ISBNDB info
+      const isbndbBook={title:'', isbn:'', cover:'', authors: [{name:''}], 'description':'', publisher:''};
+
+    // Set a complete new book
+      const completeBook={title:'', isbn:'', cover:'', authors: [{name:''}], 'description':'', publisher:''};
+      console.log(googleSearch, "test de googleSearch")
+      console.log(ISBNDBSearchInfo, "test de ISBNDBSearchInfo")
+
+      for (let gBook of googleSearch){
+        console.log("----je suis un google book------")
+        console.log(gBook)
+      }
+      for (let iBook of ISBNDBSearchInfo){
+        console.log("----je suis un IsbnDB book------")
+        console.log(iBook, "isbn book")
+      }
+
+      return completeBook
+  }
 
 
-  //       .then((response) => {
-  //         setCards(response.data.books);
-  //         setLoadingCards(false);
-  //         console.log(response.data.book.isbn, "test isbn search")
-  //       })
-  //       .catch((error) => {
-  //         console.log('Erreur !', error);
-  //       })
-  //   }
-  // }, [itemToSearch]);
-// ***************************************************************
-// !--------------------------TEST-------------------------------
-//   async function getCharmandar(){
-//     const pokemonListUrl = "https://pokeapi.co/api/v2/pokemon"
+ /**
+  * Do asyncronous command: search on Api google Book, set ISBN list, Search on Api 2 isbn DB and fix final complete result book
+  * @param {string} itemToSearch key word to search for books
+  */
+  function searchBook(itemToSearch){
 
-//     // get list of pokemon
-//     const response = await fetch(pokemonListUrl)
-//     const pokeList = await response.json()
 
-//     // find charmander in the array of pokemon
-//     const charmanderEntry = pokeList.find((poke) => poke.name === "charmandar")
+   
 
-//     // request the charmandar data
-//     const response2 = await fetch(charmanderEntry.url)
-//     const charmander = await response2.json()
+    //---------------test 3 CA MARCHE----------------------
+    //?-----1. Search google API Book----------------------
 
-//     // use the charmandar data as desired
-// }
+    googleApiBook(itemToSearch)
+    
+    //?-----2. List all valid ISBN Code--------------------
+      .then(resultGoogleApi=> isbnList(resultGoogleApi)
+          // console.log(resultGoogleApi, "test du premier résultat asyncrone:API 1: Google Api")
+        )
+    //?-----3. List all books on APi ISBN DB---------------
+        .then(resultIsbnList=> isbnApi2Book(resultIsbnList)
+              // console.log(resultIsbnList, "test du retour sur la liste des code ISBN: isbnList")
+        )
+    //?-----4. Compare and complete list of books----------
 
-// getCharmander()
+          .then(resultApi2Isbn=> completeBook(googleSearch, resultApi2Isbn)
+              // console.log(resultApi2Isbn, "test du retour asyncrone: Api 2: Isbn Api")
+          )
+    //?-----5.Return list of books completed---------------
 
-//? RECHERCHER LE MOT CLE DANS GOOGLE API
+            .then(finalResult=> {
+              console.log(finalResult, "résultats finaux")
+            })
+              .catch((error)=>{
+                console.log(error)
+              });
 
-  // Api Call on Google Book
+
+
+  
+
+    //------------------test à faire avec Async / Await-------------------
+  
+    // async function api1() {
+    //   const response = await axios.get(...)
+    //   setGoogleSearch(response.data.items)
+    //   return response.data.items
+    // }
+
+      //--------------------------------
+   
+
+    
+  }
+
+// !--------------------------NEW TEST-------------------------------
     useEffect(() => {
       if (itemToSearch) {
-        setLoadingCards(true)
-        
-        axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 3 } })
-        .then((response) => {
+        searchBook(itemToSearch);
 
-          //? RECUPERER LA LISTE D'INFO => tableau d'objet google
-          setGoogleSearch(response.data.items)
-          console.log(response.data.items, "informations initiales sur Google Book Api")
 
-            })
+        //? Si tableau de livre complet: affichage
+
+    // if (completeBookList !== []) {
+    //   setCards(completeBookList);
+
+    //   setLoadingCards(false);
       
-          .catch((error) => {
-            console.log('Erreur !', error);
-          })
+    
+    // }
       }
+
+
     }, [itemToSearch]);
 
-//? POUR CHAQUE OBJET : récupération ISBN =>tableau d'ISBN
-  ISBNList = isbnList({googleSearch});
-  console.log({ISBNList}, "test retour isbn list")
-
-//? RECHERCHER sur API2, via la liste ISBN les infos des livres (dont l'image)
-
-  // Api Call on ISBNDB 
-    useEffect(() => {
-      if (googleSearch !== []) {
-
-          for (let isbn of ISBNList){
-            console.log("-----------je suis dans API2----------")
-            console.log("isbn que je cherche: ", isbn)
-          axios.get(`https://api2.isbndb.com/book/${isbn}`,
-
-            {
-              headers: {
-                'Accept': '/',
-                'Authorization': '48454_3adb165117c5b979bbc75eb560814297'
-              }
-            })       
-
-            .then((response) => {
-            
-
-              ISBNDBSearch.push(response.data.book)
-              console.log(response.data.book, "test response API2")
-            })
-            .catch((error) => {
-              console.log('Erreur !', error);
-            })
-        }
-      }
-    }, [googleSearch]);
- 
-  console.log(ISBNDBSearch, "resultat ISBNDB Search Api2")
+//! -----------------------------------------------------------
 
 
-//? COMPARER les valeurs pour créer un livre complet
-
-//? Si tableau de livre complet: affichage
-
-      // setCards(tableau de livres complets);
-      // setLoadingCards(false);
-  
 
 
 
 // if(isbn !==''){
 	// var book_complet={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':'','isPartOf':'','position':''};
-	// var book_g={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':''};
-	// var book_w={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':'','isPartOf':'','position':''};
 	// var book_a={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':''};
 // ! --------------------------------------------------------------
  
@@ -256,14 +315,12 @@ function Search() {
       </Typography>
         <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} setLoadingCards={setLoadingCards} />
       <Box sx={{ width: '100%', display: 'flex' }}>
-        <aside sx={{ width: '40%' }}>
+      
           <HomeKidButtons />
           <BookIconeMenu />
 
-        </aside>
-
-        <Box sx={{ display: 'flex', marginLeft: { xs: '100px', sm:'0px' }, flexDirection: 'row' }}>
-          <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
+        <Box sx={{ width: '70%', display: 'flex', marginLeft: { xs: '100px', sm:'0px' }, flexDirection: 'row' }}>
+          <Box sx={{ display: 'flex', width: '60%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
             {!LoadingCards && (
               _DATA.currentData().map((data) => (
                 <Card key={data.id} sx={{ display: "flex", flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'center' }, width: "100%", height: "50%", mb: 1.5 }}>
