@@ -35,7 +35,7 @@ function Search() {
   const [LoadingCards, setLoadingCards] = useState(false)
   const [Search, setSearch] = useState('');
   const [itemToSearch, setItemToSearch] = useState('');
-  // const [completeBookList, setCompleteBookList] = useState([]);
+  const [completeBookListState, setCompleteBookListState] = useState([]);
   
 
   let googleSearchInfo = []
@@ -73,7 +73,7 @@ function Search() {
     console.log("***********Search On Google APi Book ******************")
      // Api Call on Google Book
 
-     return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 3 } })
+     return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=AIzaSyAIaqSnvJ5hDzxn48QV-ZjVApmN4BXSWsc`,{ params: { maxResults: 10 } })
      .then((response) => {
 
        //? RECUPERER LA LISTE D'INFO => tableau d'objet google
@@ -207,16 +207,8 @@ function Search() {
       for (let isbnValid of isbnValidCodeList){
 
         // Set a complete new book
-        let completeBook={title:'', isbn:'', cover:'', authors: [], 'description':'', publisher:''};
+        let completeBook={id:'',title:'', isbn:'', cover:'', authors: [], 'description':'', publisher:''};
 
-        //For each iteration: set complete Book to empty
-        // completeBook.title='';
-        // completeBook.isbn ='';
-        // completeBook.cover= '';
-        // completeBook.authors.name='';
-        // completeBook.description = '';
-        // completeBook.publisher ='';
-        // console.log(completeBook, 'le complete Book est vidé')
         console.log("--je suis l'isbn Valid #: ", isbnValid);
         // console.log(completeBook, "je suis un completeBook ")
         
@@ -240,6 +232,8 @@ function Search() {
                       
                       // ISBN
                         completeBook.isbn = isbn13
+                        //ID
+                        completeBook.id =gBook.id
                       // TITLE ( and subtitle if exists)
                         if (gBook.volumeInfo.subtitle !== undefined){
                           completeBook.title= gBook.volumeInfo.title + " "+ gBook.volumeInfo.subtitle
@@ -269,6 +263,19 @@ function Search() {
             for (let iBook of ISBNDBSearchInfo){
               console.log("----je suis un IsbnDB book------")
               console.log(iBook, "isbn book")
+              // console.log(iBook.data.book.isbn13, "test isbn API 2")
+              if (iBook.data.book.isbn13 === isbnValid){
+                console.log("j'ai le bon ISBN je traite la demande")
+                completeBook.cover = iBook.data.book.image
+              }
+              if(completeBook.publisher === undefined){
+                let publisher = iBook.data.book.publisher;
+                // ! put regex to check data
+                // ALPHï¿½E
+                // const regex = new RegExp("^[a-zA-Z0-9]+$", "g");
+                // console.log(regex().publisher, "test regex") 
+                completeBook.publisher= iBook.data.book.publisher
+              }
             }
             
             //? ---- For each book complete push in complete List Book-----
@@ -276,7 +283,7 @@ function Search() {
             completeBookList.push(completeBook)
           }
           
-      console.log(completeBookList, "completeBookList avant soumission finale")
+      // console.log(completeBookList, "completeBookList avant soumission finale")
       return completeBookList
   }
 
@@ -289,10 +296,7 @@ function Search() {
   function searchBook(itemToSearch){
 
 
-   
-
-    //---------------test 3 CA MARCHE----------------------
-    //?-----1. Search google API Book----------------------
+    // ?-----1. Search google API Book code qui fonctionne ----------------------
 
     googleApiBook(itemToSearch)
     
@@ -313,15 +317,57 @@ function Search() {
 
             .then(finalResult=> {
               console.log(finalResult, "résultats finaux")
+              setCompleteBookListState(finalResult)
+              setCards(finalResult)
+              setLoadingCards(false)
+              return finalResult
             })
               .catch((error)=>{
                 console.log(error)
               });
 
- 
+ //------------test pour le retour ----------------------
 
-  
 
+ // async function api1() {
+    //   const response = await axios.get(...)
+    //   setGoogleSearch(response.data.items)
+    //   return response.data.items
+    // }
+       //?-----1. Search google API Book----------------------
+    // const finalResponse = 
+      //   async function globalResponse() {
+      //  await googleApiBook(itemToSearch)
+          
+      //   //?-----2. List all valid ISBN Code--------------------
+      //     .then(resultGoogleApi=> isbnList(resultGoogleApi)
+      //         // console.log(resultGoogleApi, "test du premier résultat asyncrone:API 1: Google Api")
+      //       )
+      //   //?-----3. List all books on APi ISBN DB---------------
+      //       .then(resultIsbnList=> isbnApi2Book(resultIsbnList)
+      //             // console.log(resultIsbnList, "test du retour sur la liste des code ISBN: isbnList")
+      //       )
+      //   //?-----4. Compare and complete list of books----------
+
+      //         .then(resultApi2Isbn=> completeBook(googleSearchInfo,resultApi2Isbn, isbnValidCodeList)
+      //             // console.log(resultApi2Isbn, "test du retour asyncrone: Api 2: Isbn Api")
+      //         )
+      //   //?-----5.Return list of books completed---------------
+
+      //           .then(finalResult=> {
+      //             console.log(finalResult, "résultats finaux")
+      //             setCompleteBookListState(finalResult)
+      //             setCards(finalResult)
+      //             setLoadingCards(false)
+      //             // return finalResult
+      //           })
+      //             .catch((error)=>{
+      //               console.log(error)
+      //             });
+
+
+      //   }
+        // return finalResult
     //------------------test à faire avec Async / Await-------------------
   
     // async function api1() {
@@ -336,37 +382,71 @@ function Search() {
     
   }
 
-// !--------------------------NEW TEST-------------------------------
+// !--------------------------NEW TEST marche presque: difficulté avec les cards-------------------------------
     useEffect(() => {
       if (itemToSearch) {
-        searchBook(itemToSearch);
+        setLoadingCards(true);
 
+          searchBook(itemToSearch);
+          // .then((response)=>{
+
+          // })
 
         //? Si tableau de livre complet: affichage
 
-    // if (completeBookList !== []) {
-    //   setCards(completeBookList);
+      //  console.log(completeBookList.length>0, "test completeBookList est >0 ?")
+      //     if (completeBookList.length >0 ) {
+      //       setCompleteBookListState(completeBookList)
+      //       setCards(completeBookListState);
 
-    //   setLoadingCards(false);
-      
-    
-    // }
+      //       setLoadingCards(false);
+            
+          
+      //     }
       }
 
 
     }, [itemToSearch]);
 
-//! -----------------------------------------------------------
+//!---------------test 2 crashtest----------------------------------------
 
 
+// async function api1() {
+    //   const response = await axios.get(...)
+    //   setGoogleSearch(response.data.items)
+    //   return response.data.items
+    // }
+// useEffect(() => {
+//   // declare the async data fetching function
+//   if (itemToSearch) {
+
+//     setLoadingCards(true);
 
 
+//       const searchBookUseEffect = async () => {
+//         const response = await searchBook(itemToSearch);
+//       // setCompleteBookListState(response)
+//       return response
 
+//       }
 
-// ! --------------------------------------------------------------
- 
+//       // call the function
+//     const finalResult =  searchBookUseEffect()
+//         .then((response)=>{
+//           console.log(response, "réponse de searchBookseEffect")
+//           setCards(completeBookListState);
 
-  console.log(Cards)
+//         })
+//         // make sure to catch any error
+//         .catch(console.error);
+
+//         console.log( finalResult, 'test final result en UseEffect')
+//     }
+//   }, [itemToSearch]);
+
+//! ----------------------------------------------------------- 
+console.log(LoadingCards, 'test loadingCards')
+  console.log(Cards, "test cards")
   if (LoadingCards) {
     return <Loading />
   }
@@ -387,19 +467,23 @@ function Search() {
           <Box sx={{ display: 'flex', width: '60%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
             {!LoadingCards && (
               _DATA.currentData().map((data) => (
+                  // console.log({data}, "test de data")
                 <Card key={data.id} sx={{ display: "flex", flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'center' }, width: "100%", height: "50%", mb: 1.5 }}>
                   <CardMedia
                     sx={{ width: { xs: '40%', md: '15%' }, height: '100%' }}
                     component="img"
-                    image={data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : { ImgCard }}
+                    // image={data.volumeInfo.imageLinks ? data.volumeInfo.imageLinks.thumbnail : { ImgCard }}
+                    image={data.cover}
                     alt="Book Cover"
                   />
                   <CardContent sx={{ width: '80%' }}>
                     <Typography gutterBottom variant="h5" component="div" >
-                      {data.volumeInfo.title}
+                      {/* {data.volumeInfo.title} */}
+                      {data.title}
                     </Typography>
                     <Typography sx={{ fontStyle: 'italic', maxLines: 4 }} variant="body2" color="text.secondary">
-                      {data.volumeInfo.description == null ? "Aucune description n'est disponible pour ce livre" : data.volumeInfo.description.length > 500 ? `${data.volumeInfo.description.substring(0, 500)}...` : data.volumeInfo.description}
+                      {/* {data.volumeInfo.description == null ? "Aucune description n'est disponible pour ce livre" : data.volumeInfo.description.length > 500 ? `${data.volumeInfo.description.substring(0, 500)}...` : data.volumeInfo.description} */}
+                      {data.description == null ? "Aucune description n'est disponible pour ce livre" : data.description.length > 500 ? `${data.description.substring(0, 500)}...` : data.description}
                     </Typography>
                   </CardContent>
                   <CardActions sx={{ width: '10%', marginTop: '5px', marginBottom: '30px' }}>
