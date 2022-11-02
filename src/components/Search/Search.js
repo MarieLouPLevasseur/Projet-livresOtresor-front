@@ -35,17 +35,20 @@ function Search() {
   const [LoadingCards, setLoadingCards] = useState(false)
   const [Search, setSearch] = useState('');
   const [itemToSearch, setItemToSearch] = useState('');
-  const [completeBookList, setCompleteBookList] = useState([]);
+  // const [completeBookList, setCompleteBookList] = useState([]);
   
 
-  // State Google API info
-  const [googleSearch, setGoogleSearch] = useState([]);
+  let googleSearchInfo = []
+  let isbnValidCodeList=[];
+  let completeBookList = []
 
+  // State Google API info
+  // const [googleSearch, setGoogleSearch] = useState([]);
   // State ISBDN APi info
   // let ISBNDBSearch =[];
   // const [ISBNDBSearch, setISBNDBSearch] = useState([]);
 
-
+  // State ISBN of valid codes
 
   // State and data for pagination
   const [CurrentPage, setCurrentPage] = useState(1);
@@ -74,7 +77,8 @@ function Search() {
      .then((response) => {
 
        //? RECUPERER LA LISTE D'INFO => tableau d'objet google
-       setGoogleSearch(response.data.items)
+      //  setGoogleSearch(response.data.items)
+       googleSearchInfo = response.data.items
        console.log(response.data.items, "informations initiales depuis la fonction 'googleApiBook'")
       // console.log(Promise.resolve(response.data.items), "test promise.resolve sur les infos google book")
       //  Promise.resolve(response.data.items)
@@ -101,7 +105,7 @@ function Search() {
     let ISBNList= [];
 
     for (let book of resultGoogleApi){
-      console.log("-------------book # "+ bookIndex +"---------")
+      // console.log("-------------book # "+ bookIndex +"---------")
       // console.log({book}, "je suis book dans isbnList")
       // CHECK if Key Exist
       if (book.volumeInfo.industryIdentifiers !== undefined){
@@ -118,8 +122,10 @@ function Search() {
                 // console.log("j'ai bien une clé type = à ISBN13")
                 let isbn13 = book.volumeInfo.industryIdentifiers[count].identifier
 
-                console.log("mon iSBN est le: ", isbn13)
+                // console.log("mon iSBN est le: ", isbn13)
                 ISBNList.push(isbn13);
+                isbnValidCodeList.push(isbn13)
+
               }
           
           }
@@ -140,14 +146,14 @@ function Search() {
     }
       //? Si n'existe pas: effacer l'objet: ne pourra pas être enregistré en BDD sans cette clé
 
-    console.log ({indexToDelete}, "index à détruire")
+    // console.log ({indexToDelete}, "index à détruire")
     for (let index of indexToDelete){
       delete(resultGoogleApi[index])
       // googleSearch.slice(index, index)
     }
     // googleSearch.filter(function(val){return val});
 
-
+    // isbnValidCodeList.push(ISBNList)
 
     return ISBNList;
   }
@@ -176,7 +182,7 @@ function Search() {
             // setISBNDBSearch(result);
             isbnApiResult.push(result)
 
-            console.log(result, "Réponse dans Api 2");
+            // console.log(result, "Réponse dans Api 2");
           })
           
         }
@@ -188,36 +194,96 @@ function Search() {
  * 
  * @param {Array} googleSearchInfo informations of books from initial Search from Google Api Books
  * @param {Array} ISBNDBSearchInfo informations of books from second Search from ISBNDB Api 
+ * @param {Array} isbnValidCodeList List of Valid Code ISBN
  * @return {Object}
  */
-   function completeBook(googleSearch, ISBNDBSearchInfo){
+  function completeBook( googleSearchInfo, ISBNDBSearchInfo, isbnValidCodeList){
     console.log("************* Complete Book **********************")
-    // Set incomplete Book for Google info
-      const googleBook={title:'', isbn:'', cover:'', authors: [{name:''}], 'description':'', publisher:''};
+   
+      // ? --- For Each ISBN code Valid complete all key with Google Book OR ISBN DB Book -------
 
-    // Set incomplete Book for ISBNDB info
-      const isbndbBook={title:'', isbn:'', cover:'', authors: [{name:''}], 'description':'', publisher:''};
+      // console.log(isbnValidCodeList, "List de codes ISBN valide dans complete Book")
+      console.log(completeBook, "je suis un complete book qui devrait etre vide")
+      for (let isbnValid of isbnValidCodeList){
 
-    // Set a complete new book
-      const completeBook={title:'', isbn:'', cover:'', authors: [{name:''}], 'description':'', publisher:''};
-      console.log(googleSearch, "test de googleSearch")
-      console.log(ISBNDBSearchInfo, "test de ISBNDBSearchInfo")
+        // Set a complete new book
+        let completeBook={title:'', isbn:'', cover:'', authors: [], 'description':'', publisher:''};
 
-      for (let gBook of googleSearch){
-        console.log("----je suis un google book------")
-        console.log(gBook)
-      }
-      for (let iBook of ISBNDBSearchInfo){
-        console.log("----je suis un IsbnDB book------")
-        console.log(iBook, "isbn book")
-      }
+        //For each iteration: set complete Book to empty
+        // completeBook.title='';
+        // completeBook.isbn ='';
+        // completeBook.cover= '';
+        // completeBook.authors.name='';
+        // completeBook.description = '';
+        // completeBook.publisher ='';
+        // console.log(completeBook, 'le complete Book est vidé')
+        console.log("--je suis l'isbn Valid #: ", isbnValid);
+        // console.log(completeBook, "je suis un completeBook ")
+        
+        // ? ------Check each google Book----------
+          
+          for (let gBook of googleSearchInfo){
+            console.log("----je suis un google book------")
+            // console.log(gBook)
+              if (gBook !== undefined){
+                let isbn13=""
+                for (let count = 0; count< gBook.volumeInfo.industryIdentifiers.length; count ++){
 
-      return completeBook
+                  if( gBook.volumeInfo.industryIdentifiers[count].type ==="ISBN_13"){
+                    isbn13 = gBook.volumeInfo.industryIdentifiers[count].identifier
+                    console.log("mon gbook iSBN est le: ", isbn13)
+                  }
+                }
+                    if (isbn13 === isbnValid){
+                    // I have the good ISBN : set information on complete Book
+                      console.log("le gBook a bien le bon ISBN: je traite les infos")
+                      
+                      // ISBN
+                        completeBook.isbn = isbn13
+                      // TITLE ( and subtitle if exists)
+                        if (gBook.volumeInfo.subtitle !== undefined){
+                          completeBook.title= gBook.volumeInfo.title + " "+ gBook.volumeInfo.subtitle
+                        }
+                        else{
+                          
+                          completeBook.title = gBook.volumeInfo.title
+                        }
+                        
+                      // Description
+                        completeBook.description = gBook.volumeInfo.description
+                        
+                      // Publisher
+                        completeBook.publisher = gBook.volumeInfo.publisher
+                        
+                      // Authors
+                        for (let author of gBook.volumeInfo.authors){
+                          completeBook.authors.push({name: author})
+                        }
+
+                    }
+                  }
+              // console.log(completeBook, "completeBook a la fin d'un tour de gBook")
+            }
+            // ? -------- Check each ISBN DB Book-----------
+            
+            for (let iBook of ISBNDBSearchInfo){
+              console.log("----je suis un IsbnDB book------")
+              console.log(iBook, "isbn book")
+            }
+            
+            //? ---- For each book complete push in complete List Book-----
+            console.log(completeBook, "test complete book")
+            completeBookList.push(completeBook)
+          }
+          
+      console.log(completeBookList, "completeBookList avant soumission finale")
+      return completeBookList
   }
 
+  
 
  /**
-  * Do asyncronous command: search on Api google Book, set ISBN list, Search on Api 2 isbn DB and fix final complete result book
+  * Search on Api google Book, set ISBN list, Search on Api 2 isbn DB and fix final complete result book
   * @param {string} itemToSearch key word to search for books
   */
   function searchBook(itemToSearch){
@@ -240,7 +306,7 @@ function Search() {
         )
     //?-----4. Compare and complete list of books----------
 
-          .then(resultApi2Isbn=> completeBook(googleSearch, resultApi2Isbn)
+          .then(resultApi2Isbn=> completeBook(googleSearchInfo,resultApi2Isbn, isbnValidCodeList)
               // console.log(resultApi2Isbn, "test du retour asyncrone: Api 2: Isbn Api")
           )
     //?-----5.Return list of books completed---------------
@@ -252,7 +318,7 @@ function Search() {
                 console.log(error)
               });
 
-
+ 
 
   
 
@@ -296,9 +362,7 @@ function Search() {
 
 
 
-// if(isbn !==''){
-	// var book_complet={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':'','isPartOf':'','position':''};
-	// var book_a={id:'',title:'', isbn_13:'', cover:'', authors:'', 'description':'', publisher:'', date:0, numberOfPages:0, 'id_worldcat':'','id_google':'','ASIN':'','url':''};
+
 // ! --------------------------------------------------------------
  
 
