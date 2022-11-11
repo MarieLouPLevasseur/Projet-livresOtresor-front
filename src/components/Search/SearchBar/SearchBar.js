@@ -18,10 +18,11 @@ function SearchBar({ search, setSearch, setItemToSearch }) {
       mb: 5,
       display: 'flex',
       width: {sm:'70%', md:'40%'},
-      paddingLeft: {xs:'5em', sm:'9em'},
+      paddingLeft: {xs:'5em', sm:'8em'},
       flexDirection:{xs:'column', md: 'row'},
       alignItems:'center',
-      margin: {md:'auto'}
+      margin: {md:'auto'},
+      marginRight: { xs: '17%', sm:'20%' }
       
     }}
     autoComplete="off"
