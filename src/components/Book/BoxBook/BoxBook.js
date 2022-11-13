@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Rating, Typography } from '@mui/material'
+import { Box,  Typography } from '@mui/material'
 
 import Cover from '../../../assets/img/defaultCover.jpg'
 
@@ -10,7 +10,7 @@ function BoxBook({ Book }) {
         <Box 
           component="img"
           alt="Couverture d'un livre"
-          src={Book.image ? Book.image : Cover}
+          src={Book.cover ? Book.cover : Cover}
           sx={{
             height: 300,
             width: 250,
@@ -20,7 +20,6 @@ function BoxBook({ Book }) {
             marginRight:{xs:'10px'},
             marginBottom: 15,
             marginTop: {xs:'5px', md:'30px'}
-            // marginTop: 8
           }}
         />
         <Box sx={{width:{xs:'100%', md:'50%'}, textAlign: 'center'}}>
@@ -28,7 +27,9 @@ function BoxBook({ Book }) {
             Ecrit par
           </Typography>
           <Typography sx={{ mt: 1,mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
-          {Book.authors}
+          {Book.authors.map((author) => (
+                    author.name
+                  ))}
           </Typography>
           <Typography sx={{ mt: 3,mb: 1, fontFamily: 'Montserrat', fontWeight: 500 }}>
             Aux éditions
@@ -36,9 +37,8 @@ function BoxBook({ Book }) {
           <Typography sx={{ mt: 1,mb: 3, fontFamily: 'Montserrat', fontWeight: 400 }}>
           {Book.publisher}
           </Typography>
-          {/* <Rating name="read-only" precision={0.5} value={4.5} readOnly /> */}
           <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom:'30px'}}>
-          "{Book.synopsis}"
+          {Book.description}
           </Typography>
         </Box>
         </Box>

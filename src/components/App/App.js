@@ -93,7 +93,8 @@ function App() {
         <Route path="/recherche" element={<Search />} />
         <Route path="/mes-livres" element={<MyBooks />} />
         <Route path="/recompenses" element={<Rewards />} />
-        <Route path="/recherche/voir-livre/:identifier" element={<Book />} />
+        {/* <Route path="/recherche/voir-livre/:identifier" element={<Book />} /> */}
+        <Route path="/recherche/voir-livre" element={<Book />} />
         <Route path="/mes-livres/voir-livre/:id" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>

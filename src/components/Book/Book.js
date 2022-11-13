@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { Typography, Box } from '@mui/material';
 
 import './Book.scss'
@@ -7,39 +6,25 @@ import BookMenu from './BookMenu/BookMenu';
 import BoxBook from './BoxBook/BoxBook';
 import BookButton from './BookButton/BookButton';
 import BookIconeMenu from './BookIconeMenu/BookIconeMenu';
-import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux'
 import Loading from '../Loading/Loading';
 
 function Book() {
 
-  // UseParams
-  const { identifier } = useParams();
-  console.log( identifier, 'identifier');
-
   // Local States
-  const [Book, setBook] = useState([]);
+  const Book = useSelector((state) => state.searchBook);
+
   const [loadingBook, setLoadingBook] = useState(true);
 
 
   // Api Calls
   useEffect(() => {
-    axios.get(`https://api2.isbndb.com/book/${identifier}`,
-            {
-              headers : { 'Accept': '/',
-                          'Authorization': '48454_3adb165117c5b979bbc75eb560814297'}
-            })
-    .then((response) => {
-      console.log(response.data, 'response. data');
-      setBook(response.data.book);
+
+    if(Book){
       setLoadingBook(false)
-    })
-    .catch((error) => {
-      console.log('Erreur !', error);
-    });
-  },[])
+    }
 
-
+  },[Book])
 
   if (loadingBook) {
     return <Loading />

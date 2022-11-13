@@ -548,14 +548,14 @@ function Search() {
                   </CardContent>
                   <CardActions sx={{ width: '10%', marginTop: '5px', marginBottom: '10%', margin:'15px', justifyContent:'center' }}>
                     {/* TODO: CHANGE LINK by passing new value */}
-                    {/* <Link to={`/recherche/voir-livre/${data.isbn13}`} style={{ textDecoration: 'none' }}> */}
+                    <Link to={`/recherche/voir-livre`} style={{ textDecoration: 'none' }}>
                       <Button sx={{fontSize:{md:'1em',lg:'1em'}}} size="small"
                        onClick={()=> {handleDispatchSearchBookInfo(data)}}
                       //  onClick={(data) => {
                         // dispatchSearchBookInfos(data.isbn, data.cover, data.description, data.title, data.authors, data.puslisher);
                       // }}
                        >Voir le livre</Button>
-                    {/* </Link> */}
+                    </Link>
                   </CardActions>
                 </Card>
               ))
