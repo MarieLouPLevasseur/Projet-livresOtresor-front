@@ -135,18 +135,29 @@ function BookButton(Book) {
 
           {console.log(Book, "info book dans bookbutton")}
 
-       <Box sx={{ flexGrow: 1, display:'flex', flexDirection: 'column', width:'100%'}}>
+       <Box sx={{ flexGrow: 1,
+                  display:'flex',
+                  flexDirection: 'row',
+                  width:'60%',
+                  margin: 'auto'
+                }}>
           <Button className="buttonBookAdd"  onClick={(e) => handleClickAddButton(true,Book)}
 
 
-            sx={{ my: 2, color: 'white', background:'#4462A5' , fontFamily:'Montserrat', width:'100%'}}
-          >
-                Ajouter à mes livres lus
+            sx={{ my: 2,
+                  color: 'white',
+                  background:'#4462A5',
+                  fontFamily:'Montserrat',
+                  width:'100%',
+                  margin:'20px'
+                 
+                }}
+            >  Ajouter à mes livres lus
 
           </Button>
           <Button className="buttonBookAdd"  onClick={(e) => handleClickAddButton(false,Book)}
 
-            sx={{ my: 2, color: 'white',fontFamily:'Montserrat', background:'#4462A5', width:'100%' }}
+            sx={{ my: 2, color: 'white',fontFamily:'Montserrat', background:'#4462A5', width:'100%', margin:'20px' }}
           >
                 Ajouter à ma liste d'envie
 
