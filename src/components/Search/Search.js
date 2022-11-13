@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
@@ -13,6 +13,8 @@ import usePagination from "./UsePagination";
 import Loading from '../Loading/Loading';
 import ImgCard from '../../assets/img/defaultCover.jpg'
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
+import { searchBookIsbn,searchBookCover,searchBookTitle, searchBookDescription, searchBookAuthors, searchBookPublisher} from '../../features/book/searchBookSlice';
+
 
 import './Search.scss'
 import { toBeEmpty } from '@testing-library/jest-dom/dist/matchers';
@@ -43,8 +45,6 @@ function Search() {
   const isLogUser = useSelector((state) => state.user.isLogUser);
   const isLogKid = useSelector((state) => state.kid.isLogKid);
   
-  // console.log(isLogUser, "User is logged?");
-  // console.log(isLogKid, "Kid is logged?");
 
    // set token
    const token = useSelector(state => {
@@ -57,10 +57,22 @@ function Search() {
 
    })
   
-  //  Books API infos
+  //  Books
+    // API infos
   let googleSearchInfo = []
   let isbnValidCodeList=[];
   let completeBookList = []
+   //Search Book
+//    function dispatchSearchBookInfos ( isbn, cover, description, title, authors, publisher) {
+// console.log("je suis dans le nouveau dispatch")
+// console.log(isbn, "test valeur isbn")
+//           dispatch(searchBookAuthors(authors))
+//           dispatch(cover(cover))
+//           dispatch(isbn(isbn))
+//           dispatch(description(description))
+//           dispatch(title(title))
+//           dispatch(publisher(publisher))
+//     };
 
   // Api infos
     
@@ -89,12 +101,38 @@ function Search() {
 
 
   // FUNCTIONS
+  
+  const dispatch = useDispatch();
+  function handleDispatchSearchBookInfo(book){
+
+    console.log("je suis dans la fonction pour dispatch")
+    console.log(book, "je teste 'book' ")
+    console.log(book.isbn, "je teste 'book.isbn' ")
+
+
+    // localStorage.setItem('searchBook', JSON.stringify({
+    //   isbn: e.isbn,
+    //   cover: e.cover,
+    //   title: e.title,
+    //   description: e.description,
+    //   authors: e.authors,
+    //   publisher: e.publisher,
+    // }));
+
+    
+    dispatch(searchBookIsbn(book.isbn));
+    dispatch(searchBookCover(book.cover));
+    dispatch(searchBookTitle(book.title));
+    dispatch(searchBookDescription(book.description));
+    dispatch(searchBookPublisher(book.publisher));
+    dispatch(searchBookAuthors(book.authors));
+};
   /**
    * Search result on Google Book Api with itemToSearch given by user
    * @param {string} itemToSearch string given by user: key word to search on API
    */
    function googleApiBook(itemToSearch){
-    console.log("***********Search On Google APi Book ******************")
+    // console.log("***********Search On Google APi Book ******************")
      // Api Call on Google Book
 
      return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=${googleApiKey}`,{ params: { maxResults: 10 } })
@@ -103,7 +141,7 @@ function Search() {
        //? RECUPERER LA LISTE D'INFO => tableau d'objet google
       //  setGoogleSearch(response.data.items)
        googleSearchInfo = response.data.items
-       console.log(response.data.items, "informations initiales depuis la fonction 'googleApiBook'")
+      //  console.log(response.data.items, "informations initiales depuis la fonction 'googleApiBook'")
      
        return response.data.items
          })
@@ -120,7 +158,7 @@ function Search() {
  * @return {Array} List of ISBN code book from Search
  */
    function isbnList (resultGoogleApi){
-    console.log("************* ISBN LIST Function***************")
+    // console.log("************* ISBN LIST Function***************")
     let bookIndex= 0;
     let indexToDelete = [];
     let ISBNList= [];
@@ -170,11 +208,8 @@ function Search() {
     // console.log ({indexToDelete}, "index à détruire")
     for (let index of indexToDelete){
       delete(resultGoogleApi[index])
-      // googleSearch.slice(index, index)
     }
-    // googleSearch.filter(function(val){return val});
 
-    // isbnValidCodeList.push(ISBNList)
 
     return ISBNList;
   }
@@ -186,7 +221,7 @@ function Search() {
    * 
    */
    async function isbnApi2Book(ISBNList){
-    console.log("************Function isbnApi2Book******************")
+    // console.log("************Function isbnApi2Book******************")
     const isbnApiResult = [];
         for (let isbn of ISBNList){
           const booksApi2 = await axios.get(`https://api2.isbndb.com/book/${isbn}`,
@@ -236,12 +271,12 @@ function Search() {
  * @return {Object}
  */
   function completeBook( googleSearchInfo, ISBNDBSearchInfo, isbnValidCodeList){
-    console.log("************* Complete Book **********************")
+    // console.log("************* Complete Book **********************")
    
       // ? --- For Each ISBN code Valid complete all key with Google Book OR ISBN DB Book -------
 
       // console.log(isbnValidCodeList, "List de codes ISBN valide dans complete Book")
-      console.log(completeBook, "je suis un complete book qui devrait etre vide")
+      // console.log(completeBook, "je suis un complete book qui devrait etre vide")
       for (let isbnValid of isbnValidCodeList){
 
         // Set a complete new book
@@ -249,13 +284,13 @@ function Search() {
 
         let coverBook = "";
 
-        console.log("--je suis l'isbn Valid #: ", isbnValid);
+        // console.log("--je suis l'isbn Valid #: ", isbnValid);
         // console.log(completeBook, "je suis un completeBook ")
         
         // ? ------Check each google Book----------
           
           for (let gBook of googleSearchInfo){
-            console.log("----je suis un google book------")
+            // console.log("----je suis un google book------")
             // console.log(gBook)
               if (gBook !== undefined){
                 let isbn13=""
@@ -268,7 +303,7 @@ function Search() {
                 }
                     if (isbn13 === isbnValid){
                     // I have the good ISBN : set information on complete Book
-                      console.log("le gBook a bien le bon ISBN: je traite les infos")
+                      // console.log("le gBook a bien le bon ISBN: je traite les infos")
                       
                       // ISBN
                         completeBook.isbn = isbn13
@@ -308,7 +343,7 @@ function Search() {
             // ? -------- Check each ISBN DB Book-----------
             
             for (let iBook of ISBNDBSearchInfo){
-              console.log("----je suis un IsbnDB book------")
+              // console.log("----je suis un IsbnDB book------")
               // console.log(iBook, "isbn book")
               // console.log(iBook.data.book.isbn13, "test isbn API 2")
               if (iBook.data.book.isbn13 === isbnValid){
@@ -339,7 +374,7 @@ function Search() {
             }
             
             //? ---- For each book complete push in complete List Book-----
-            console.log(completeBook, "test complete book")
+            // console.log(completeBook, "test complete book")
             completeBookList.push(completeBook)
           }
           
@@ -376,7 +411,7 @@ function Search() {
     //?-----5.Return list of books completed---------------
 
             .then(finalResult=> {
-              console.log(finalResult, "résultats finaux")
+              // console.log(finalResult, "résultats finaux")
               setCompleteBookListState(finalResult)
               setCards(finalResult)
               setLoadingCards(false)
@@ -513,9 +548,14 @@ function Search() {
                   </CardContent>
                   <CardActions sx={{ width: '10%', marginTop: '5px', marginBottom: '10%', margin:'15px', justifyContent:'center' }}>
                     {/* TODO: CHANGE LINK by passing new value */}
-                    <Link to={`/recherche/voir-livre/${data.isbn13}`} style={{ textDecoration: 'none' }}>
-                      <Button sx={{fontSize:{md:'1em',lg:'1em'}}} size="small">Voir le livre</Button>
-                    </Link>
+                    {/* <Link to={`/recherche/voir-livre/${data.isbn13}`} style={{ textDecoration: 'none' }}> */}
+                      <Button sx={{fontSize:{md:'1em',lg:'1em'}}} size="small"
+                       onClick={()=> {handleDispatchSearchBookInfo(data)}}
+                      //  onClick={(data) => {
+                        // dispatchSearchBookInfos(data.isbn, data.cover, data.description, data.title, data.authors, data.puslisher);
+                      // }}
+                       >Voir le livre</Button>
+                    {/* </Link> */}
                   </CardActions>
                 </Card>
               ))
