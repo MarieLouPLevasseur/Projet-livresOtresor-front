@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
+import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions,TextField } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector,useDispatch } from 'react-redux';
+
+import './SearchBar/SearchBar.scss'
+import { AirlineSeatLegroomExtraOutlined, Padding } from '@mui/icons-material'
 
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons'
-import SearchBar from './SearchBar/SearchBar';
+// import SearchBar from './SearchBar/SearchBar';
 import usePagination from "./UsePagination";
 import Loading from '../Loading/Loading';
 import ImgCard from '../../assets/img/defaultCover.jpg'
@@ -38,12 +41,12 @@ function Search() {
   const [Cards, setCards] = useState([]);
   const [LoadingCards, setLoadingCards] = useState(false)
   const [Search, setSearch] = useState('');
-  const [itemToSearch, setItemToSearch] = useState('');
+  // const [itemToSearch, setItemToSearch] = useState('');
   const [completeBookListState, setCompleteBookListState] = useState([]);
   
   // Set datas if User or Kid
   const isLogUser = useSelector((state) => state.user.isLogUser);
-  const isLogKid = useSelector((state) => state.kid.isLogKid);
+  // const isLogKid = useSelector((state) => state.kid.isLogKid);
   
 
    // set token
@@ -62,23 +65,12 @@ function Search() {
   let googleSearchInfo = []
   let isbnValidCodeList=[];
   let completeBookList = []
-   //Search Book
-//    function dispatchSearchBookInfos ( isbn, cover, description, title, authors, publisher) {
-// console.log("je suis dans le nouveau dispatch")
-// console.log(isbn, "test valeur isbn")
-//           dispatch(searchBookAuthors(authors))
-//           dispatch(cover(cover))
-//           dispatch(isbn(isbn))
-//           dispatch(description(description))
-//           dispatch(title(title))
-//           dispatch(publisher(publisher))
-//     };
 
   // Api infos
     
     const apiEndpointApiKey = `/api/v1/apiKey`;
     const apiUrl = useSelector((state) => state.api.apiUrl);
-    const [loadingApiKey, setLoadingApiKey] = useState(true);
+    // const [loadingApiKey, setLoadingApiKey] = useState(true);
 
     const [googleApiKey, setGoogleApiKey] = useState("");
     const [isbndbApiKey, setIsbndbApiKey] = useState("");
@@ -93,32 +85,26 @@ function Search() {
 
   const count = Math.ceil(Cards.length / PER_PAGE);
   const _DATA = usePagination(Cards, PER_PAGE);
-
+  // const apiKeyIsSet = setApiKeys()
   const handleChange = (e, value) => {
     setCurrentPage(value);
     _DATA.jump(value);
   };
 
-
-  // FUNCTIONS
   
   const dispatch = useDispatch();
-  function handleDispatchSearchBookInfo(book){
+ 
+ // ********** HandleSubmit **************
+
+  /**
+   * Dispatch information of a complete book in the store slice on click to view details of a book search
+   * @param {object} book 
+   */
+   function handleDispatchSearchBookInfo(book){
 
     console.log("je suis dans la fonction pour dispatch")
     console.log(book, "je teste 'book' ")
     console.log(book.isbn, "je teste 'book.isbn' ")
-
-
-    // localStorage.setItem('searchBook', JSON.stringify({
-    //   isbn: e.isbn,
-    //   cover: e.cover,
-    //   title: e.title,
-    //   description: e.description,
-    //   authors: e.authors,
-    //   publisher: e.publisher,
-    // }));
-
     
     dispatch(searchBookIsbn(book.isbn));
     dispatch(searchBookCover(book.cover));
@@ -127,15 +113,37 @@ function Search() {
     dispatch(searchBookPublisher(book.publisher));
     dispatch(searchBookAuthors(book.authors));
 };
+
+  //*********** Functions *****************
+
+/**
+ * set informations of books to card to set to view with given item to search by user
+ */
+ function handleSubmitSearch(search){
+  // console.log("************HANDLE SUBMIT SEARCH **************")
+          setLoadingCards(true);  
+          // e.preventDefault()
+          // console.log(search, "test search dans le HandleSubmit")
+          // setItemToSearch(search)
+          setSearch(search)
+          console.log(Search, "Search du state")
+          
+                searchBook()
+                     
+  }
+
   /**
    * Search result on Google Book Api with itemToSearch given by user
-   * @param {string} itemToSearch string given by user: key word to search on API
+  //  * @param {string} itemToSearch string given by user: key word to search on API
    */
-   function googleApiBook(itemToSearch){
+   function googleApiBook(){
     // console.log("***********Search On Google APi Book ******************")
+    // console.log(isbndbApiKey, "valeur isbnApiKey dans API 1");
+    // console.log(googleApiKey, "valeur googleApiKey dans API 1");
+
      // Api Call on Google Book
 
-     return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${itemToSearch}&key=${googleApiKey}`,{ params: { maxResults: 10 } })
+     return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${Search}&key=${googleApiKey}`,{ params: { maxResults: 10 } })
      .then((response) => {
 
        //? RECUPERER LA LISTE D'INFO => tableau d'objet google
@@ -145,11 +153,7 @@ function Search() {
      
        return response.data.items
          })
-   
-      //  .catch((error) => {
-      //    console.log(error);
-      //  })
-       
+         
    }
 
   /**
@@ -210,9 +214,11 @@ function Search() {
       delete(resultGoogleApi[index])
     }
 
-
+    console.log(ISBNList, "isbn List")
     return ISBNList;
   }
+
+ 
 
     
   /**
@@ -223,8 +229,11 @@ function Search() {
    async function isbnApi2Book(ISBNList){
     // console.log("************Function isbnApi2Book******************")
     const isbnApiResult = [];
+    // console.log({isbndbApiKey}, "valeur isbnApiKey dans API 2");
+    // console.log({googleApiKey}, "valeur googleApiKey dans API 2");
         for (let isbn of ISBNList){
-          const booksApi2 = await axios.get(`https://api2.isbndb.com/book/${isbn}`,
+          // const booksApi2 = await axios.get(`https://api2.isbndb.com/book/${isbn}`,
+          await axios.get(`https://api2.isbndb.com/book/${isbn}`,
 
               {
                 headers: {
@@ -382,18 +391,17 @@ function Search() {
       return completeBookList
   }
 
-  
-
  /**
-  * Search on Api google Book, set ISBN list, Search on Api 2 isbn DB and fix final complete result book
-  * @param {string} itemToSearch key word to search for books
+  * Search on Api google Book, set ISBN list, Search on Api 2 isbn DB and fix final complete result on each book
   */
-  function searchBook(itemToSearch){
+  function searchBook(){
 
 
     // ?-----1. Search google API Book code qui fonctionne ----------------------
 
-    googleApiBook(itemToSearch)
+    // googleApiBook(itemToSearch)
+    googleApiBook()
+
     
     //?-----2. List all valid ISBN Code--------------------
       .then(resultGoogleApi=> isbnList(resultGoogleApi)
@@ -420,98 +428,33 @@ function Search() {
               .catch((error)=>{
                 console.log(error)
               });
-
- //------------test pour le retour ----------------------
-
-
- // async function api1() {
-    //   const response = await axios.get(...)
-    //   setGoogleSearch(response.data.items)
-    //   return response.data.items
-    // }
-       //?-----1. Search google API Book----------------------
-    // const finalResponse = 
-      //   async function globalResponse() {
-      //  await googleApiBook(itemToSearch)
-          
-      //   //?-----2. List all valid ISBN Code--------------------
-      //     .then(resultGoogleApi=> isbnList(resultGoogleApi)
-      //         // console.log(resultGoogleApi, "test du premier résultat asyncrone:API 1: Google Api")
-      //       )
-      //   //?-----3. List all books on APi ISBN DB---------------
-      //       .then(resultIsbnList=> isbnApi2Book(resultIsbnList)
-      //             // console.log(resultIsbnList, "test du retour sur la liste des code ISBN: isbnList")
-      //       )
-      //   //?-----4. Compare and complete list of books----------
-
-      //         .then(resultApi2Isbn=> completeBook(googleSearchInfo,resultApi2Isbn, isbnValidCodeList)
-      //             // console.log(resultApi2Isbn, "test du retour asyncrone: Api 2: Isbn Api")
-      //         )
-      //   //?-----5.Return list of books completed---------------
-
-      //           .then(finalResult=> {
-      //             console.log(finalResult, "résultats finaux")
-      //             setCompleteBookListState(finalResult)
-      //             setCards(finalResult)
-      //             setLoadingCards(false)
-      //             // return finalResult
-      //           })
-      //             .catch((error)=>{
-      //               console.log(error)
-      //             });
-
-
-      //   }
-        // return finalResult
-    //------------------test à faire avec Async / Await-------------------
-  
-    // async function api1() {
-    //   const response = await axios.get(...)
-    //   setGoogleSearch(response.data.items)
-    //   return response.data.items
-    // }
-
-      //--------------------------------
-   
-
     
   }
 
     useEffect(() => {
-      if(token){
-          // Get Api Keys
-          axios.get(apiUrl + apiEndpointApiKey, {headers : {
-            'Authorization': `Bearer ${token}`
-          }
-          })
-          .then((response) => {
-            // console.log(response.data);
-            setLoadingApiKey(false);
-            setGoogleApiKey(response.data.apiKeyGoogle);
-            setIsbndbApiKey(response.data.apiKeyIsbndb);
+     
 
-          
-          })
-          .catch((error) => {
-            console.log(error);
-          })
-     }
-
-      if (itemToSearch) {
-        setLoadingCards(true);
-
-          searchBook(itemToSearch);
-         
+      if (((googleApiKey === "") || (isbndbApiKey === "")) && (token !=="")){
+        axios.get(apiUrl + apiEndpointApiKey, {headers : {
+          'Authorization': `Bearer ${token}`
+          }})
+        
+            .then((response) => {
+              // setLoadingApiKey(false);
+              setGoogleApiKey(response.data.apiKeyGoogle);
+              setIsbndbApiKey(response.data.apiKeyIsbndb);
+             
+             return true
+            
+            })
+            .catch((error) => {
+              console.log(error);
+            })
       }
+   
+    },  );
 
-
-    }, [itemToSearch || token ]);
-
-
-
-// console.log(LoadingCards, 'test loadingCards')
-  // console.log(Cards, "test cards")
-  if (LoadingCards || loadingApiKey) {
+  if (LoadingCards) {
     return <Loading />
   }
   return (
@@ -521,7 +464,56 @@ function Search() {
       <Typography sx={{ mt: 3, mb: 3, fontWeight: 700, fontSize: { xs: 25, sm: 40 }, letterSpacing: 2, color: '#4462A5' }}>
         Trouve et ajoute ton livre !
       </Typography>
-        <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} setLoadingCards={setLoadingCards} />
+        {/* <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} setLoadingCards={setLoadingCards} /> */}
+        {/* SearchBar ----------------------*/}
+                  <Box 
+              component="form"
+              onSubmit={(e) => {
+                // setItemToSearch({Search})
+                handleSubmitSearch({Search})
+                setSearch("")
+
+               
+              }}
+              sx={{
+                mt: 2,
+                mb: 5,
+                display: 'flex',
+                width: {sm:'70%', md:'40%'},
+                paddingLeft: {xs:'5em', sm:'8em'},
+                flexDirection:{xs:'column', md: 'row'},
+                alignItems:'center',
+                margin: {md:'auto'},
+                marginRight: { xs: '17%', sm:'20%' }
+                
+              }}
+              autoComplete="off"
+              >
+                <TextField 
+                  value={Search}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                  }}
+                  id="outlined-basic" 
+                  label="Recherche..." 
+                  variant="outlined"
+                  sx={{ width: '70%', mr: 0.5 }}
+                />
+                <Button
+                  className="searchButton"
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    width: {xs: '50%' ,md:'20%'} ,
+                    margin: {xs:'15px', md:'auto'},
+                  }}
+                >
+                  C'est parti !
+                </Button>
+              </Box>
+          {/*  ----------------------*/}
+
+
       <Box sx={{ width: '100%', display: 'flex' }}>
       
           <HomeKidButtons />
@@ -547,13 +539,9 @@ function Search() {
                     </Typography>
                   </CardContent>
                   <CardActions sx={{ width: '10%', marginTop: '5px', marginBottom: '10%', margin:'15px', justifyContent:'center' }}>
-                    {/* TODO: CHANGE LINK by passing new value */}
                     <Link to={`/recherche/voir-livre`} style={{ textDecoration: 'none' }}>
                       <Button sx={{fontSize:{md:'1em',lg:'1em'}}} size="small"
                        onClick={()=> {handleDispatchSearchBookInfo(data)}}
-                      //  onClick={(data) => {
-                        // dispatchSearchBookInfos(data.isbn, data.cover, data.description, data.title, data.authors, data.puslisher);
-                      // }}
                        >Voir le livre</Button>
                     </Link>
                   </CardActions>
