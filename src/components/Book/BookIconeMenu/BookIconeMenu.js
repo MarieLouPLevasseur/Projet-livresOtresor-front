@@ -18,7 +18,7 @@ function BookIconeMenu() {
   return (
     <ThemeProvider theme={theme}>
         <div>
-          <Box sx={{ display: { xs: 'block', sm: 'none' }, position: 'fixed', alignSelf: 'start', top:'30vh' , left: '20px'}}>
+          <Box sx={{ display: { xs: 'block', sm: 'none' }, position: 'fixed', alignSelf: 'start', top:'30vh' , left: '20px', flexDirection:'column'}}>
               <Box sx={{display:'flex', flexDirection:'column'}} >
                   <Button>
                     <HomeIcon sx={{fontSize:'50px'}} />
