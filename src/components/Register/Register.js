@@ -16,7 +16,20 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+// import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { Icon, SvgIcon } from '@mui/material';
+// import { StyleSheet, TextInput, View } from 'react-native';
 
+
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+// import { useFormControl } from '@mui/material/FormControl';
+import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
+
+
+import OpenEye from  '../../assets/img/oeil_ouvert.png';
+import CloseEye from  '../../assets/img/oeil_ferme.png';
 import './Register.scss';
 import Image from '../../assets/img/register.jpg';
 
@@ -78,18 +91,33 @@ export default function Register() {
   const [lastNameValue, setLastName] = useState("");
   const [emailValue, setEmail] = useState("");
   const [passwordValue, setPassword] = useState("");
+  const [verifiedPasswordValue, setVerifiedPasswordValue] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [passwordType, setPasswordType] = useState("password");
+  const [passwordInput, setPasswordInput] = useState("");
+
+ 
+    const { passwordVisibility, rightIcon, handlePasswordVisibility } =
+    useTogglePasswordVisibility();
+
 
   // error control
   const [emailError, setEmailError] = useState(false);
+  const [passwordValidityError, setPasswordValidityError] = useState(false);
+  const [passwordMatchError, setPasswordMatchError] = useState(false);
 
   //alert snackbar control
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertInvalidEmail, setAlertInvalidEmail] = useState(false)
+  const [alertInvalidPassword, setAlertInvalidPassword] = useState(false)
+  const [alertMatchPassword, setAlertMatchPassword] = useState(false)
 
   // Redirect when connected
   const navigate = useNavigate();
 
+  // Verifications
   const checkEmailValidity = () => {
     if (
       !emailValue.match(
@@ -101,6 +129,31 @@ export default function Register() {
       setEmailError(false);
     }
   };
+
+  const checkPasswordValidity = () => {
+    if (
+      !passwordValue.match(
+        "^([A-Za-z0-9_\\-\\.]+)@([A-Za-z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+      )
+    ) {
+      setPasswordValidityError(true);
+    } else {
+      setPasswordValidityError(false);
+    }
+  };
+
+  const checkPasswordMatch = () => {
+    console.log("------- Password Matchs-----------")
+
+    console.log( passwordValue , " Valeur mot de passe  ")
+    console.log( verifiedPasswordValue, " Valeur Vérification mot de passe ")
+    console.log( passwordValue === verifiedPasswordValue, " Les mot de passe sont égaux? ")
+    if ( passwordValue !== verifiedPasswordValue) {
+      setPasswordMatchError(false);
+    } else {
+      setPasswordMatchError(true);
+    }
+  };
   
   // Redirect when success
     useEffect(() => {
@@ -109,6 +162,8 @@ export default function Register() {
         navigate("/connexion-parent")
       }, 2000);
     }
+
+
   });
 
   //api call
@@ -128,13 +183,32 @@ export default function Register() {
 
   const apiEndpoint ="/api/v1/registration"
 
+// HANDLE
+   
+    // const handleClickShowPassword = () => {
+    //   // ! in test
+    //   setShowPassword(true)
+    // };
+    // const handleMouseDownPassword = (event) => {
+    //   event.preventDefault();
+    //   setShowPassword(false)
+    // };
+
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(" --------Handle Submit Registration---------------")
+    console.log(passwordMatchError, "valeur password Match Error")
     if (emailValue === "" || firstNameValue === "" || lastNameValue === "" || passwordValue === "" ) {
       setAlertErrorSubmit(true);
     } else if (emailError === true) {
       setAlertInvalidEmail(true)
+    } else if (passwordValidityError === true){
+      setAlertInvalidPassword(true)
+    }else if (passwordMatchError === true){
+      setAlertMatchPassword(true)
+    
     } else {
     const profilUser = {
       firstName: firstNameValue,
@@ -143,12 +217,13 @@ export default function Register() {
       password: passwordValue,
     };
     const profilUserJson = JSON.stringify(profilUser);
-    postApi(apiUrl + apiEndpoint,profilUserJson)
+    // postApi(apiUrl + apiEndpoint,profilUserJson)
     }
   };
 
   return (
     <ThemeProvider theme={theme}>
+
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -223,19 +298,47 @@ export default function Register() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
+              {/* ---------- PASSWORDS ------------*/}
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
                   name="password"
                   label="Mot de passe"
-                  type="password"
                   id="password"
                   autoComplete="new-password"
                   value={passwordValue}
+                  // secureTextEntry={passwordVisibility}
+                  type= { passwordVisibility? "password": ""}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+
               </Grid>
+              <Grid item xs={12}>
+
+                <TextField
+                  error={ passwordMatchError }
+                  
+                  helperText={ passwordMatchError ? "Les mots de passe ne sont pas concordants" : "" }                
+                  required
+                  fullWidth
+                  name="VerifiedPassword"
+                  label="Confirmation mot de passe"
+                  id="VerifiedPassword"
+                  autoComplete="new-password"
+                  value={verifiedPasswordValue}
+                  // ! le remplissage et correction en temps réel a refaire
+                  onBlur={checkPasswordMatch}
+                  // !le secureTextEntry ne fonctionne pas (ni majuscule ni minuscule: erreur à revoir)
+                  // securetextentry={passwordVisibility}
+                  type= { passwordVisibility? "password": ""}               
+
+                  onChange={(e) => setVerifiedPasswordValue(e.target.value)}   
+                />
+    <img edge="end" alt={rightIcon} src={rightIcon ==="eye"? OpenEye : CloseEye} size={22} onClick={handlePasswordVisibility} />
+
+              </Grid>
+             
               <Grid item xs={12}>
               </Grid>
             </Grid>
@@ -261,48 +364,85 @@ export default function Register() {
           </Box>
         </Grid>
       </Grid>
-      <Snackbar
-        open={alertSuccesSubmit}
-        autoHideDuration={6000}
-        onClose={() => setAlertSuccesSubmit(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          Inscription réussie !
-        </MuiAlert>
-      </Snackbar>
-      <Snackbar
-        open={alertErrorSubmit}
-        autoHideDuration={6000}
-        onClose={() => setAlertErrorSubmit(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          Inscription incomplète : Merci de remplir tous les champs
-        </MuiAlert>
-      </Snackbar>
-      <Snackbar
-        open={alertInvalidEmail}
-        autoHideDuration={6000}
-        onClose={() => setAlertInvalidEmail(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          severity="warning"
-          sx={{ width: "100%" }}
-        >
-          Adresse Email invalide !
-        </MuiAlert>
-      </Snackbar>
+
+        {/* **** Alert Submissions **** */}
+          <Snackbar
+            open={alertSuccesSubmit}
+            autoHideDuration={6000}
+            onClose={() => setAlertSuccesSubmit(false)}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              Inscription réussie !
+            </MuiAlert>
+          </Snackbar>
+          <Snackbar
+            open={alertErrorSubmit}
+            autoHideDuration={6000}
+            onClose={() => setAlertErrorSubmit(false)}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              Inscription incomplète : Merci de remplir tous les champs
+            </MuiAlert>
+          </Snackbar>
+
+
+      {/* ***** Alert Mail ***** */}
+          <Snackbar
+            open={alertInvalidEmail}
+            autoHideDuration={6000}
+            onClose={() => setAlertInvalidEmail(false)}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity="warning"
+              sx={{ width: "100%" }}
+            >
+              Adresse Email invalide !
+            </MuiAlert>
+          </Snackbar>
+
+      {/* *****  Alert Password ***** */}
+          <Snackbar
+            open={alertInvalidPassword}
+            autoHideDuration={6000}
+            onClose={() => setAlertInvalidPassword(false)}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity="warning"
+              sx={{ width: "100%" }}
+            >
+              le mot de passe doit contenir XXX
+            </MuiAlert>
+          </Snackbar>
+
+          <Snackbar
+            open={alertMatchPassword}
+            autoHideDuration={6000}
+            onClose={() => setAlertMatchPassword(false)}
+          >
+            <MuiAlert
+              elevation={6}
+              variant="filled"
+              severity="warning"
+              sx={{ width: "100%" }}
+            >
+              La confirmation du mot de passe est invalide
+            </MuiAlert>
+          </Snackbar>
+
     </ThemeProvider>
   );
 }
