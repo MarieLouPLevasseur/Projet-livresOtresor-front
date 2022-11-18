@@ -77,15 +77,17 @@ function BookButton(Book) {
     if (isRead === "" ) {
       setAlertErrorSubmit(true);
     } else {
+      console.log(Book.Book, "je suis le Book.Book dans le bouton")
       const loginFormData = {
         "is_read":     isRead,
         "book":{
-        "isbn" :       Book.Book.isbn13,
-        "cover":       Book.Book.image,
+        "isbn" :       Book.Book.isbn,
+        "cover":       Book.Book.cover,
         "publisher":   Book.Book.publisher,
-        "description": Book.Book.synopsis !=="" ? "Il n'y a pas de description pour ce livre" : Book.Book.synopsis,
+        "description": Book.Book.description !=="" ? "Il n'y a pas de description pour ce livre" : Book.Book.description,
         "title":       Book.Book.title,
-        "authors":     [{"name": Book.Book.authors[0]}],
+        "authors":     [{"name": Book.Book.authors[0].name}],
+        // "authors":     [{"name": 'inconnu'}],
         
       }
     }

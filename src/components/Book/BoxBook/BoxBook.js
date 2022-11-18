@@ -6,13 +6,7 @@ import Cover from '../../../assets/img/defaultCover.jpg'
 function BoxBook({ Book }) {
   return (
     <div>
-      {/* <Box sx={{display:'flex',
-                flexDirection: {md:'row', sm:'column',xs:'column'},
-                justifyContent:'center',
-                width:'100%',
-                marginLeft:{md:5, l:5}
-                
-                }}> */}
+     
       <Box sx={{ display: 'flex',
                  padding: '20px',
                  flexDirection: { xs: 'column', sd: 'row', md: 'row', lg:'column' },
@@ -20,7 +14,6 @@ function BoxBook({ Book }) {
                  margin: 'auto',
                  ml:{md:10},
                  justifyItems:'center',
-                //  justifyContent:{lg:'space-around'}
                 alignItems:{lg: 'center'}
               }}>
 
@@ -47,8 +40,6 @@ function BoxBook({ Book }) {
             />
 
           {/* ------- Wrapper: (Author Publisher) + (Description) -------*/}
-
-          {/* <Box sx={{ width: { xs: '100%', md: '50%', sd: '30%' },  margin: 'auto' }}> */}
 
             {/* ------- Wrapper: Author + Publisher -------*/}
             <Box sx={{display:'flex', flexDirection: {xs:'column',sm:'row', md:'column'}, order:{md:3}, justifyContent:{sm:'space-evenly'}, wrap:'wrap'}}>
@@ -84,15 +75,13 @@ function BoxBook({ Book }) {
                      Description:
                   </Typography>
                   <Typography sx={{ m: 'auto', mt: 3, fontFamily: 'Montserrat', fontWeight: 300, width: '80%', fontStyle: 'italic', marginBottom: '30px',textAlign: 'justify', }}>
-                    "{Book.description}"
+                    {Book.description ? Book.description : "aucune description"}
                   </Typography>
                
                 </Box>
 
          
-          {/* </Box> */}
         </Box>
-      {/* </Box> */}
     </div>
   )
 }

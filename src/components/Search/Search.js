@@ -334,8 +334,11 @@ function Search() {
             completeBook.publisher = gBook.volumeInfo.publisher
 
             // Authors
-            for (let author of gBook.volumeInfo.authors) {
-              completeBook.authors.push({ name: author })
+            if (gBook.volumeInfo.authors !== undefined) {
+
+              for (let author of gBook.volumeInfo.authors) {
+                completeBook.authors.push({ name: author })
+              }
             }
 
             // CoverBook
@@ -361,15 +364,24 @@ function Search() {
           // Cover
           //ISBN DB has cover: set ISBN DB
           if (iBook.data.book.image !== "") {
-
+            console.log("j'ai une image sur ISBN")
+            console.log(iBook.data.book.image, "image de ISBN")
             completeBook.cover = iBook.data.book.image
+
+            console.log(completeBook.cover, "completeBook?")
           }
           //ISBN DB has no cover but google has: set google
           else if (iBook.data.book.image === "" && coverBook !== "") {
             completeBook.cover = coverBook;
+            console.log("j'ai une image sur GOOGLE")
+            console.log(completeBook.cover, "completeBook?")
+
           }
           else {
-            completeBook.cover = "https://i.pinimg.com/564x/11/1b/59/111b5913903c2bfbe7f11487bb3f06f6.jpg"
+            // completeBook.cover = "https://i.pinimg.com/564x/11/1b/59/111b5913903c2bfbe7f11487bb3f06f6.jpg"
+            completeBook.cover = ImgCard
+            console.log("j'ai une image par défaut")
+            console.log(completeBook.cover, "completeBook?")
           }
         }
         if (completeBook.publisher === undefined) {
@@ -378,8 +390,19 @@ function Search() {
           // ALPHï¿½E
           // const regex = new RegExp("^[a-zA-Z0-9]+$", "g");
           // console.log(regex().publisher, "test regex") 
-          completeBook.publisher = iBook.data.book.publisher
+          completeBook.publisher = publisher
         }
+        if (completeBook.authors.length === 0) {
+
+          let authors = iBook.data.book.authors;
+          console.log( authors, "authors dans ibook")
+          for (let author of authors){
+
+            completeBook.authors.push({ name: author })
+          }
+         
+        }
+
       }
 
       //? ---- For each book complete push in complete List Book-----
@@ -524,14 +547,21 @@ function Search() {
           <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
             {!LoadingCards && (
               _DATA.currentData().map((data) => (
-                <Card key={data.id} sx={{ marginTop: '30px', display: "flex", flexDirection: { xs: 'column', lg: 'row' }, alignItems: { xs: 'center' }, width: "100%", height: "50%", mb: 1.5 }}>
+                <Card key={data.id} sx={{
+                                          marginTop: '30px',
+                                          display: "flex",
+                                          flexDirection: { xs: 'column', xl:'row' },
+                                          alignItems: { xs: 'center' },
+                                          width: "100%", height: "50%", mb: 1.5,
+                                          border:'groove'
+                                           }}>
                   <CardMedia
-                    sx={{ width: { xs: '40%', md: 'auto', lg: 'auto' }, height: { xs: '120%', sm: '120%', md: '60%', lg: '70%' } }}
+                    sx={{ width: { xs: '40%', md: 'auto', lg: '40%' }, height: { xs: '120%', sm: '120%', md: '60%', lg: '70%' }, padding:5 }}
                     component="img"
                     image={data.cover}
                     alt="Book Cover"
                   />
-                  <CardContent sx={{ width: '80%' }}>
+                  <CardContent sx={{ width: '80%',boxSizing:'border-box'  }}>
                     <Typography gutterBottom variant="h5" component="div" sx={{ fontSize: { sm: '1.5em', md: '2em', lg: '2.3em' } }} >
                       {data.title}
                     </Typography>
@@ -539,7 +569,7 @@ function Search() {
                       {data.description == null ? "Aucune description n'est disponible pour ce livre" : data.description.length > 300 ? `${data.description.substring(0, 300)}...` : data.description}
                     </Typography>
                   </CardContent>
-                  <CardActions sx={{ width: '10%', marginTop: '5px', marginBottom: '10%', margin: '15px', justifyContent: 'center' }}>
+                  <CardActions sx={{ width: '10%', marginTop: '5px', justifyContent: 'center', paddingBottom: '10%'}}>
                     <Link to={`/recherche/voir-livre`} style={{ textDecoration: 'none' }}>
                       <Button sx={{ fontSize: { md: '1em', lg: '1em' } }} size="small"
                         onClick={() => { handleDispatchSearchBookInfo(data) }}
