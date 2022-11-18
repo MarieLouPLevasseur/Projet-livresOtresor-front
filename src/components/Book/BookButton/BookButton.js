@@ -77,15 +77,17 @@ function BookButton(Book) {
     if (isRead === "" ) {
       setAlertErrorSubmit(true);
     } else {
+      console.log(Book.Book, "je suis le Book.Book dans le bouton")
       const loginFormData = {
         "is_read":     isRead,
         "book":{
-        "isbn" :       Book.Book.isbn13,
-        "cover":       Book.Book.image,
+        "isbn" :       Book.Book.isbn,
+        "cover":       Book.Book.cover,
         "publisher":   Book.Book.publisher,
-        "description": Book.Book.synopsis !=="" ? "Il n'y a pas de description pour ce livre" : Book.Book.synopsis,
+        "description": Book.Book.description !=="" ? "Il n'y a pas de description pour ce livre" : Book.Book.description,
         "title":       Book.Book.title,
-        "authors":     [{"name": Book.Book.authors[0]}],
+        "authors":     [{"name": Book.Book.authors[0].name}],
+        // "authors":     [{"name": 'inconnu'}],
         
       }
     }
@@ -135,18 +137,29 @@ function BookButton(Book) {
 
           {console.log(Book, "info book dans bookbutton")}
 
-       <Box sx={{ flexGrow: 1, display:'flex', flexDirection: 'column', width:'100%'}}>
+       <Box sx={{ flexGrow: 1,
+                  display:'flex',
+                  flexDirection: 'row',
+                  width:'60%',
+                  margin: 'auto'
+                }}>
           <Button className="buttonBookAdd"  onClick={(e) => handleClickAddButton(true,Book)}
 
 
-            sx={{ my: 2, color: 'white', background:'#4462A5' , fontFamily:'Montserrat', width:'100%'}}
-          >
-                Ajouter à mes livres lus
+            sx={{ my: 2,
+                  color: 'white',
+                  background:'#4462A5',
+                  fontFamily:'Montserrat',
+                  width:'100%',
+                  margin:'20px'
+                 
+                }}
+            >  Ajouter à mes livres lus
 
           </Button>
           <Button className="buttonBookAdd"  onClick={(e) => handleClickAddButton(false,Book)}
 
-            sx={{ my: 2, color: 'white',fontFamily:'Montserrat', background:'#4462A5', width:'100%' }}
+            sx={{ my: 2, color: 'white',fontFamily:'Montserrat', background:'#4462A5', width:'100%', margin:'20px' }}
           >
                 Ajouter à ma liste d'envie
 
