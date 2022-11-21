@@ -225,9 +225,11 @@ export default function Register() {
         <CssBaseline />
         <Grid
           item
-          xs={false}
-          sm={4}
-          md={7}
+          xs={12}
+          sm={12}
+          md={12}
+          lg={7}
+
           sx={{
             backgroundImage: `url(${Image})`,
             backgroundRepeat: 'no-repeat',
@@ -237,7 +239,7 @@ export default function Register() {
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid  xs={12} sm={12} md={12} lg={5} component={Paper} elevation={6} square>
           <Box
             sx={{
               my: 8,
@@ -307,7 +309,6 @@ export default function Register() {
                   value={passwordValue}
                   // secureTextEntry={passwordVisibility}
                   onBlur={checkPasswordValidity}
-
                   type= { passwordVisibility? "password": ""}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -317,7 +318,6 @@ export default function Register() {
 
                 <TextField
                   error={ passwordMatchError }
-                  
                   helperText={ passwordMatchError ? "Les mots de passe ne sont pas concordants" : "" }                
                   required
                   fullWidth
