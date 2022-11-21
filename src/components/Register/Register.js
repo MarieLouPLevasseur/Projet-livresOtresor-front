@@ -16,14 +16,13 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-// import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import { Icon, SvgIcon } from '@mui/material';
-// import { StyleSheet, TextInput, View } from 'react-native';
+// import IconButton from '@mui/material/IconButton';
+// import { Icon, SvgIcon } from '@mui/material';
+import Loading from '../Loading/Loading';
 
 
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+// import Visibility from '@mui/icons-material/Visibility';
+// import VisibilityOff from '@mui/icons-material/VisibilityOff';
 // import { useFormControl } from '@mui/material/FormControl';
 import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
 
@@ -93,6 +92,7 @@ export default function Register() {
   const [passwordValue, setPassword] = useState("");
   const [verifiedPasswordValue, setVerifiedPasswordValue] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading]= useState(false);
 
   const [passwordType, setPasswordType] = useState("password");
   const [passwordInput, setPasswordInput] = useState("");
@@ -132,8 +132,10 @@ export default function Register() {
 
   const checkPasswordValidity = () => {
     if (
-      !passwordValue.match(
-        "^([A-Za-z0-9_\\-\\.]+)@([A-Za-z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+      passwordValue.match(
+        // minimum 8 character: minimum: 1 lowercase, 1 uppercase, 1 special character
+        "^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$"
+
       )
     ) {
       setPasswordValidityError(true);
@@ -149,9 +151,9 @@ export default function Register() {
     console.log( verifiedPasswordValue, " Valeur Vérification mot de passe ")
     console.log( passwordValue === verifiedPasswordValue, " Les mot de passe sont égaux? ")
     if ( passwordValue !== verifiedPasswordValue) {
-      setPasswordMatchError(false);
-    } else {
       setPasswordMatchError(true);
+    } else {
+      setPasswordMatchError(false);
     }
   };
   
@@ -174,7 +176,9 @@ export default function Register() {
     } )
     .then(function (response) {
       console.log(response);
+      setLoading(false);
       setAlertSuccesSubmit(true);
+      
     })
     .catch(function (error) {
       console.log(error);
@@ -184,18 +188,7 @@ export default function Register() {
   const apiEndpoint ="/api/v1/registration"
 
 // HANDLE
-   
-    // const handleClickShowPassword = () => {
-    //   // ! in test
-    //   setShowPassword(true)
-    // };
-    // const handleMouseDownPassword = (event) => {
-    //   event.preventDefault();
-    //   setShowPassword(false)
-    // };
-
-
-
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(" --------Handle Submit Registration---------------")
@@ -216,11 +209,15 @@ export default function Register() {
       email: emailValue,
       password: passwordValue,
     };
+    setLoading(true);
+
     const profilUserJson = JSON.stringify(profilUser);
-    // postApi(apiUrl + apiEndpoint,profilUserJson)
+    postApi(apiUrl + apiEndpoint,profilUserJson)
     }
   };
-
+  if (loading ) {
+    return <Loading/>
+  }
   return (
     <ThemeProvider theme={theme}>
 
@@ -309,6 +306,8 @@ export default function Register() {
                   autoComplete="new-password"
                   value={passwordValue}
                   // secureTextEntry={passwordVisibility}
+                  onBlur={checkPasswordValidity}
+
                   type= { passwordVisibility? "password": ""}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -424,7 +423,7 @@ export default function Register() {
               severity="warning"
               sx={{ width: "100%" }}
             >
-              le mot de passe doit contenir XXX
+              le mot de passe doit contenir: plus de 8 caractères, avoir au moins une lettre minuscule ET majuscule et avoir un caractère spécial ( ! , $ , \ , @ , ...)
             </MuiAlert>
           </Snackbar>
 
