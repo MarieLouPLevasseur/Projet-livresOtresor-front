@@ -17,8 +17,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { kidLogin, kidId, kidUsername, kidAvatar } from '../../features/login/kidSlice';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Modal from '@mui/material/Modal';
 
-import Image from '../../../src/assets/img/kidlogin.jpg';
+
+// import Image from '../../../src/assets/img/kidlogin.jpg';
 import Children from '../../../src/assets/img/children-connexion.png';
 import './KidLogin.scss';
 import OpenEye from '../../assets/img/oeil_ouvert.png';
@@ -86,6 +88,14 @@ export default function KidLogin() {
   const [passwordValue, setPassword] = useState("");
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
   useTogglePasswordVisibility();
+  const [openModal, setOpenModal] = useState("");
+
+  const handleOpen = () => {
+    setOpenModal(true);
+  };
+  const handleClose = () => {
+    setOpenModal(false);
+  };
 
 
   // Error states
@@ -155,17 +165,12 @@ export default function KidLogin() {
           sm={12}
           md={12}
           lg={7}
-          // maxWidth= md={'50%'}
           rowSpacing
-          // md={false}
           sx={{
-            // margin:"auto",
-            // backgroundImage: `url(${Image})`,
             backgroundImage: `url(${Children})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            // backgroundSize: 'cover',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -212,7 +217,7 @@ export default function KidLogin() {
 
                 onChange={(e) => setPassword(e.target.value)}
               />
-                                <img edge="end" alt={rightIcon === "eye"? "Set password visible":"set password invisible"} src={rightIcon === "eye" ? OpenEye : CloseEye} size={22} onClick={handlePasswordVisibility} />
+               <img edge="end" alt={rightIcon === "eye"? "Set password visible":"set password invisible"} src={rightIcon === "eye" ? OpenEye : CloseEye} size={22} onClick={handlePasswordVisibility} />
 
               <Button
                 className="loginButton"
@@ -224,11 +229,43 @@ export default function KidLogin() {
                 S'identifier
               </Button>
               <Grid container>
-                <Grid item xs>
+                <Grid item xs={12}>
                   <Link href="/inscription" variant="body2" underline='hover' color='#768fd7' >
                     Pas encore de compte ? Inscrivez-vous
                   </Link>
+                 
                 </Grid>
+                <Grid item xs={12}>
+                
+                    <Button sx={{
+                                textTransform:"initial"
+                                }}
+                          onClick={handleOpen}
+                    >    
+                           Oups, j'ai oublié mon mot de passe... Envoyez moi un nouveau mot de passe</Button>
+                    <Modal
+                      open={openModal}
+                      onClose={handleClose}
+                      aria-labelledby="parent-modal-title"
+                      aria-describedby="parent-modal-description"
+                    >
+                      <Box sx={{ width: 400,
+                          backgroundColor:'white',
+                          margin:'auto',
+                          alignContent:'center'
+                          }}
+                      >
+                        
+                        <h2 id="parent-modal-title"> Oubli du mot de passe?</h2>
+                        <p className="parent-modal-description">
+                            Si tu as oublié ton mot de passe, il faut que tu demandes à tes parents de te le donner (ou de t'en créer un nouveau) depuis leur espace parent. 
+                            </p>
+                            <p className="parent-modal-description"> 
+                            Passe une belle journée!
+                        </p>                       
+                      </Box>
+                    </Modal>
+                  </Grid>
               </Grid>
               <AnotherFooter sx={{ mt: 5 }}/>
               <Copyright sx={{ mt: 2 }} />
