@@ -19,7 +19,12 @@ import { kidLogin, kidId, kidUsername, kidAvatar } from '../../features/login/ki
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Image from '../../../src/assets/img/kidlogin.jpg';
+import Children from '../../../src/assets/img/children-connexion.png';
 import './KidLogin.scss';
+import OpenEye from '../../assets/img/oeil_ouvert.png';
+import CloseEye from '../../assets/img/oeil_ferme.png';
+import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
+
 
 
 function Copyright(props) {
@@ -79,6 +84,9 @@ export default function KidLogin() {
   // Controlled components
   const [userNameValue, setUserName] = useState("");
   const [passwordValue, setPassword] = useState("");
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } =
+  useTogglePasswordVisibility();
+
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
@@ -141,20 +149,28 @@ export default function KidLogin() {
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
+        
           item
-          xs={false}
-          sm={4}
-          md={7}
+          xs={12}
+          sm={12}
+          md={12}
+          lg={7}
+          // maxWidth= md={'50%'}
+          rowSpacing
+          // md={false}
           sx={{
-            backgroundImage: `url(${Image})`,
+            // margin:"auto",
+            // backgroundImage: `url(${Image})`,
+            backgroundImage: `url(${Children})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+            // backgroundSize: 'cover',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid xs={12} sm={12} md={12} lg={5} component={Paper} elevation={6} square>
           <Box
             sx={{
               my: 8,
@@ -189,12 +205,15 @@ export default function KidLogin() {
                 fullWidth
                 name="password"
                 label="Mot de passe"
-                type="password"
                 id="password"
                 autoComplete="current-password"
                 value={passwordValue}
+                type={passwordVisibility ? "password" : ""}
+
                 onChange={(e) => setPassword(e.target.value)}
               />
+                                <img edge="end" alt={rightIcon === "eye"? "Set password visible":"set password invisible"} src={rightIcon === "eye" ? OpenEye : CloseEye} size={22} onClick={handlePasswordVisibility} />
+
               <Button
                 className="loginButton"
                 type="submit"
