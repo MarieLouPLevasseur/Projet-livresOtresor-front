@@ -3,7 +3,7 @@ import ButtonList from '../HomeUser/ButtonList/ButtonList'
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 import Card from '@mui/material/Card';
 import axios from 'axios'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {  Link } from 'react-router-dom';
 
 
@@ -11,7 +11,7 @@ import './HomeUser.scss'
 import { Button, Typography } from '@mui/material';
 import Account from './Account/Account';
 import Loading from '../Loading/Loading';
-import { userFirstname, userLastname } from '../../features/login/userSlice';
+// import { userFirstname, userLastname } from '../../features/login/userSlice';
 
 function HomeUser() {
 
@@ -30,7 +30,7 @@ function HomeUser() {
   // Api Calls
   const apiEndpointKids = `/api/v1/users/${id}/kids`
 
-  console.log(id);
+  // console.log(id);
 
   useEffect(() => {
     if(id){
@@ -39,9 +39,9 @@ function HomeUser() {
     }
     })
     .then((response) => {
-      console.log(response.data)
+      // console.log(response.data)
       setKidsValue(response.data);
-       console.log(KidsValue);
+      //  console.log(KidsValue);
        setLoadingKidsValue(false)
     })
     .catch((error) => {
@@ -60,18 +60,17 @@ function HomeUser() {
       <HomeCarousel />
       <Card variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', marginTop:'30px'}}>
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}>Compte personnel de: {firstname} {lastname}</Typography>
+      <Link to = "/profil/utilisateur/compte" >
         <Account />
+      </Link>
       </Card>
-      <Link to = "/profil/utilisateur/compte" style ={{textDecoration: 'none'}}>
-
-        <Button className='button'sx={{marginBottom: '30px'}}>
+        <Button className='button'sx={{marginBottom: '30px', textDecoration: 'none'}}>
           <Typography sx={{fontSize: '1.4rem', padding:'20px', background:'#4462A5', color:'white', letterSpacing:'1px', fontFamily: 'montserrat'}}>Ajouter un compte</Typography>
         </Button>
-      </Link>
     
       {KidsValue.map((e) => (
-      <Card className='card' variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', background: '#'}}>
-        <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> Compte enfant : {e.username}  </Typography>
+      <Card key={e.id} className='card' variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', background: '#'}}>
+        <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> Compte enfant : {e.firstname}  </Typography>
         <ButtonList kidId={e.id} username={e.username} avatar={e.profile_avatar}/>
 
       </Card>

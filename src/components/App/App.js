@@ -24,8 +24,8 @@ import Footer from '../Footer/Footer'
 import PageNotFound from '../PageNotFound/PageNotFound';
 
 import UserLogin from '../UserLogin/UserLogin';
-import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
-import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress } from '../../features/login/kidSlice';
+import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
+import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress, kidFirstname } from '../../features/login/kidSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -56,6 +56,7 @@ function App() {
   // set kid user data only
       dispatch(userKidAvatar(loggedUserKids.avatar));
       dispatch(userKidUsername(loggedUserKids.username));
+      dispatch(userKidFirstname(loggedUserKids.firstname));
       dispatch(userKidId(loggedUserKids.kidId));
 
   // set kid data if connected directly only
@@ -64,6 +65,7 @@ function App() {
       dispatch(kidLogin(loggedKid.token));
       dispatch(kidId(loggedKid.id));
       dispatch(kidUsername(loggedKid.username));
+      dispatch(kidFirstname(loggedKid.firstname));
       dispatch(kidAvatar(loggedKid.profil_avatar));
       dispatch(kidProgress(progressKid.progress));
     }

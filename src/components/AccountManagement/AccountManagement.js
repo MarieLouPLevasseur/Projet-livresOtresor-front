@@ -48,6 +48,7 @@ function AccountManagement() {
   // Controlled components
   const [kidAddUsernameValue, setKidAddUsernameValue] = useState("");
   const [kidAddPasswordValue, setKidAddPasswordValue] = useState("");
+  const [kidAddFirstNameValue, setKidAddFirstNameValue] = useState("");
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
@@ -55,6 +56,16 @@ function AccountManagement() {
 
    // Api Calls
    const apiEndpointKids = `/api/v1/users/${id}/kids`
+  /////  TODO: ajouter un prénom pour le compte kid en plus du username (car pénible pour associer un compte sans l'appeler papillon 375)=> faire en back
+  // TODO : Pour toute modification des comptes utilisateurs adultes: demander la confirmation du mot de passe *//
+    // TODO si perte mot de passe=> procédure de renvoi de mail.
+  // TODO Permettre la route pour la suppression de l'utilisateur
+    // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
+  // TODO Permettre la route pour suppression d'un kid
+    // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
+
+  
+    
  
 //  GET List of users
    useEffect(() => {
@@ -104,6 +115,7 @@ function AccountManagement() {
       const profilUser = {
         username: kidAddUsernameValue,
         password: kidAddPasswordValue,
+        firstname: kidAddFirstNameValue
       };
        const profilUserJson = JSON.stringify(profilUser);
      postApi(apiUrl + apiEndpoint,profilUserJson);
@@ -125,7 +137,7 @@ function AccountManagement() {
               </Typography>
             </Box>
             <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'300px'}}>
-              <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'white', background:'#4462A5'}}>Informations</Typography>
+              <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'white', background:'#4462A5'}}>Informations du compte</Typography>
             </Card>
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
               <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
@@ -188,17 +200,32 @@ function AccountManagement() {
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
               <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
                 <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', textAlign:'center', Width:'100%', padding:'10px', gap:'10px' }}>
-                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> {e.username} </Typography>
+                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> {e.firstname} </Typography>
+
                   <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
                       <Grid item xs={12} sm={6}>
                         <TextField
                             autoComplete="given-name"
-                            defaultValue = {e.username}
+                            defaultValue = {e.firstname}
+                            // defaultValue = "Valeur a recuperer du back"
                             name="firstName"
                             fullWidth
-                            label="Nom du compte"
+                            label="Nom du compte *"
                             autoFocus
-                          />
+                            />
+                      </Grid>
+                  </Box>
+
+                  <Box sx={{display:'flex', justifyContent:'space-around', Width:'100%', marginBottom:'20px', mt:'18px'}}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                        autoComplete="kid-username"
+                        defaultValue = {e.username}
+                        name="kid-username"
+                        fullWidth
+                        label="Identifiant de connexion-optionnel"
+                        autoFocus
+                        />
                       </Grid>
                   </Box>
                      
@@ -206,11 +233,15 @@ function AccountManagement() {
                   <Box sx={{display:'flex', justifyContent:'space-around', Width:'100%', marginBottom:'20px', mt:'18px'}}>
                       <Grid item xs={12} sm={6}>
                         <TextField
-                        fullWidth
-                        name="password"
-                        label="Mot de passe"
-                        type="password"
                         autoComplete="new-password"
+                        // placeholder = " "
+                        name="password"
+                        fullWidth
+                        label="Mot de passe-optionnel"
+                        autoFocus
+
+                        type="password"
+
                         />
                       </Grid>
                   </Box>
@@ -225,24 +256,49 @@ function AccountManagement() {
             <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'300px'}}>
               <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', color:'white', background:'#4462A5'}}>Créer un nouveau profil</Typography>
             </Card>
-
 {/* KID CARD to add ***** */}
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
               <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
               <Box sx={{display:'flex', flexDirection:'column', justifyContent:'flex-start', Width:'100%', padding:'10px', gap:'10px' }}>
-                  <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around' }}>
+               
+
+
+
+                  <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', borderBlockColor:'red' }}>
                       <Grid item xs={12} sm={6}>
                         <TextField
                             autoComplete="given-name"
                             name="firstName"
+                            required
                             fullWidth
-                            label="Prénom"
+                            label='Prénom'
                             autoFocus
-                            value={kidAddUsernameValue}
-                            onChange={(e)=> setKidAddUsernameValue(e.target.value)}
-                          />
+                            value={kidAddFirstNameValue}
+                            onChange={(e)=> setKidAddFirstNameValue(e.target.value)}
+                            />
                       </Grid>
                   </Box>
+                  <Box sx={{color:'blue'}}>
+                    Si vous souhaitez donner les accès pour que votre enfant puisse se connecter depuis l'accueil en autonomie, vous pouvez renseigner son identifiant et son mot de passe.
+                     Vous serez la seule personne pouvant modifier son identifiant ou son mot de passe. Vous pourrez modifier votre choix après la création de son compte.
+
+                  </Box>
+
+                  <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around' }}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                        autoComplete="kid-username"
+                        name="kid-username"
+                        fullWidth
+                        label="Identifiant de connexion"
+                        autoFocus
+                        value={kidAddUsernameValue}
+                        onChange={(e)=> setKidAddUsernameValue(e.target.value)}
+
+                        />
+                      </Grid>
+                  </Box>
+
                   <Box sx={{display:'flex', justifyContent:'space-around', Width:'100%', marginBottom:'20px'}}>
                       <Grid item xs={12} sm={6}>
                         <TextField
@@ -256,6 +312,10 @@ function AccountManagement() {
                         />
                       </Grid>
                   </Box>
+                  <p>
+              (*) Les champs marqués d'un astérix sont obligatoires
+
+                </p>
                 </Box>
               </Card>
              
