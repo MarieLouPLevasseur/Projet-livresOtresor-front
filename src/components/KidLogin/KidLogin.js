@@ -88,7 +88,7 @@ export default function KidLogin() {
   const [passwordValue, setPassword] = useState("");
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
   useTogglePasswordVisibility();
-  const [openModal, setOpenModal] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const handleOpen = () => {
     setOpenModal(true);
@@ -165,7 +165,7 @@ export default function KidLogin() {
           sm={12}
           md={12}
           lg={7}
-          rowSpacing
+          // rowSpacing
           sx={{
             backgroundImage: `url(${Children})`,
             backgroundRepeat: 'no-repeat',
@@ -175,7 +175,7 @@ export default function KidLogin() {
             backgroundPosition: 'center',
           }}
         />
-        <Grid xs={12} sm={12} md={12} lg={5} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={12} md={12} lg={5} component={Paper} elevation={6} square>
           <Box
             sx={{
               my: 8,
