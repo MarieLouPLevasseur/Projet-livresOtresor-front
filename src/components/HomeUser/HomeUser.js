@@ -64,10 +64,12 @@ function HomeUser() {
         <Account />
       </Link>
       </Card>
+
         <Button className='button'sx={{marginBottom: '30px', textDecoration: 'none'}}>
-          <Typography sx={{fontSize: '1.4rem', padding:'20px', background:'#4462A5', color:'white', letterSpacing:'1px', fontFamily: 'montserrat'}}>Ajouter un compte</Typography>
+      <Link to = "/profil/utilisateur/compte" style={{"textDecoration":"none"}}>
+          <Typography sx={{fontSize: '1.4rem', padding:'20px', background:'#4462A5', color:'white', letterSpacing:'1px', fontFamily: 'montserrat'}}>Ajouter un compte enfant</Typography>
+    </Link>
         </Button>
-    
       {KidsValue.map((e) => (
       <Card key={e.id} className='card' variant='outlined' sx={{border:'1px solid #4462A5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width:'70%', margin: 'auto', marginBottom:'30px', background: '#'}}>
         <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> Compte enfant : {e.firstname}  </Typography>

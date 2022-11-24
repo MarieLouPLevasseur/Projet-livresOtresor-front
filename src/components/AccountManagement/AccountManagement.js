@@ -8,6 +8,12 @@ import Validate from './Validate/Validate';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios'
+import Fab from '@mui/material/Fab'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 
 import {  Link } from 'react-router-dom';
 
@@ -49,19 +55,31 @@ function AccountManagement() {
   const [kidAddUsernameValue, setKidAddUsernameValue] = useState("");
   const [kidAddPasswordValue, setKidAddPasswordValue] = useState("");
   const [kidAddFirstNameValue, setKidAddFirstNameValue] = useState("");
+  const [kidUpdateUsernameValue, setKidUpdateUsernameValue] = useState("");
+  const [kidUpdatePasswordValue, setKidUpdatePasswordValue] = useState("");
+  const [kidUpdateFirstNameValue, setKidUpdateFirstNameValue] = useState("");
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+  const [alertErrorCreate, setAlertErrorCreate] = useState(false);
+  const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
+  const [alertErrorUpdate, setAlertErrorUpdate] = useState(false);
+  const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
 
    // Api Calls
    const apiEndpointKids = `/api/v1/users/${id}/kids`
-  /////  TODO: ajouter un prénom pour le compte kid en plus du username (car pénible pour associer un compte sans l'appeler papillon 375)=> faire en back
+   
+  /////   : ajouter un prénom pour le compte kid en plus du username (car pénible pour associer un compte sans l'appeler papillon 375)=> faire en back
+  // TODO: Modification des comptes enfants
+      // TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
+      // TODO mettre à jour l'encart du prénom (ou rechargement page?)
+
   // TODO : Pour toute modification des comptes utilisateurs adultes: demander la confirmation du mot de passe *//
     // TODO si perte mot de passe=> procédure de renvoi de mail.
   // TODO Permettre la route pour la suppression de l'utilisateur
     // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
-  // TODO Permettre la route pour suppression d'un kid
+  // TODO : Permettre la route pour suppression d'un kid
     // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
 
   
@@ -99,18 +117,19 @@ function AccountManagement() {
   },
   })
   .then(function (response) {
-   
+   setAlertSuccessCreate(true)
    
   })
-  // })
   .catch(function (error) {
     console.log(error);
-    setAlertErrorLogin(true)
+    setAlertErrorCreate(true)
+    // TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
+
   });
 }
    const apiEndpoint = `/api/v1/users/${id}/kids`
   
-   const handleSubmit = () => {
+   const handleSubmitCreate = () => {
      
       const profilUser = {
         username: kidAddUsernameValue,
@@ -119,6 +138,41 @@ function AccountManagement() {
       };
        const profilUserJson = JSON.stringify(profilUser);
      postApi(apiUrl + apiEndpoint,profilUserJson);
+
+
+     
+   };
+
+   // ***************Set Datas for Update a Kid**************************
+
+ // Api Call
+ const patchApiUpdate = (routeApi ,data) => {
+  axios.patch(routeApi , data, {headers : {
+    'Authorization': `Bearer ${token}`
+  },
+  })
+  .then(function (response) {
+   setAlertSuccessUpdate(true)
+   
+  })
+  // })
+  .catch(function (error) {
+    console.log(error);
+    setAlertErrorUpdate(true)
+    // TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
+  });
+}
+  
+   const handleSubmitUpdate = (id) => {
+     console.log("-----------je suis dans le handleSubmit Update--------")
+     console.log(id, "test de 'e'")
+      const profilUser = {
+        username: kidUpdateUsernameValue,
+        password: kidUpdatePasswordValue,
+        firstname: kidUpdateFirstNameValue
+      };
+       const profilUserJson = JSON.stringify(profilUser);
+     patchApiUpdate(apiUrl + apiEndpoint+`/${id}`,profilUserJson);
 
 
      
@@ -137,7 +191,7 @@ function AccountManagement() {
               </Typography>
             </Box>
             <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'300px'}}>
-              <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'white', background:'#4462A5'}}>Informations du compte</Typography>
+              <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', margin:'auto', color:'white', background:'#4462A5'}}>Informations du compte parent</Typography>
             </Card>
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
               <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
@@ -197,17 +251,18 @@ function AccountManagement() {
             </Card>
 {/* KID CARD to edit***** */}
             {KidsValue.map((e) => (
-            <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
-              <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
-                <Box sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', textAlign:'center', Width:'100%', padding:'10px', gap:'10px' }}>
-                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat'}}> {e.firstname} </Typography>
+            <Box key={e.id}  sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
+              <Card  variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'70%'}}>
+                <Box   sx={{display:'flex', flexDirection:{xs:'column', md:'row'}, justifyContent:'space-around', textAlign:'center', Width:'100%', padding:'10px', gap:'10px' }}>
+                <Typography sx={{fontSize: '1.4rem', padding:'30px', fontFamily: 'montserrat', textTransform:'capitalize'}}> {e.firstname} </Typography>
 
                   <Box sx={{display:'flex', Width:'100%', justifyContent:'space-around', mt:'18px' }}>
                       <Grid item xs={12} sm={6}>
                         <TextField
                             autoComplete="given-name"
                             defaultValue = {e.firstname}
-                            // defaultValue = "Valeur a recuperer du back"
+                            onChange={(e)=> setKidUpdateFirstNameValue(e.target.value)}
+
                             name="firstName"
                             fullWidth
                             label="Nom du compte *"
@@ -221,6 +276,8 @@ function AccountManagement() {
                         <TextField
                         autoComplete="kid-username"
                         defaultValue = {e.username}
+                        onChange={(e)=> setKidUpdateUsernameValue(e.target.value)}
+
                         name="kid-username"
                         fullWidth
                         label="Identifiant de connexion-optionnel"
@@ -234,7 +291,8 @@ function AccountManagement() {
                       <Grid item xs={12} sm={6}>
                         <TextField
                         autoComplete="new-password"
-                        // placeholder = " "
+                        onChange={(e)=> setKidUpdatePasswordValue(e.target.value)}
+
                         name="password"
                         fullWidth
                         label="Mot de passe-optionnel"
@@ -247,14 +305,24 @@ function AccountManagement() {
                   </Box>
                 </Box>
               </Card>
-              <AccountM />
+              {/* <AccountM /> */}
+              <Box sx={{ '& > :not(style)': { m: 1 } }}>
+                  <Fab color="secondary" aria-label="edit">
+                    {/* <EditIcon onSubmit={handleSubmitCreate}/> */}
+                    <EditIcon onClick={(id)=> handleSubmitUpdate(e.id)}
+/>
+                  </Fab>
+                  <Fab>
+                    <DeleteIcon />
+                  </Fab>
+                </Box>
             </Box>
              ))}
 {/* ***** */}
 
           
             <Card variant='outlined' sx={{border:'1px solid #4462A5', marginBottom:'30px', marginTop:'30px', marginLeft:'20px', width:'300px'}}>
-              <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', color:'white', background:'#4462A5'}}>Créer un nouveau profil</Typography>
+              <Typography sx={{fontSize: '1.4rem', padding:'15px', fontFamily: 'montserrat', color:'white', background:'#4462A5'}}>Créer un nouveau profil enfant</Typography>
             </Card>
 {/* KID CARD to add ***** */}
             <Box sx={{display:'flex', justifyContent:'space-around', alignItems:'center', width: '100%'}}>
@@ -319,10 +387,72 @@ function AccountManagement() {
                 </Box>
               </Card>
              
-                <Validate handleSubmit={handleSubmit}/>
+                <Validate handleSubmit={handleSubmitCreate}/>
              
             </Box>
-{/* ***** */}
+
+
+{/* ** ALERT ERROR *** */}
+<Snackbar
+        open={alertErrorCreate}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorCreate(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%",
+          display: 'block',
+          textAlign: "center",
+          marginBottom:'60%'
+          }}
+        >
+        Une erreur s'est produite. Merci de réessayer.
+        </MuiAlert>
+      </Snackbar>
+
+<Snackbar
+        open={alertErrorUpdate}
+        autoHideDuration={6000}
+        onClose={() => setAlertErrorUpdate(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%",
+          display: 'block',
+          textAlign: "center",
+          marginBottom:'60%'
+          }}
+        >
+        Une erreur s'est produite. Merci de réessayer.
+        </MuiAlert>
+      </Snackbar>
+
+{/* ** ALERT SUCCESS *** */}
+
+<Snackbar
+        open={alertSuccessUpdate}
+        autoHideDuration={6000}
+        onClose={() => setAlertSuccessUpdate(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="success"
+          sx={{ width: "100%",
+          display: 'block',
+          textAlign: "center",
+          marginBottom:'60%'
+          }}
+        >
+        <p>La modification a bien été effectuée.</p>
+        </MuiAlert>
+      </Snackbar>
+
+
 
           </Box>
       </div>
