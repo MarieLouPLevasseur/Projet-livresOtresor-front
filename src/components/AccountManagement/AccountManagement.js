@@ -13,7 +13,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import {  useNavigate } from 'react-router-dom';
+// import {  useNavigate } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 
@@ -54,7 +54,9 @@ function AccountManagement() {
   const [loadinKidsValue, setLoadingKidsValue] = useState(true);
 
   // Modal
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalDeleteKid, setOpenModalDeleteKid] = useState(false);
+  const [openModalDeleteUser, setOpenModalDeleteUser] = useState(false);
+  const [openModalConfirmDeleteUser, setOpenModalConfirmDeleteUser] = useState(false);
 
   // Controlled components
   const [kidAddUsernameValue, setKidAddUsernameValue] = useState("");
@@ -63,6 +65,7 @@ function AccountManagement() {
   const [kidUpdateUsernameValue, setKidUpdateUsernameValue] = useState("");
   const [kidUpdatePasswordValue, setKidUpdatePasswordValue] = useState("");
   const [kidUpdateFirstNameValue, setKidUpdateFirstNameValue] = useState("");
+  const [passwordToCheck, setPasswordToCheck] = useState("");
   const [idKidToDelete, setIdKidToDelete] = useState(0);
   const [changeKid, setChangeKid] = useState(false);
 
@@ -71,32 +74,40 @@ function AccountManagement() {
   const [alertErrorUpdate, setAlertErrorUpdate] = useState(false);
   const [alertUsernameFailed, setAlertUsernameFailed] = useState(false);
   const [alertErrorDelete, setAlertErrorDelete] = useState(false);
+  const [alertErrorCheckCredential, setAlertErrorCheckCredential] = useState(false);
 
   // Success State
   const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
   const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
   const [alertSuccessDelete, setAlertSuccessDelete] = useState(false);
+  const [alertSuccessDeleteUser, setAlertSuccessDeleteUser] = useState(false);
+  // const [setAlertSuccessCheckCredential, setAlertSuccessCheckCredential] = useState(false);
+
 
   // Api Calls
   const apiEndpointKids = `/api/v1/users/${id}/kids`
+  const apiEndpointUsers = `/api/v1/users/${id}`
+  const apiEndpointDeleteUser = `/api/v1/users/delete/${id}`
 
   /////   : ajouter un prénom pour le compte kid en plus du username (car pénible pour associer un compte sans l'appeler papillon 375)=> faire en back
   ///// TODO : Modification des comptes enfants
   ///// TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
-  // TODO mettre à jour l'encart du prénom (ou rechargement page?)
+  ///// TODO mettre à jour l'encart du prénom (ou rechargement page?)
 
-  // TODO : Pour toute modification des comptes utilisateurs adultes: demander la confirmation du mot de passe *//
-  // TODO si perte mot de passe=> procédure de renvoi de mail.
-  // TODO Permettre la route pour la suppression de l'utilisateur
-  // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
+  ///// TODO : Pour toute modification des comptes utilisateurs adultes: demander la confirmation du mot de passe *//
+  /////  si perte mot de passe=> procédure de renvoi de mail via l'accueil
+  ///// TODO Permettre la route pour la suppression de l'utilisateur
+  ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
+  // TODO : Afficher une page de remerciement/confirmation et déloguer le User avant de rediriger vers l'accueil principale du site
+  // TODO : mettre mot de passe en visible
   ///// TODO : Permettre la route pour suppression d'un kid
-  // TODO: mettre une alerte de confirmation de suppression car action définitive et irréversible
+  ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
 
-  let navigate = useNavigate(); 
-  const routeChange = () =>{ 
-    let path = `/profil/utilisateur`; 
-    navigate(path);
-  }
+  // let navigate = useNavigate(); 
+  // const routeChange = () =>{ 
+  //   let path = `/profil/utilisateur`; 
+  //   navigate(path);
+  // }
 
 
   //  GET List of users
@@ -125,12 +136,19 @@ function AccountManagement() {
 
    //****** MODAL ***********
 
-   const handleOpen = (id) => {
-    setOpenModal(true);
+   const handleOpendeleteKid = (id) => {
+    setOpenModalDeleteKid(true);
     setIdKidToDelete(id);
   };
+   const handleOpendeleteUser = () => {
+    setOpenModalDeleteUser(true);
+  };
+
+
   const handleClose = () => {
-    setOpenModal(false);
+    setOpenModalDeleteUser(false);
+    setOpenModalDeleteKid(false);
+    setOpenModalConfirmDeleteUser(false);
     setIdKidToDelete(0);
 
   };
@@ -259,6 +277,73 @@ function AccountManagement() {
     handleClose();
 
   };
+
+   // *************** Check Credential User **************************
+
+  // Api Call
+ 
+
+  const postApiCheckCredential = (routeApi,data) => {
+    axios.post(routeApi,data, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(function (response) {
+        console.log(response)
+        setOpenModalConfirmDeleteUser(true)
+      })
+      .catch(function (error) {
+        console.log(error);
+          setAlertErrorCheckCredential(true)
+
+      });
+  }
+
+  const handleSubmitCheckCredential = () => {
+    console.log("-----------je suis dans le handleSubmit CheckCredential--------")
+
+    // ? password a ajouter
+
+    const passwordUser = {
+      password: passwordToCheck,
+    };
+    const passwordUserJson = JSON.stringify(passwordUser);
+  
+    postApiCheckCredential(apiUrl + apiEndpointUsers + '/checkCredential', passwordUserJson);
+    // handleClose();
+
+  };
+   // *************** Delete User **************************
+
+    // Api Call
+   const deleteApiUser = (routeApi) => {
+    axios.delete(routeApi, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(function (response) {
+        console.log(response)
+        setAlertSuccessDeleteUser(true)
+
+      })
+      .catch(function (error) {
+        console.log(error);
+        
+          setAlertErrorDelete(true)
+
+      });
+  }
+
+  const handleSubmitDeleteUser = () => {
+    console.log("-----------je suis dans le handleSubmit Delete--------")
+    console.log(id, "test de 'e'")
+  
+    deleteApiUser(apiUrl + apiEndpointDeleteUser );
+    handleClose();
+
+  };
   // **************************************************************
   if (loadinKidsValue) {
     return <Loading />
@@ -337,7 +422,7 @@ function AccountManagement() {
                         <EditIcon />
                       </Fab>
                       <Fab>
-                        <DeleteIcon />
+                        <DeleteIcon  onClick={() => handleOpendeleteUser()}/>
                       </Fab>
                     </Box>
                   </Box>
@@ -413,22 +498,10 @@ function AccountManagement() {
                       <Fab>
                       
 
-
-                        {/* MODAL */}
-
-                        {/* <Grid item xs={12}>  */}
-
-                        {/* <DeleteIcon  onClick={(id) => handleSubmitDelete(e.id)}/> */}
-                        <DeleteIcon  onClick={(id) => handleOpen(e.id)}/>
+                        <DeleteIcon  onClick={(id) => handleOpendeleteKid(e.id)}/>
                         </Fab>
                       
-                        
-                        {/* </Grid> */}
-
-
-
-
-
+                   
                     </Box>
                     </Box>
                   </Card>
@@ -588,6 +661,46 @@ function AccountManagement() {
               </MuiAlert>
             </Snackbar>
 
+            <Snackbar
+              open={alertErrorCheckCredential}
+              autoHideDuration={7000}
+              onClose={() => setAlertErrorCheckCredential(false)}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                severity="error"
+                sx={{
+                  width: "100%",
+                  display: 'block',
+                  textAlign: "center",
+                  marginBottom: '40%'
+                }}
+              >
+                Ce n'est pas le bon mot de passe. Nous ne pouvons pas accéder à votre demande. 
+                En cas d'oubli, retourner à l'espace d'accueil de connexion et suivez la procédure d'oubli du mot de passe
+              </MuiAlert>
+            </Snackbar>
+            <Snackbar
+              open={alertErrorUpdate}
+              autoHideDuration={6000}
+              onClose={() => setAlertErrorUpdate(false)}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                severity="error"
+                sx={{
+                  width: "100%",
+                  display: 'block',
+                  textAlign: "center",
+                  marginBottom: '60%'
+                }}
+              >
+                Une erreur s'est produite. Merci de réessayer.
+              </MuiAlert>
+            </Snackbar>
+
             {/* ** ALERT SUCCESS *** */}
 
             <Snackbar
@@ -650,9 +763,118 @@ function AccountManagement() {
             </Snackbar>
 
             {/* ******* MODAL ********** */}
+                  {/*  User*/}
+                  {/* CheckCredential */}
+                <Modal
+                          open={openModalDeleteUser}
+                          onClose={handleClose}
+                          aria-labelledby="parent-modal-title"
+                          aria-describedby="parent-modal-description"
+                        >
+                          <Box sx={{
+                            width: 400,
+                            backgroundColor: 'white',
+                            margin: 'auto',
+                            alignContent: 'center'
+                          }}
+                          >
 
-            <Modal
-                          open={openModal}
+                            <h2 id="parent-modal-title"> Suppression du compte?</h2>
+                            <p className="parent-modal-description">
+                             Merci de Confirmer votre mot de passe
+                            </p>
+                            <Box component="form" noValidate 
+                              sx={{
+                                margin: 10
+                              }}
+                            >
+                              <Button
+                                className="closeButton"
+                                // type="password"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleClose} 
+                                sx={{ mt: 2, mb: 2, background: 'red' }}
+                              >
+                                Non, c'est une erreur. Annuler
+                              </Button>
+                              <TextField
+                              type="password"
+                          value={passwordToCheck}
+                          placeholder="Confirmation mot de passe"
+                          onChange={(e) => setPasswordToCheck(e.target.value)}
+                        >
+                        </TextField>
+                        <Button
+                          className="confirmPasswordButton"
+                          // type="submit"
+                          fullWidth
+                          variant="contained"
+                          label='confirmation mot de passe'
+                          onClick={handleSubmitCheckCredential}
+                          sx={{ mt: 2, mb: 2, background: '#4462A5' }}
+                        >
+                          Vérifier le mot de passe
+                        </Button>
+                            </Box>
+                          </Box>
+                        </Modal> 
+                        {/* Confirm Delete */}
+
+                          <Modal
+                          open={openModalConfirmDeleteUser}
+                          onClose={handleClose}
+                          aria-labelledby="parent-modal-title"
+                          aria-describedby="parent-modal-description"
+                        >
+                          <Box sx={{
+                            width: 400,
+                            backgroundColor: 'white',
+                            margin: 'auto',
+                            alignContent: 'center'
+                          }}
+                          >
+
+                            <h2 id="parent-modal-title"> Suppression du compte?</h2>
+                            <p className="parent-modal-description">
+                              Mot de passe confirmé.
+                            </p>
+                            <p className="parent-modal-description">
+
+                            Etes-vous certain de vouloir supprimer ce compte? Cette action sera définitive et entrainera la suppression des comptes enfants associés.
+                            </p>
+                            <Box component="form" noValidate 
+                              sx={{
+                                margin: 10
+                              }}
+                            >
+                              <Button
+                                className="closeButton"
+                                // type="submit"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleClose} 
+                                sx={{ mt: 2, mb: 2, background: 'red' }}
+                              >
+                                Non, c'est une erreur. Annuler
+                              </Button>
+                              <Button
+                                className="deleteButton"
+                                // type="password"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleSubmitDeleteUser}
+                                sx={{ mt: 2, mb: 2, background: 'green' }}
+                              >
+                                Oui, je suis sûr. Supprimer.
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Modal> 
+
+                        {/*----- Kid ------- */}
+                        <Modal
+                          open={openModalDeleteKid}
                           onClose={handleClose}
                           aria-labelledby="parent-modal-title"
                           aria-describedby="parent-modal-description"
