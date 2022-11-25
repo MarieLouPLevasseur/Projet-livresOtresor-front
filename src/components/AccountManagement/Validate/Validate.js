@@ -18,7 +18,8 @@ function Validate({ handleSubmit }) {
     <div>
     <Box sx={{ '& > :not(style)': { m: 1 } }}>
      
-          <Fab color='success'  onClick={()=>{handleSubmit();routeChange();}} >
+          <Fab color='success'  onClick={()=>{handleSubmit();}} >
+          {/* <Fab color='success'  > */}
             <DoneOutlineIcon />
           </Fab>
       

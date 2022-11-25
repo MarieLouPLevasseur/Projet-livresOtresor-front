@@ -3,19 +3,20 @@ import React, { useEffect, useState } from 'react'
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import Avatar from '@mui/material/Avatar';
 import { Box, Typography, TextField, Card, Grid } from '@mui/material';
-import AccountM from './AccountM/AccountM';
+// import AccountM from './AccountM/AccountM';
 import Validate from './Validate/Validate';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import axios from 'axios'
 import Fab from '@mui/material/Fab'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import {  useNavigate } from 'react-router-dom';
 
 
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import Loading from '../Loading/Loading';
 
@@ -60,29 +61,34 @@ function AccountManagement() {
   const [kidUpdateFirstNameValue, setKidUpdateFirstNameValue] = useState("");
 
   // Error states
-  const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
-  const [alertErrorLogin, setAlertErrorLogin] = useState(false);
+  // const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
+  // const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertErrorCreate, setAlertErrorCreate] = useState(false);
   const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
   const [alertErrorUpdate, setAlertErrorUpdate] = useState(false);
   const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
+  const [alertUsernameFailed, setAlertUsernameFailed] = useState(false);
 
   // Api Calls
   const apiEndpointKids = `/api/v1/users/${id}/kids`
 
   /////   : ajouter un prénom pour le compte kid en plus du username (car pénible pour associer un compte sans l'appeler papillon 375)=> faire en back
-  // TODO: Modification des comptes enfants
-  // TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
+  ///// TODO : Modification des comptes enfants
+  ///// TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
   // TODO mettre à jour l'encart du prénom (ou rechargement page?)
 
   // TODO : Pour toute modification des comptes utilisateurs adultes: demander la confirmation du mot de passe *//
   // TODO si perte mot de passe=> procédure de renvoi de mail.
   // TODO Permettre la route pour la suppression de l'utilisateur
   // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
-  // TODO : Permettre la route pour suppression d'un kid
+  // TODO: Permettre la route pour suppression d'un kid
   // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
 
-
+  let navigate = useNavigate(); 
+  const routeChange = () =>{ 
+    let path = `/profil/utilisateur`; 
+    navigate(path);
+  }
 
 
   //  GET List of users
@@ -119,13 +125,20 @@ function AccountManagement() {
       },
     })
       .then(function (response) {
-        setAlertSuccessCreate(true)
+        setAlertSuccessCreate(true);
+        setTimeout( routeChange, 4500);
+        // routeChange()
 
       })
       .catch(function (error) {
         console.log(error);
-        setAlertErrorCreate(true)
-        // TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
+        console.log(error.message)
+        if (error.message === "Request failed with status code 400"){
+          setAlertUsernameFailed(true)
+        }
+        else{
+          setAlertErrorCreate(true)
+        }
 
       });
   }
@@ -161,8 +174,14 @@ function AccountManagement() {
       // })
       .catch(function (error) {
         console.log(error);
-        setAlertErrorUpdate(true)
-        // TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
+        
+        if (error.message === "Request failed with status code 409"){
+          setAlertUsernameFailed(true)
+        }
+        else{
+          setAlertErrorUpdate(true)
+
+        }
       });
   }
 
@@ -364,7 +383,7 @@ function AccountManagement() {
                         />
                       </Grid>
                     </Box>
-                    <Box sx={{ color: 'blue' }}>
+                    <Box sx={{ color: 'blue' , textAlign:"justify"}}>
                       Si vous souhaitez donner les accès pour que votre enfant puisse se connecter depuis l'accueil en autonomie, vous pouvez renseigner son identifiant et son mot de passe.
                       Vous serez la seule personne pouvant modifier son identifiant ou son mot de passe. Vous pourrez modifier votre choix après la création de son compte.
 
@@ -413,6 +432,26 @@ function AccountManagement() {
 
             {/* ** ALERT ERROR *** */}
             <Snackbar
+              open={alertUsernameFailed}
+              autoHideDuration={6000}
+              onClose={() => setAlertUsernameFailed(false)}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                severity="error"
+                sx={{
+                  width: "100%",
+                  display: 'block',
+                  textAlign: "center",
+                  marginBottom: '60%'
+                }}
+              >
+               Cet identifiant ne peux pas être utilisé. Merci d'en choisir un autre.
+              </MuiAlert>
+            </Snackbar>
+
+            <Snackbar
               open={alertErrorCreate}
               autoHideDuration={6000}
               onClose={() => setAlertErrorCreate(false)}
@@ -431,7 +470,6 @@ function AccountManagement() {
                 Une erreur s'est produite. Merci de réessayer.
               </MuiAlert>
             </Snackbar>
-
             <Snackbar
               open={alertErrorUpdate}
               autoHideDuration={6000}
@@ -471,6 +509,26 @@ function AccountManagement() {
                 }}
               >
                 <p>La modification a bien été effectuée.</p>
+              </MuiAlert>
+            </Snackbar>
+
+            <Snackbar
+              open={alertSuccessCreate}
+              autoHideDuration={6000}
+              onClose={() => setAlertSuccessCreate(false)}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                severity="success"
+                sx={{
+                  width: "100%",
+                  display: 'block',
+                  textAlign: "center",
+                  marginBottom: '60%'
+                }}
+              >
+                <p>L'ajout a bien été effectué.</p>
               </MuiAlert>
             </Snackbar>
 
