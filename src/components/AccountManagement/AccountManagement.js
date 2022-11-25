@@ -14,6 +14,8 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import {  useNavigate } from 'react-router-dom';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
 
 
 // import { Link } from 'react-router-dom';
@@ -51,6 +53,8 @@ function AccountManagement() {
   const [KidsValue, setKidsValue] = useState([]);
   const [loadinKidsValue, setLoadingKidsValue] = useState(true);
 
+  // Modal
+  const [openModal, setOpenModal] = useState(false);
 
   // Controlled components
   const [kidAddUsernameValue, setKidAddUsernameValue] = useState("");
@@ -59,15 +63,19 @@ function AccountManagement() {
   const [kidUpdateUsernameValue, setKidUpdateUsernameValue] = useState("");
   const [kidUpdatePasswordValue, setKidUpdatePasswordValue] = useState("");
   const [kidUpdateFirstNameValue, setKidUpdateFirstNameValue] = useState("");
+  const [idKidToDelete, setIdKidToDelete] = useState(0);
+  const [changeKid, setChangeKid] = useState(false);
 
   // Error states
-  // const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
-  // const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertErrorCreate, setAlertErrorCreate] = useState(false);
-  const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
   const [alertErrorUpdate, setAlertErrorUpdate] = useState(false);
-  const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
   const [alertUsernameFailed, setAlertUsernameFailed] = useState(false);
+  const [alertErrorDelete, setAlertErrorDelete] = useState(false);
+
+  // Success State
+  const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
+  const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
+  const [alertSuccessDelete, setAlertSuccessDelete] = useState(false);
 
   // Api Calls
   const apiEndpointKids = `/api/v1/users/${id}/kids`
@@ -81,8 +89,8 @@ function AccountManagement() {
   // TODO si perte mot de passe=> procédure de renvoi de mail.
   // TODO Permettre la route pour la suppression de l'utilisateur
   // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
-  // TODO: Permettre la route pour suppression d'un kid
-  // TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
+  ///// TODO : Permettre la route pour suppression d'un kid
+  // TODO: mettre une alerte de confirmation de suppression car action définitive et irréversible
 
   let navigate = useNavigate(); 
   const routeChange = () =>{ 
@@ -109,12 +117,23 @@ function AccountManagement() {
           console.log('Erreur !', error);
         })
 
+        setChangeKid(false)
     }
-  }, [id]);
+  }, [id, changeKid]);
 
-  if (loadinKidsValue) {
-    return <Loading />
-  }
+  
+
+   //****** MODAL ***********
+
+   const handleOpen = (id) => {
+    setOpenModal(true);
+    setIdKidToDelete(id);
+  };
+  const handleClose = () => {
+    setOpenModal(false);
+    setIdKidToDelete(0);
+
+  };
   // ***************Set Datas for Create a Kid**************************
 
   // Api Call
@@ -126,8 +145,12 @@ function AccountManagement() {
     })
       .then(function (response) {
         setAlertSuccessCreate(true);
-        setTimeout( routeChange, 4500);
-        // routeChange()
+        // setTimeout( routeChange, 4500);
+        setChangeKid(true);
+        setKidAddFirstNameValue("");
+        setKidAddPasswordValue("");
+        setKidAddUsernameValue("");
+
 
       })
       .catch(function (error) {
@@ -142,7 +165,6 @@ function AccountManagement() {
 
       });
   }
-  const apiEndpoint = `/api/v1/users/${id}/kids`
 
   const handleSubmitCreate = () => {
 
@@ -152,11 +174,14 @@ function AccountManagement() {
       firstname: kidAddFirstNameValue
     };
     const profilUserJson = JSON.stringify(profilUser);
-    postApi(apiUrl + apiEndpoint, profilUserJson);
+    postApi(apiUrl + apiEndpointKids, profilUserJson);
 
 
 
   };
+
+
+ 
 
   // ***************Set Datas for Update a Kid**************************
 
@@ -169,7 +194,10 @@ function AccountManagement() {
     })
       .then(function (response) {
         setAlertSuccessUpdate(true)
-
+        setChangeKid(true)
+        setKidUpdateFirstNameValue("");
+        setKidUpdatePasswordValue("");
+        setKidUpdateUsernameValue("");
       })
       // })
       .catch(function (error) {
@@ -194,12 +222,47 @@ function AccountManagement() {
       firstname: kidUpdateFirstNameValue
     };
     const profilUserJson = JSON.stringify(profilUser);
-    patchApiUpdate(apiUrl + apiEndpoint + `/${id}`, profilUserJson);
+    patchApiUpdate(apiUrl + apiEndpointKids + `/${id}`, profilUserJson);
 
 
 
   };
+  // *************** Delete Kid**************************
+
+  // Api Call
+  const deleteApiKid = (routeApi) => {
+    axios.delete(routeApi, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(function (response) {
+        console.log(response)
+        setAlertSuccessDelete(true)
+        setChangeKid(true)
+
+      })
+      // })
+      .catch(function (error) {
+        console.log(error);
+        
+          setAlertErrorDelete(true)
+
+      });
+  }
+
+  const handleSubmitDelete = () => {
+    console.log("-----------je suis dans le handleSubmit Delete--------")
+    console.log(id, "test de 'e'")
+  
+    deleteApiKid(apiUrl + apiEndpointKids + `/${idKidToDelete}`);
+    handleClose();
+
+  };
   // **************************************************************
+  if (loadinKidsValue) {
+    return <Loading />
+  }
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -215,11 +278,11 @@ function AccountManagement() {
               </Typography>
 
               {/* User Card informations */}
-              <Card variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '40%' }}>
+              <Card  variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '40%' }}>
 
                 <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', margin: 'auto', color: 'white', background: '#4462A5' }}>Informations du compte parent</Typography>
               </Card>
-              <Box sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
+              <Box  sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>
                 <Card variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '70%' }}>
                   <Box sx={{ display: 'flex', flexDirection: {xs:'column', lg:"row"}, justifyContent: 'flex-start', Width: '100%', padding: '10px', gap: '10px' }}>
                     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, Width: '100%', justifyContent: 'space-around', gap: '10px' }}>
@@ -291,7 +354,7 @@ function AccountManagement() {
                   <Box sx={{ display: 'flex', flexDirection: {xs:'column', lg:"row"}, justifyContent: 'flex-start', Width: '100%', padding: '10px', gap: '10px' }}>
                       <Box >
 
-                        <Typography sx={{ fontSize: '1.4rem', padding: '30px', fontFamily: 'montserrat', textTransform: 'capitalize' }}> {e.firstname} </Typography>
+                        <Typography sx={{ fontSize: '1.4rem', padding: '30px', fontFamily: 'montserrat', textTransform: 'uppercase' }}> {e.firstname} </Typography>
                       </Box>
 
                       <Box sx={{ display: 'flex', Width: '100%', justifyContent: 'space-around', mt: '18px' }}>
@@ -348,8 +411,24 @@ function AccountManagement() {
                         />
                       </Fab>
                       <Fab>
-                        <DeleteIcon />
-                      </Fab>
+                      
+
+
+                        {/* MODAL */}
+
+                        {/* <Grid item xs={12}>  */}
+
+                        {/* <DeleteIcon  onClick={(id) => handleSubmitDelete(e.id)}/> */}
+                        <DeleteIcon  onClick={(id) => handleOpen(e.id)}/>
+                        </Fab>
+                      
+                        
+                        {/* </Grid> */}
+
+
+
+
+
                     </Box>
                     </Box>
                   </Card>
@@ -428,7 +507,7 @@ function AccountManagement() {
               </Box>
 
             </Box>
-
+          
 
             {/* ** ALERT ERROR *** */}
             <Snackbar
@@ -455,6 +534,25 @@ function AccountManagement() {
               open={alertErrorCreate}
               autoHideDuration={6000}
               onClose={() => setAlertErrorCreate(false)}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                severity="error"
+                sx={{
+                  width: "100%",
+                  display: 'block',
+                  textAlign: "center",
+                  marginBottom: '60%'
+                }}
+              >
+                Une erreur s'est produite. Merci de réessayer.
+              </MuiAlert>
+            </Snackbar>
+            <Snackbar
+              open={alertErrorDelete}
+              autoHideDuration={6000}
+              onClose={() => setAlertErrorDelete(false)}
             >
               <MuiAlert
                 elevation={6}
@@ -511,6 +609,25 @@ function AccountManagement() {
                 <p>La modification a bien été effectuée.</p>
               </MuiAlert>
             </Snackbar>
+            <Snackbar
+              open={alertSuccessDelete}
+              autoHideDuration={6000}
+              onClose={() => setAlertSuccessDelete(false)}
+            >
+              <MuiAlert
+                elevation={6}
+                variant="filled"
+                severity="success"
+                sx={{
+                  width: "100%",
+                  display: 'block',
+                  textAlign: "center",
+                  marginBottom: '60%'
+                }}
+              >
+                <p>La suppression a bien été effectuée.</p>
+              </MuiAlert>
+            </Snackbar>
 
             <Snackbar
               open={alertSuccessCreate}
@@ -532,10 +649,60 @@ function AccountManagement() {
               </MuiAlert>
             </Snackbar>
 
+            {/* ******* MODAL ********** */}
+
+            <Modal
+                          open={openModal}
+                          onClose={handleClose}
+                          aria-labelledby="parent-modal-title"
+                          aria-describedby="parent-modal-description"
+                        >
+                          <Box sx={{
+                            width: 400,
+                            backgroundColor: 'white',
+                            margin: 'auto',
+                            alignContent: 'center'
+                          }}
+                          >
+
+                            <h2 id="parent-modal-title"> Suppression du compte?</h2>
+                            <p className="parent-modal-description">
+                              Etes-vous sur de vouloir supprimer ce compte ? Cette action sera définitive et irréversible.
+                            </p>
+                            <Box component="form" noValidate 
+                              sx={{
+                                margin: 10
+                              }}
+                            >
+                              <Button
+                                className="closeButton"
+                                // type="submit"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleClose} 
+                                sx={{ mt: 2, mb: 2, background: 'red' }}
+                              >
+                                Non, c'est une erreur. Annuler
+                              </Button>
+                              <Button
+                                className="deleteButton"
+                                // type="submit"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleSubmitDelete}
+                                sx={{ mt: 2, mb: 2, background: 'green' }}
+                              >
+                                Oui, je suis sûr. Supprimer.
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Modal> 
 
           </Box>
 
         </Box>
+
+        
       </div>
     </ThemeProvider>
   )

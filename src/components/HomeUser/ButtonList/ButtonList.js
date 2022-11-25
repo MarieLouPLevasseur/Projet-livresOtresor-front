@@ -51,9 +51,9 @@ function ButtonList( {kidId, username, avatar,firstname}){
         <EditIcon />
         </Link>
       </Fab>
-      <Fab>
+      {/* <Fab>
         <DeleteIcon />
-      </Fab>
+      </Fab> */}
     </Box>
     </div>
   )
