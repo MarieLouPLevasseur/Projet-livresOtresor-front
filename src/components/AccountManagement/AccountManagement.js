@@ -6,7 +6,7 @@ import { Box, Typography, TextField, Card, Grid } from '@mui/material';
 // import AccountM from './AccountM/AccountM';
 import Validate from './Validate/Validate';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector } from 'react-redux';
 import axios from 'axios'
 import Fab from '@mui/material/Fab'
 import EditIcon from '@mui/icons-material/Edit'
@@ -16,11 +16,12 @@ import MuiAlert from '@mui/material/Alert';
 // import {  useNavigate } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 // import { Link } from 'react-router-dom';
 
 import Loading from '../Loading/Loading';
+import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
 
 import './AccountManagement.scss';
 
@@ -39,35 +40,44 @@ const theme = createTheme({
 
 function AccountManagement() {
 
-  // Redux-toolkit state import
-  const apiUrl = useSelector((state) => state.api.apiUrl);
-
-  const token = useSelector((state) => state.user.token);
-  const id = useSelector((state) => state.user.userId);
-  const firstname = useSelector((state) => state.user.firstname);
-  const lastname = useSelector((state) => state.user.lastname);
-  const email = useSelector((state) => state.user.email);
-
-
-  // Local States
-  const [KidsValue, setKidsValue] = useState([]);
-  const [loadinKidsValue, setLoadingKidsValue] = useState(true);
 
   // Modal
   const [openModalDeleteKid, setOpenModalDeleteKid] = useState(false);
-  const [openModalDeleteUser, setOpenModalDeleteUser] = useState(false);
+  const [openModalCheckCredential, setOpenModalCheckCredential] = useState(false);
   const [openModalConfirmDeleteUser, setOpenModalConfirmDeleteUser] = useState(false);
+  // const [openModalUpdateUser, setOpenModalUpdateUser] = useState(false);
 
-  // Controlled components
+  // Kid
+  const [KidsValue, setKidsValue] = useState([]);
+  const [loadinKidsValue, setLoadingKidsValue] = useState(true);
   const [kidAddUsernameValue, setKidAddUsernameValue] = useState("");
   const [kidAddPasswordValue, setKidAddPasswordValue] = useState("");
   const [kidAddFirstNameValue, setKidAddFirstNameValue] = useState("");
   const [kidUpdateUsernameValue, setKidUpdateUsernameValue] = useState("");
   const [kidUpdatePasswordValue, setKidUpdatePasswordValue] = useState("");
   const [kidUpdateFirstNameValue, setKidUpdateFirstNameValue] = useState("");
+  
+  // User
+  const token = useSelector((state) => state.user.token);
+  const id = useSelector((state) => state.user.userId);
+  const [firstname, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loadinUserValue, setLoadingUserValue] = useState(true);
+  const [userUpdateEmailValue, setUserUpdateEmailValue] = useState("");
+  const [userUpdatePasswordValue, setUserUpdatePasswordValue] = useState("");
+  const [userUpdateLastNameValue, setUserUpdateLastNameValue] = useState("");
+  const [userUpdateFirstNameValue, setUserUpdateFirstNameValue] = useState("");
+  const [changeUpdateUser, setChangeUpdateUser] = useState(false);
+  const [changeDeleteUser, setChangeDeleteUser] = useState(false);
+
+
+  // Others
+  const dispatch = useDispatch();
   const [passwordToCheck, setPasswordToCheck] = useState("");
   const [idKidToDelete, setIdKidToDelete] = useState(0);
-  const [changeKid, setChangeKid] = useState(false);
+  const [changeDatas, setChangeDatas] = useState(false);
+
 
   // Error states
   const [alertErrorCreate, setAlertErrorCreate] = useState(false);
@@ -81,10 +91,9 @@ function AccountManagement() {
   const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
   const [alertSuccessDelete, setAlertSuccessDelete] = useState(false);
   const [alertSuccessDeleteUser, setAlertSuccessDeleteUser] = useState(false);
-  // const [setAlertSuccessCheckCredential, setAlertSuccessCheckCredential] = useState(false);
-
 
   // Api Calls
+  const apiUrl = useSelector((state) => state.api.apiUrl);
   const apiEndpointKids = `/api/v1/users/${id}/kids`
   const apiEndpointUsers = `/api/v1/users/${id}`
   const apiEndpointDeleteUser = `/api/v1/users/delete/${id}`
@@ -100,6 +109,11 @@ function AccountManagement() {
   ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
   // TODO : Afficher une page de remerciement/confirmation et déloguer le User avant de rediriger vers l'accueil principale du site
   // TODO : mettre mot de passe en visible
+  // TODO : factoriser les Alert et les modals
+  // TODO : créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
+  // TODO : ajouter une variable 'checked' lorsque la confirmation du mot de passe a été faites une fois. Cela évitera à l'utilisateur de rentrer sont code 50 fois apres confirmations
+    // TODO : valider un temps avant la remise à 0 du checked?
+  // TODO : mettre un hover au survol des boutons edit, validate et delete
   ///// TODO : Permettre la route pour suppression d'un kid
   ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
 
@@ -119,20 +133,32 @@ function AccountManagement() {
         }
       })
         .then((response) => {
-          console.log(response.data)
           setKidsValue(response.data);
-          console.log(KidsValue);
           setLoadingKidsValue(false)
         })
         .catch((error) => {
-          console.log('Erreur !', error);
+          console.log(error);
         })
 
-        setChangeKid(false)
-    }
-  }, [id, changeKid]);
+        axios.get(apiUrl + apiEndpointUsers, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+          .then((response) => {
+            setFirstName(response.data.firstname);
+            setLastName(response.data.lastname);
+            setEmail(response.data.email);
+            setLoadingUserValue(false)
+          })
+          .catch((error) => {
+            console.log(error);
+          })
 
-  
+
+        setChangeDatas(false)
+    }
+  }, [id, changeDatas]);
 
    //****** MODAL ***********
 
@@ -141,18 +167,20 @@ function AccountManagement() {
     setIdKidToDelete(id);
   };
    const handleOpendeleteUser = () => {
-    setOpenModalDeleteUser(true);
+    setOpenModalCheckCredential(true);
   };
 
 
   const handleClose = () => {
-    setOpenModalDeleteUser(false);
+    setOpenModalCheckCredential(false);
     setOpenModalDeleteKid(false);
     setOpenModalConfirmDeleteUser(false);
+    setChangeDeleteUser(false);
+    setChangeUpdateUser(false);
     setIdKidToDelete(0);
 
   };
-  // ***************Set Datas for Create a Kid**************************
+  // *************** Set Datas for Create a Kid**************************
 
   // Api Call
   const postApi = (routeApi, data) => {
@@ -163,13 +191,10 @@ function AccountManagement() {
     })
       .then(function (response) {
         setAlertSuccessCreate(true);
-        // setTimeout( routeChange, 4500);
-        setChangeKid(true);
+        setChangeDatas(true);
         setKidAddFirstNameValue("");
         setKidAddPasswordValue("");
         setKidAddUsernameValue("");
-
-
       })
       .catch(function (error) {
         console.log(error);
@@ -194,14 +219,9 @@ function AccountManagement() {
     const profilUserJson = JSON.stringify(profilUser);
     postApi(apiUrl + apiEndpointKids, profilUserJson);
 
-
-
   };
 
-
- 
-
-  // ***************Set Datas for Update a Kid**************************
+  // *************** Set Datas for Update a Kid **************************
 
   // Api Call
   const patchApiUpdate = (routeApi, data) => {
@@ -212,12 +232,11 @@ function AccountManagement() {
     })
       .then(function (response) {
         setAlertSuccessUpdate(true)
-        setChangeKid(true)
+        setChangeDatas(true)
         setKidUpdateFirstNameValue("");
         setKidUpdatePasswordValue("");
         setKidUpdateUsernameValue("");
       })
-      // })
       .catch(function (error) {
         console.log(error);
         
@@ -233,7 +252,6 @@ function AccountManagement() {
 
   const handleSubmitUpdate = (id) => {
     console.log("-----------je suis dans le handleSubmit Update--------")
-    console.log(id, "test de 'e'")
     const profilUser = {
       username: kidUpdateUsernameValue,
       password: kidUpdatePasswordValue,
@@ -241,8 +259,6 @@ function AccountManagement() {
     };
     const profilUserJson = JSON.stringify(profilUser);
     patchApiUpdate(apiUrl + apiEndpointKids + `/${id}`, profilUserJson);
-
-
 
   };
   // *************** Delete Kid**************************
@@ -257,10 +273,9 @@ function AccountManagement() {
       .then(function (response) {
         console.log(response)
         setAlertSuccessDelete(true)
-        setChangeKid(true)
+        setChangeDatas(true)
 
       })
-      // })
       .catch(function (error) {
         console.log(error);
         
@@ -281,7 +296,6 @@ function AccountManagement() {
    // *************** Check Credential User **************************
 
   // Api Call
- 
 
   const postApiCheckCredential = (routeApi,data) => {
     axios.post(routeApi,data, {
@@ -291,7 +305,17 @@ function AccountManagement() {
     })
       .then(function (response) {
         console.log(response)
-        setOpenModalConfirmDeleteUser(true)
+        console.log(changeUpdateUser === true, "est que j'update un user?")
+        console.log(changeDeleteUser === true, "est que je supprime un user?")
+
+        if(changeUpdateUser === true){
+
+          handleSubmitUpdateUser()
+        }
+        if(changeDeleteUser === true){
+
+          setOpenModalConfirmDeleteUser(true)
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -303,15 +327,12 @@ function AccountManagement() {
   const handleSubmitCheckCredential = () => {
     console.log("-----------je suis dans le handleSubmit CheckCredential--------")
 
-    // ? password a ajouter
-
     const passwordUser = {
       password: passwordToCheck,
     };
     const passwordUserJson = JSON.stringify(passwordUser);
   
     postApiCheckCredential(apiUrl + apiEndpointUsers + '/checkCredential', passwordUserJson);
-    // handleClose();
 
   };
    // *************** Delete User **************************
@@ -344,8 +365,75 @@ function AccountManagement() {
     handleClose();
 
   };
+
+  // *************** Set Datas for Update a User **************************
+
+  // Api Call
+  const patchApiUpdateUser = (routeApi, data) => {
+    axios.patch(routeApi, data, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(function (response) {
+        setAlertSuccessUpdate(true)
+        setChangeDatas(true)
+
+        //dispatch Data on Store
+        dispatch(userFirstname(userUpdateFirstNameValue? userUpdateFirstNameValue : firstname));
+        dispatch(userLastname(userUpdateLastNameValue? userUpdateLastNameValue: lastName));
+        dispatch(userEmail(userUpdateEmailValue ? userUpdateEmailValue: email));
+
+        // Erase value on form
+        setUserUpdateFirstNameValue("");
+        setUserUpdatePasswordValue("");
+        setUserUpdateEmailValue("");
+        setUserUpdateLastNameValue("");
+        handleClose();
+      })
+      .catch(function (error) {
+        console.log(error);     
+
+        setAlertErrorUpdate(true)
+
+      });
+  }
+
+
+  const handleSubmitUpdateUser = () => {
+    console.log("-----------je suis dans le handleSubmit Update User--------")
+    console.log (userUpdateEmailValue, "update email")
+    console.log(userUpdateFirstNameValue, "update firstname")
+    console.log(userUpdateLastNameValue, "update lastname")
+    console.log(userUpdatePasswordValue, "update password")
+    // Without password
+    if (userUpdatePasswordValue === ""){
+      const updateUserWithoutPassword = {
+        lastname: userUpdateLastNameValue === "" ? lastName : userUpdateLastNameValue,
+        firstname: userUpdateFirstNameValue === "" ? firstname: userUpdateFirstNameValue,
+        email: userUpdateEmailValue === "" ? email : userUpdateEmailValue
+      };
+      const updateUserWithoutPasswordJson = JSON.stringify(updateUserWithoutPassword);
+    patchApiUpdateUser(apiUrl + apiEndpointUsers , updateUserWithoutPasswordJson);
+    }
+    // with password
+    else{
+
+      const updateUserWithPassword = {
+        lastname: userUpdateLastNameValue === "" ? lastName : userUpdateLastNameValue,
+        // TODO vérifier les contraintes du mot de passe avant soumission
+        password: userUpdatePasswordValue,
+        firstname: userUpdateFirstNameValue === "" ? firstname: userUpdateFirstNameValue,
+        email: userUpdateEmailValue === "" ? email : userUpdateEmailValue
+      };
+      const updateUserWithPasswordJson = JSON.stringify(updateUserWithPassword);
+      patchApiUpdateUser(apiUrl + apiEndpointUsers , updateUserWithPasswordJson);
+    }
+
+  };
+
   // **************************************************************
-  if (loadinKidsValue) {
+  if (loadinKidsValue || loadinUserValue) {
     return <Loading />
   }
   return (
@@ -380,9 +468,11 @@ function AccountManagement() {
                           label="email"
                           name="email"
                           autoComplete="email"
+                          onChange={(e) => setUserUpdateEmailValue(e.target.value)}
+
                         />
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={12} sm={6} >
                         <TextField
                           defaultValue={firstname}
                           autoComplete="given-name"
@@ -390,6 +480,8 @@ function AccountManagement() {
                           fullWidth
                           label="Nom"
                           autoFocus
+                          onChange={(e) => setUserUpdateFirstNameValue(e.target.value)}
+
                         />
                       </Grid>
                     </Box>
@@ -404,25 +496,31 @@ function AccountManagement() {
                           type="password"
                           id="password"
                           autoComplete="new-password"
+                          onChange={(e) => setUserUpdatePasswordValue(e.target.value)}
+
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
-                          defaultValue={lastname}
+                          defaultValue={lastName}
                           label="pseudonyme"
                           name="lastName"
                           autoComplete="family-name"
+                          onChange={(e) => setUserUpdateLastNameValue(e.target.value)}
+
                         />
                       </Grid>
                     </Box>
                                       {/* <AccountM /> */}
                     <Box sx={{ '& > :not(style)': { m: 1 } , display:'flex', flexDirection:'row', justifyContent:'center'}}>
                       <Fab color="secondary" aria-label="edit">
-                        <EditIcon />
+                            <CheckCircleIcon onClick={() => [setOpenModalCheckCredential(true), setChangeUpdateUser(true)]}>
+                              
+                            </CheckCircleIcon>
                       </Fab>
-                      <Fab>
-                        <DeleteIcon  onClick={() => handleOpendeleteUser()}/>
+                      <Fab sx={{backgroundColor:'#FB4747'}}>
+                        <DeleteIcon sx={{backgroundColor:'#FB4747'}} onClick={() => [setOpenModalCheckCredential(true), setChangeDeleteUser(true)]}/>
                       </Fab>
                     </Box>
                   </Box>
@@ -492,13 +590,16 @@ function AccountManagement() {
                     {/* <AccountM /> */}
                     <Box sx={{ '& > :not(style)': { m: 1 } , display:'flex', flexDirection:'row', justifyContent:'center'}}>
                       <Fab color="secondary" aria-label="edit">
-                        <EditIcon onClick={(id) => handleSubmitUpdate(e.id)}
-                        />
-                      </Fab>
-                      <Fab>
+                        <CheckCircleIcon onClick={(id)=> handleSubmitUpdate(e.id)}>
+
+                        </CheckCircleIcon>
+                        {/* <Validate onClick={(id) => handleSubmitUpdate(e.id)} */}
+                        {/* /> */}
+                      </Fab >
+                      <Fab sx={{backgroundColor:'#FB4747'}}>
                       
 
-                        <DeleteIcon  onClick={(id) => handleOpendeleteKid(e.id)}/>
+                        <DeleteIcon sx={{backgroundColor:'#FB4747'}} onClick={(id) => handleOpendeleteKid(e.id)}/>
                         </Fab>
                       
                    
@@ -574,6 +675,7 @@ function AccountManagement() {
 
                     </p>
                   </Box>
+                 {/* <CheckCircleIcon></CheckCircleIcon> onClick={() => [setOpenModalCheckCredential(true), setChangeUpdateUser(true)]} */}
                   <Validate handleSubmit={handleSubmitCreate} />
                 </Card>
 
@@ -766,7 +868,7 @@ function AccountManagement() {
                   {/*  User*/}
                   {/* CheckCredential */}
                 <Modal
-                          open={openModalDeleteUser}
+                          open={openModalCheckCredential}
                           onClose={handleClose}
                           aria-labelledby="parent-modal-title"
                           aria-describedby="parent-modal-description"
@@ -779,7 +881,7 @@ function AccountManagement() {
                           }}
                           >
 
-                            <h2 id="parent-modal-title"> Suppression du compte?</h2>
+                            <h2 id="parent-modal-title"> {changeDeleteUser ? "Suppression du compte?" : "Modification du compte?"}</h2>
                             <p className="parent-modal-description">
                              Merci de Confirmer votre mot de passe
                             </p>
