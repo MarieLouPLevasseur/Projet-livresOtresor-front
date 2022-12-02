@@ -18,15 +18,18 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import Loading from '../Loading/Loading';
 import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
+import { userLogout } from '../../features/login/userSlice';
+import { kidLogout } from '../../features/login/kidSlice';
 
 import './AccountManagement.scss';
 import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
 import OpenEye from '../../assets/img/oeil_ouvert.png';
 import CloseEye from '../../assets/img/oeil_ferme.png';
+import logoBook from '../../assets/img/logo.3.png';
 
 const theme = createTheme({
   palette: {
@@ -48,6 +51,8 @@ function AccountManagement() {
   const [openModalDeleteKid, setOpenModalDeleteKid] = useState(false);
   const [openModalCheckCredential, setOpenModalCheckCredential] = useState(false);
   const [openModalConfirmDeleteUser, setOpenModalConfirmDeleteUser] = useState(false);
+  const [openModalDeleteAccountMessage, setOpenModalDeleteAccountMessage] = useState(false);
+
   // const [openModalUpdateUser, setOpenModalUpdateUser] = useState(false);
 
   // Kid
@@ -96,7 +101,7 @@ function AccountManagement() {
   const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
   const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
   const [alertSuccessDelete, setAlertSuccessDelete] = useState(false);
-  const [alertSuccessDeleteUser, setAlertSuccessDeleteUser] = useState(false);
+  // const [alertSuccessDeleteUser, setAlertSuccessDeleteUser] = useState(false);
 
   // Api Calls
   const apiUrl = useSelector((state) => state.api.apiUrl);
@@ -114,21 +119,19 @@ function AccountManagement() {
   ///// TODO Permettre la route pour la suppression de l'utilisateur
   ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
   ///// TODO : mettre mot de passe en visible
-  // TODO : Afficher une page de remerciement/confirmation et déloguer le User avant de rediriger vers l'accueil principale du site
+  ///// TODO : Afficher une page de remerciement/confirmation et déloguer le User avant de rediriger vers l'accueil principale du site
   // TODO : factoriser les Alert et les modals
   // TODO :  créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
   // TODO : ? ajouter une variable 'checked' lorsque la confirmation du mot de passe a été faites une fois. Cela évitera à l'utilisateur de rentrer sont code 50 fois apres confirmations
     // TODO : ? valider un temps avant la remise à 0 du checked?
   // TODO : mettre un hover au survol des boutons edit, validate et delete
   // TODO : ? Envoyer une confirmation lors du changement de mot de passe par mail?  
+  // TODO ?vérifier les contraintes du mot de passe avant soumission?
+
   ///// TODO : Permettre la route pour suppression d'un kid
   ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
 
-  // let navigate = useNavigate(); 
-  // const routeChange = () =>{ 
-  //   let path = `/profil/utilisateur`; 
-  //   navigate(path);
-  // }
+ 
 
 
   //  GET List of users
@@ -353,8 +356,13 @@ function AccountManagement() {
     })
       .then(function (response) {
         console.log(response)
-        setAlertSuccessDeleteUser(true)
+        setOpenModalDeleteAccountMessage(true)
 
+        // logout user
+        dispatch(userLogout());
+        dispatch(kidLogout())
+        localStorage.removeItem('user');
+        localStorage.removeItem('kid');
       })
       .catch(function (error) {
         console.log(error);
@@ -428,7 +436,7 @@ function AccountManagement() {
 
       const updateUserWithPassword = {
         lastname: userUpdateLastNameValue === "" ? lastName : userUpdateLastNameValue,
-        // TODO vérifier les contraintes du mot de passe avant soumission
+        // TODO ?vérifier les contraintes du mot de passe avant soumission?
         password: userUpdatePasswordValue,
         firstname: userUpdateFirstNameValue === "" ? firstname: userUpdateFirstNameValue,
         email: userUpdateEmailValue === "" ? email : userUpdateEmailValue
@@ -497,10 +505,10 @@ function AccountManagement() {
                       <Grid item xs={12} sm={6}>
                         <TextField
                           fullWidth
-
+                          defaultValue={userUpdatePasswordValue}
                           name="password"
                           label="Mot de passe"
-                          type="password"
+                          // type="password"
                           id="password"
                           autoComplete="new-password"
                           onChange={(e) => setUserUpdatePasswordValue(e.target.value)}
@@ -600,8 +608,6 @@ function AccountManagement() {
                         <CheckCircleIcon onClick={(id)=> handleSubmitUpdate(e.id)}>
 
                         </CheckCircleIcon>
-                        {/* <Validate onClick={(id) => handleSubmitUpdate(e.id)} */}
-                        {/* /> */}
                       </Fab >
                       <Fab sx={{backgroundColor:'#FB4747'}}>
                       
@@ -682,7 +688,6 @@ function AccountManagement() {
 
                     </p>
                   </Box>
-                 {/* <CheckCircleIcon></CheckCircleIcon> onClick={() => [setOpenModalCheckCredential(true), setChangeUpdateUser(true)]} */}
                   <Validate handleSubmit={handleSubmitCreate} />
                 </Card>
 
@@ -871,6 +876,8 @@ function AccountManagement() {
               </MuiAlert>
             </Snackbar>
 
+
+
             {/* ******* MODAL ********** */}
                   {/*  User*/}
                   {/* CheckCredential */}
@@ -900,7 +907,6 @@ function AccountManagement() {
                             >
                               <Button
                                 className="closeButton"
-                                // type="password"
                                 fullWidth
                                 variant="contained"
                                 onClick={handleClose} 
@@ -909,7 +915,6 @@ function AccountManagement() {
                                 Non, c'est une erreur. Annuler
                               </Button>
                               <TextField
-                              // type="password"
                               type={passwordVisibility ? "password" : ""}
 
                           value={passwordToCheck}
@@ -922,7 +927,6 @@ function AccountManagement() {
 
                         <Button
                           className="confirmPasswordButton"
-                          // type="submit"
                           fullWidth
                           variant="contained"
                           label='confirmation mot de passe'
@@ -965,7 +969,6 @@ function AccountManagement() {
                             >
                               <Button
                                 className="closeButton"
-                                // type="submit"
                                 fullWidth
                                 variant="contained"
                                 onClick={handleClose} 
@@ -975,7 +978,6 @@ function AccountManagement() {
                               </Button>
                               <Button
                                 className="deleteButton"
-                                // type="password"
                                 fullWidth
                                 variant="contained"
                                 onClick={handleSubmitDeleteUser}
@@ -986,6 +988,58 @@ function AccountManagement() {
                             </Box>
                           </Box>
                         </Modal> 
+                      {/* Good Bye message when user delete account */}
+
+                      <Modal
+                          open={openModalDeleteAccountMessage}
+                          onClose={handleClose}
+                          aria-labelledby="parent-modal-title"
+                          aria-describedby="parent-modal-description"
+                          disableEnforceFocus
+                        >
+                          <Box sx={{
+                            width: '40%',
+                            padding:10,
+                            backgroundColor: 'white',
+                            margin: 'auto',
+                            alignContent: 'center',
+                            textAlign:'center'
+                          }}
+                          >
+
+                            <h2 id="parent-modal-title"> Merci d'avoir fait un bout de chemin avec nous!</h2>
+                            <p className="parent-modal-delete-account" >
+                            Nous avons été heureux de vous compter parmis nos membres.
+                            </p>
+                            <p className="parent-modal-delete-account" >
+                            Nous vous souhaitons une belle journée. 
+                            </p>
+                            <p className="parent-modal-delete-account" >
+
+                            Bonne continuation. 
+                             </p>
+
+                            <img className="logoModal" src={logoBook} alt="logo Book" width={'30%'} >
+ 
+                            
+                            </img>
+                          <Link to={'/'} style={{"textDecoration":"none"}}>
+                          
+                              <Button
+                                className="closeButton"
+                                fullWidth
+                                variant="contained"
+                                onClick={handleClose} 
+                                sx={{ mt: 2, mb: 2, background: 'blue' }}
+                              >
+                              Retour à l'Accueil
+                              </Button>
+                          </Link>
+                              
+                            </Box>
+                        </Modal> 
+
+
 
                         {/*----- Kid ------- */}
                         <Modal
@@ -1013,7 +1067,6 @@ function AccountManagement() {
                             >
                               <Button
                                 className="closeButton"
-                                // type="submit"
                                 fullWidth
                                 variant="contained"
                                 onClick={handleClose} 
@@ -1023,7 +1076,6 @@ function AccountManagement() {
                               </Button>
                               <Button
                                 className="deleteButton"
-                                // type="submit"
                                 fullWidth
                                 variant="contained"
                                 onClick={handleSubmitDelete}
