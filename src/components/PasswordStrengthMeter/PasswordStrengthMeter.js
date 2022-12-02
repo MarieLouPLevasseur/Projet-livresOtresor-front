@@ -30,7 +30,7 @@ import zxcvbn from 'zxcvbn';
       const createPasswordLabel = ()=>{
         switch (testedResult.score) {
           case 0:
-            return 'très faible'
+            return ''
           case 1:
             return 'faible';
           case 2:

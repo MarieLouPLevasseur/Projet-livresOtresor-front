@@ -25,6 +25,7 @@ import OpenEye from '../../assets/img/oeil_ouvert.png';
 import CloseEye from '../../assets/img/oeil_ferme.png';
 import './Register.scss';
 import Image from '../../assets/img/register.jpg';
+import PasswordStrengthMeter from '../PasswordStrengthMeter/PasswordStrengthMeter';
 
 
 function Copyright(props) {
@@ -118,19 +119,19 @@ export default function Register() {
     }
   };
 
-  const checkPasswordValidity = () => {
-    if (
-      passwordValue.match(
-        // minimum 8 character: minimum: 1 lowercase, 1 uppercase, 1 special character
-        "^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$"
+  // const checkPasswordValidity = () => {
+  //   if (
+  //     passwordValue.match(
+  //       // minimum 8 character: minimum: 1 lowercase, 1 uppercase, 1 special character
+  //       "^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*|[a-zA-Z0-9]*)$"
 
-      )
-    ) {
-      setPasswordValidityError(true);
-    } else {
-      setPasswordValidityError(false);
-    }
-  };
+  //     )
+  //   ) {
+  //     setPasswordValidityError(true);
+  //   } else {
+  //     setPasswordValidityError(false);
+  //   }
+  // };
 
   const checkPasswordMatch = () => {
     console.log("------- Password Matchs-----------")
@@ -310,10 +311,11 @@ export default function Register() {
                     autoComplete="new-password"
                     value={passwordValue}
                     // secureTextEntry={passwordVisibility}
-                    onBlur={checkPasswordValidity}
+                    // onBlur={checkPasswordValidity}
                     type={passwordVisibility ? "password" : ""}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                      <PasswordStrengthMeter passwordValue={passwordValue}/>
 
                 </Grid>
                 <Grid item xs={12}>
