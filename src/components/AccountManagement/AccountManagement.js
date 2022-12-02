@@ -30,6 +30,8 @@ import { useTogglePasswordVisibility } from '../../components/useTogglePasswordV
 import OpenEye from '../../assets/img/oeil_ouvert.png';
 import CloseEye from '../../assets/img/oeil_ferme.png';
 import logoBook from '../../assets/img/logo.3.png';
+import PasswordStrengthMeter from '../PasswordStrengthMeter/PasswordStrengthMeter';
+
 
 const theme = createTheme({
   palette: {
@@ -514,6 +516,9 @@ function AccountManagement() {
                           onChange={(e) => setUserUpdatePasswordValue(e.target.value)}
 
                         />
+
+                      <PasswordStrengthMeter passwordValue={userUpdatePasswordValue}/>
+                      
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <TextField
