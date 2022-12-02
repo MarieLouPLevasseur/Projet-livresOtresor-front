@@ -24,6 +24,9 @@ import Loading from '../Loading/Loading';
 import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
 
 import './AccountManagement.scss';
+import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
+import OpenEye from '../../assets/img/oeil_ouvert.png';
+import CloseEye from '../../assets/img/oeil_ferme.png';
 
 const theme = createTheme({
   palette: {
@@ -77,6 +80,9 @@ function AccountManagement() {
   const [passwordToCheck, setPasswordToCheck] = useState("");
   const [idKidToDelete, setIdKidToDelete] = useState(0);
   const [changeDatas, setChangeDatas] = useState(false);
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } =
+  useTogglePasswordVisibility();
+
 
 
   // Error states
@@ -107,13 +113,14 @@ function AccountManagement() {
   /////  si perte mot de passe=> procédure de renvoi de mail via l'accueil
   ///// TODO Permettre la route pour la suppression de l'utilisateur
   ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
+  ///// TODO : mettre mot de passe en visible
   // TODO : Afficher une page de remerciement/confirmation et déloguer le User avant de rediriger vers l'accueil principale du site
-  // TODO : mettre mot de passe en visible
   // TODO : factoriser les Alert et les modals
-  // TODO : créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
-  // TODO : ajouter une variable 'checked' lorsque la confirmation du mot de passe a été faites une fois. Cela évitera à l'utilisateur de rentrer sont code 50 fois apres confirmations
-    // TODO : valider un temps avant la remise à 0 du checked?
+  // TODO :  créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
+  // TODO : ? ajouter une variable 'checked' lorsque la confirmation du mot de passe a été faites une fois. Cela évitera à l'utilisateur de rentrer sont code 50 fois apres confirmations
+    // TODO : ? valider un temps avant la remise à 0 du checked?
   // TODO : mettre un hover au survol des boutons edit, validate et delete
+  // TODO : ? Envoyer une confirmation lors du changement de mot de passe par mail?  
   ///// TODO : Permettre la route pour suppression d'un kid
   ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
 
@@ -519,7 +526,7 @@ function AccountManagement() {
                               
                             </CheckCircleIcon>
                       </Fab>
-                      <Fab sx={{backgroundColor:'#FB4747'}}>
+                      <Fab className="deleteIconBackground" sx={{backgroundColor:'#FB4747'}}>
                         <DeleteIcon sx={{backgroundColor:'#FB4747'}} onClick={() => [setOpenModalCheckCredential(true), setChangeDeleteUser(true)]}/>
                       </Fab>
                     </Box>
@@ -671,7 +678,7 @@ function AccountManagement() {
                       </Grid>
                     </Box>
                     <p>
-                      (*) Les champs marqués d'un astérix sont obligatoires
+                      (*) Les champs marqués d'un astérix sont obligatoires.
 
                     </p>
                   </Box>
@@ -780,7 +787,7 @@ function AccountManagement() {
                 }}
               >
                 Ce n'est pas le bon mot de passe. Nous ne pouvons pas accéder à votre demande. 
-                En cas d'oubli, retourner à l'espace d'accueil de connexion et suivez la procédure d'oubli du mot de passe
+                En cas d'oubli déconnectez-vous, retournez à l'espace d'accueil de connexion et suivez la procédure d'oubli du mot de passe.
               </MuiAlert>
             </Snackbar>
             <Snackbar
@@ -887,7 +894,8 @@ function AccountManagement() {
                             </p>
                             <Box component="form" noValidate 
                               sx={{
-                                margin: 10
+                                margin: 10,
+                                textAlign:'center'
                               }}
                             >
                               <Button
@@ -901,12 +909,17 @@ function AccountManagement() {
                                 Non, c'est une erreur. Annuler
                               </Button>
                               <TextField
-                              type="password"
+                              // type="password"
+                              type={passwordVisibility ? "password" : ""}
+
                           value={passwordToCheck}
+                          
                           placeholder="Confirmation mot de passe"
                           onChange={(e) => setPasswordToCheck(e.target.value)}
                         >
                         </TextField>
+                        <img sx={{margin:'auto'}}edge="end" alt={rightIcon === "eye" ? "Set password visible" : "set password invisible"} src={rightIcon === "eye" ? OpenEye : CloseEye} size={22} onClick={handlePasswordVisibility} />
+
                         <Button
                           className="confirmPasswordButton"
                           // type="submit"
@@ -958,7 +971,7 @@ function AccountManagement() {
                                 onClick={handleClose} 
                                 sx={{ mt: 2, mb: 2, background: 'red' }}
                               >
-                                Non, c'est une erreur. Annuler
+                                Non, c'est une erreur. Annuler.
                               </Button>
                               <Button
                                 className="deleteButton"
@@ -1006,7 +1019,7 @@ function AccountManagement() {
                                 onClick={handleClose} 
                                 sx={{ mt: 2, mb: 2, background: 'red' }}
                               >
-                                Non, c'est une erreur. Annuler
+                                Non, c'est une erreur. Annuler.
                               </Button>
                               <Button
                                 className="deleteButton"
