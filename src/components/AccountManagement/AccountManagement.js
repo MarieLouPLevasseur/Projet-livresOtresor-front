@@ -32,7 +32,6 @@ import CloseEye from '../../assets/img/oeil_ferme.png';
 import logoBook from '../../assets/img/logo.3.png';
 import PasswordStrengthMeter from '../PasswordStrengthMeter/PasswordStrengthMeter';
 
-
 const theme = createTheme({
   palette: {
     primary: {
@@ -90,50 +89,26 @@ function AccountManagement() {
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
   useTogglePasswordVisibility();
 
+  // Alert
 
-
-  // Error states
-  const [alertErrorCreate, setAlertErrorCreate] = useState(false);
-  const [alertErrorUpdate, setAlertErrorUpdate] = useState(false);
-  const [alertUsernameFailed, setAlertUsernameFailed] = useState(false);
-  const [alertErrorDelete, setAlertErrorDelete] = useState(false);
-  const [alertErrorCheckCredential, setAlertErrorCheckCredential] = useState(false);
-
-  // Success State
-  const [alertSuccessCreate, setAlertSuccessCreate] = useState(false);
-  const [alertSuccessUpdate, setAlertSuccessUpdate] = useState(false);
-  const [alertSuccessDelete, setAlertSuccessDelete] = useState(false);
-  // const [alertSuccessDeleteUser, setAlertSuccessDeleteUser] = useState(false);
-
+  const [alert, setAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("");
+  
   // Api Calls
   const apiUrl = useSelector((state) => state.api.apiUrl);
   const apiEndpointKids = `/api/v1/users/${id}/kids`
   const apiEndpointUsers = `/api/v1/users/${id}`
   const apiEndpointDeleteUser = `/api/v1/users/delete/${id}`
 
-  /////   : ajouter un prénom pour le compte kid en plus du username (car pénible pour associer un compte sans l'appeler papillon 375)=> faire en back
-  ///// TODO : Modification des comptes enfants
-  ///// TODO mettre une erreur spécifique et parlante en cas d'identifiant déjà utilisé
-  ///// TODO mettre à jour l'encart du prénom (ou rechargement page?)
-
-  ///// TODO : Pour toute modification des comptes utilisateurs adultes: demander la confirmation du mot de passe *//
-  /////  si perte mot de passe=> procédure de renvoi de mail via l'accueil
-  ///// TODO Permettre la route pour la suppression de l'utilisateur
-  ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
-  ///// TODO : mettre mot de passe en visible
-  ///// TODO : Afficher une page de remerciement/confirmation et déloguer le User avant de rediriger vers l'accueil principale du site
-  // TODO : factoriser les Alert et les modals
+  
+  // TODO: factoriser les Alert et les modals
   // TODO :  créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
   // TODO : ? ajouter une variable 'checked' lorsque la confirmation du mot de passe a été faites une fois. Cela évitera à l'utilisateur de rentrer sont code 50 fois apres confirmations
     // TODO : ? valider un temps avant la remise à 0 du checked?
   // TODO : mettre un hover au survol des boutons edit, validate et delete
   // TODO : ? Envoyer une confirmation lors du changement de mot de passe par mail?  
   // TODO ?vérifier les contraintes du mot de passe avant soumission?
-
-  ///// TODO : Permettre la route pour suppression d'un kid
-  ///// TODO : mettre une alerte de confirmation de suppression car action définitive et irréversible
-
- 
 
 
   //  GET List of users
@@ -162,9 +137,13 @@ function AccountManagement() {
             setLastName(response.data.lastname);
             setEmail(response.data.email);
             setLoadingUserValue(false)
+           
           })
           .catch((error) => {
             console.log(error);
+             setAlert(true);
+             setAlertMessage("Une erreur s'est produite.")
+             setAlertSeverity("error")
           })
 
 
@@ -202,7 +181,10 @@ function AccountManagement() {
       },
     })
       .then(function (response) {
-        setAlertSuccessCreate(true);
+         setAlert(true);
+         setAlertMessage("Le compte enfant a bien été créé")
+         setAlertSeverity("success")
+
         setChangeDatas(true);
         setKidAddFirstNameValue("");
         setKidAddPasswordValue("");
@@ -212,10 +194,14 @@ function AccountManagement() {
         console.log(error);
         console.log(error.message)
         if (error.message === "Request failed with status code 400"){
-          setAlertUsernameFailed(true)
+           setAlert(true);
+           setAlertMessage("Vous ne pouvez pas utiliser cet identifiant")
+           setAlertSeverity("error")
         }
         else{
-          setAlertErrorCreate(true)
+           setAlert(true);
+           setAlertMessage("Une erreur s'est produite lors de la création")
+           setAlertSeverity("error")
         }
 
       });
@@ -243,7 +229,10 @@ function AccountManagement() {
       },
     })
       .then(function (response) {
-        setAlertSuccessUpdate(true)
+        setAlert(true);
+        setAlertMessage("La mise à jour a bien été prise en compte")
+        setAlertSeverity("success")
+
         setChangeDatas(true)
         setKidUpdateFirstNameValue("");
         setKidUpdatePasswordValue("");
@@ -253,10 +242,14 @@ function AccountManagement() {
         console.log(error);
         
         if (error.message === "Request failed with status code 409"){
-          setAlertUsernameFailed(true)
+          setAlert(true);
+          setAlertMessage("Vous ne pouvez pas utiliser cet identifiant")
+          setAlertSeverity("error")
         }
         else{
-          setAlertErrorUpdate(true)
+          setAlert(true);
+          setAlertMessage("Une erreur s'est produit lors de la mise à jour")
+          setAlertSeverity("error")
 
         }
       });
@@ -284,14 +277,19 @@ function AccountManagement() {
     })
       .then(function (response) {
         console.log(response)
-        setAlertSuccessDelete(true)
+        setAlert(true);
+        setAlertMessage("Le compte a bien été détruit")
+        setAlertSeverity("success")
+
         setChangeDatas(true)
 
       })
       .catch(function (error) {
         console.log(error);
         
-          setAlertErrorDelete(true)
+          setAlert(true);
+          setAlertMessage("Une erreur s'est produite lors de la suppression")
+          setAlertSeverity("error")
 
       });
   }
@@ -331,7 +329,11 @@ function AccountManagement() {
       })
       .catch(function (error) {
         console.log(error);
-          setAlertErrorCheckCredential(true)
+          // setAlertErrorCheckCredential(true)
+
+          setAlert(true);
+          setAlertMessage("Une erreur s'est produite lors de la vérification du mot de passe. En cas de mot de passe oublié. Retourner à l'accueil et suivez la procédure d'oubli sur la pase de connexion.")
+          setAlertSeverity("error")
 
       });
   }
@@ -369,7 +371,11 @@ function AccountManagement() {
       .catch(function (error) {
         console.log(error);
         
-          setAlertErrorDelete(true)
+          // setAlertErrorDelete(true)
+
+          setAlert(true);
+          setAlertMessage("Une erreur s'est produite lors de la suppression")
+          setAlertSeverity("error")
 
       });
   }
@@ -393,7 +399,10 @@ function AccountManagement() {
       },
     })
       .then(function (response) {
-        setAlertSuccessUpdate(true)
+        setAlert(true);
+        setAlertMessage("La mise à jour a bien été effectuée")
+        setAlertSeverity("success")
+
         setChangeDatas(true)
 
         //dispatch Data on Store
@@ -411,7 +420,9 @@ function AccountManagement() {
       .catch(function (error) {
         console.log(error);     
 
-        setAlertErrorUpdate(true)
+        setAlert(true);
+        setAlertMessage("Une erreur s'est produite lors de la mise à jour")
+        setAlertSeverity("error")
 
       });
   }
@@ -456,6 +467,7 @@ function AccountManagement() {
   return (
     <ThemeProvider theme={theme}>
       <div>
+        {/* <AlertErrorMessage alertStatus={alertError} message= {alertMessage} /> */}
         <Box sx={{ width: { md: '80%' }, border: '1px solid #4462A5', justifyContent: 'space-between', alignItems: 'center', margin: 'auto' }}>
 
           <Box sx={{ display: 'flex', alignItems: 'start', flexDirection: 'column', Width: '100%' }}>
@@ -701,188 +713,27 @@ function AccountManagement() {
             </Box>
           
 
-            {/* ** ALERT ERROR *** */}
-            <Snackbar
-              open={alertUsernameFailed}
-              autoHideDuration={6000}
-              onClose={() => setAlertUsernameFailed(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="error"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
+            {/* ** ALERT Message *** */}
+              <Snackbar
+                open={alert}
+                autoHideDuration={6000}
+                onClose={() => setAlert(false)}
               >
-               Cet identifiant ne peux pas être utilisé. Merci d'en choisir un autre.
-              </MuiAlert>
-            </Snackbar>
-
-            <Snackbar
-              open={alertErrorCreate}
-              autoHideDuration={6000}
-              onClose={() => setAlertErrorCreate(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="error"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                Une erreur s'est produite. Merci de réessayer.
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={alertErrorDelete}
-              autoHideDuration={6000}
-              onClose={() => setAlertErrorDelete(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="error"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                Une erreur s'est produite. Merci de réessayer.
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={alertErrorUpdate}
-              autoHideDuration={6000}
-              onClose={() => setAlertErrorUpdate(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="error"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                Une erreur s'est produite. Merci de réessayer.
-              </MuiAlert>
-            </Snackbar>
-
-            <Snackbar
-              open={alertErrorCheckCredential}
-              autoHideDuration={7000}
-              onClose={() => setAlertErrorCheckCredential(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="error"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '40%'
-                }}
-              >
-                Ce n'est pas le bon mot de passe. Nous ne pouvons pas accéder à votre demande. 
-                En cas d'oubli déconnectez-vous, retournez à l'espace d'accueil de connexion et suivez la procédure d'oubli du mot de passe.
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={alertErrorUpdate}
-              autoHideDuration={6000}
-              onClose={() => setAlertErrorUpdate(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="error"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                Une erreur s'est produite. Merci de réessayer.
-              </MuiAlert>
-            </Snackbar>
-
-            {/* ** ALERT SUCCESS *** */}
-
-            <Snackbar
-              open={alertSuccessUpdate}
-              autoHideDuration={6000}
-              onClose={() => setAlertSuccessUpdate(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="success"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                <p>La modification a bien été effectuée.</p>
-              </MuiAlert>
-            </Snackbar>
-            <Snackbar
-              open={alertSuccessDelete}
-              autoHideDuration={6000}
-              onClose={() => setAlertSuccessDelete(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="success"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                <p>La suppression a bien été effectuée.</p>
-              </MuiAlert>
-            </Snackbar>
-
-            <Snackbar
-              open={alertSuccessCreate}
-              autoHideDuration={6000}
-              onClose={() => setAlertSuccessCreate(false)}
-            >
-              <MuiAlert
-                elevation={6}
-                variant="filled"
-                severity="success"
-                sx={{
-                  width: "100%",
-                  display: 'block',
-                  textAlign: "center",
-                  marginBottom: '60%'
-                }}
-              >
-                <p>L'ajout a bien été effectué.</p>
-              </MuiAlert>
-            </Snackbar>
-
-
-
+                <MuiAlert
+                  elevation={6}
+                  variant="filled"
+                  severity={alertSeverity}
+                  sx={{
+                    width: "100%",
+                    display: 'block',
+                    textAlign: "center",
+                    marginBottom: '60%'
+                  }}
+                >
+                  {alertMessage}
+                </MuiAlert>
+              </Snackbar>
+        
             {/* ******* MODAL ********** */}
                   {/*  User*/}
                   {/* CheckCredential */}
