@@ -599,6 +599,7 @@ function AccountManagement() {
                             label="Identifiant de connexion-optionnel"
                             autoFocus
                           />
+
                         </Grid>
                       </Box>
 
@@ -613,10 +614,8 @@ function AccountManagement() {
                             fullWidth
                             label="Mot de passe-optionnel"
                             autoFocus
-
-                            type="password"
-
                           />
+
                         </Grid>
                       </Box>
                     {/* <AccountM /> */}
@@ -693,11 +692,15 @@ function AccountManagement() {
                           fullWidth
                           name="password"
                           label="Mot de passe"
-                          type="password"
+                          // type="password"
+                          type={passwordVisibility ? "password" : ""}
                           autoComplete="new-password"
                           value={kidAddPasswordValue}
                           onChange={(e) => setKidAddPasswordValue(e.target.value)}
                         />
+                   <PasswordStrengthMeter passwordValue={kidAddPasswordValue}/>
+                   <img edge="end" alt={rightIcon === "eye"? "Set password visible":"set password invisible"} src={rightIcon === "eye" ? OpenEye : CloseEye} size={22} onClick={handlePasswordVisibility} />
+
                       </Grid>
                     </Box>
                     <p>
