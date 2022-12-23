@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import Navbar from '../Navbar/Navbar'
 import Home from '../Home/Home'
@@ -26,6 +27,8 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import UserLogin from '../UserLogin/UserLogin';
 import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
 import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress, kidFirstname } from '../../features/login/kidSlice';
+import { userLogout } from '../../features/login/userSlice';
+import { kidLogout } from '../../features/login/kidSlice';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -38,6 +41,13 @@ function App() {
 
   const isLogUser = useSelector((state) => state.user.isLogUser);
   const isLogKid = useSelector((state) => state.kid.isLogKid);
+  console.log(isLogKid, "test is LogKid")
+  const handleLogout = () => {
+    dispatch(userLogout());
+    dispatch(kidLogout())
+    localStorage.removeItem('user');
+    localStorage.removeItem('kid');
+  };
 
   useEffect(() => {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
@@ -46,6 +56,10 @@ function App() {
     const progressKid = JSON.parse(localStorage.getItem('kidProgress'));
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
+      // TODO : Mettre un message de déconnexion pour ne pas surprendre l'utilisateur
+      setTimeout(() => Navigate('/connexion-parent'),1000*60*60);
+      setTimeout(() => handleLogout(),1000*60*60);
+
 
   // set user data only
       dispatch(userId(loggedUser.id));
@@ -68,6 +82,10 @@ function App() {
       dispatch(kidFirstname(loggedKid.firstname));
       dispatch(kidAvatar(loggedKid.profil_avatar));
       dispatch(kidProgress(progressKid.progress));
+
+      setTimeout(() => Navigate('/connexion-enfant'),1000*60*60);
+      setTimeout(() => handleLogout(),1000*60*60);
+
     }
   },[]);
 

@@ -103,7 +103,7 @@ function AccountManagement() {
 
   
   // TODO: factoriser les Alert et les modals
-  // TODO :  créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
+  ///// TODO :  créer la barre d'affichage du niveau de sécurité du mot de passe (plutot que l'obligatoire d'un mot de passe avec Regex)
   // TODO : ? ajouter une variable 'checked' lorsque la confirmation du mot de passe a été faites une fois. Cela évitera à l'utilisateur de rentrer sont code 50 fois apres confirmations
     // TODO : ? valider un temps avant la remise à 0 du checked?
   // TODO : mettre un hover au survol des boutons edit, validate et delete
@@ -329,8 +329,6 @@ function AccountManagement() {
       })
       .catch(function (error) {
         console.log(error);
-          // setAlertErrorCheckCredential(true)
-
           setAlert(true);
           setAlertMessage("Une erreur s'est produite lors de la vérification du mot de passe. En cas de mot de passe oublié. Retourner à l'accueil et suivez la procédure d'oubli sur la pase de connexion.")
           setAlertSeverity("error")
@@ -371,8 +369,6 @@ function AccountManagement() {
       .catch(function (error) {
         console.log(error);
         
-          // setAlertErrorDelete(true)
-
           setAlert(true);
           setAlertMessage("Une erreur s'est produite lors de la suppression")
           setAlertSeverity("error")
@@ -449,7 +445,6 @@ function AccountManagement() {
 
       const updateUserWithPassword = {
         lastname: userUpdateLastNameValue === "" ? lastName : userUpdateLastNameValue,
-        // TODO ?vérifier les contraintes du mot de passe avant soumission?
         password: userUpdatePasswordValue,
         firstname: userUpdateFirstNameValue === "" ? firstname: userUpdateFirstNameValue,
         email: userUpdateEmailValue === "" ? email : userUpdateEmailValue
@@ -467,7 +462,6 @@ function AccountManagement() {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        {/* <AlertErrorMessage alertStatus={alertError} message= {alertMessage} /> */}
         <Box sx={{ width: { md: '80%' }, border: '1px solid #4462A5', justifyContent: 'space-between', alignItems: 'center', margin: 'auto' }}>
 
           <Box sx={{ display: 'flex', alignItems: 'start', flexDirection: 'column', Width: '100%' }}>
