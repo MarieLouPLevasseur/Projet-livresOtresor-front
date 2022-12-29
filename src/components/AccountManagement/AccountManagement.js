@@ -93,7 +93,7 @@ function AccountManagement() {
 
   const [alert, setAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("info");
   
   // Api Calls
   const apiUrl = useSelector((state) => state.api.apiUrl);

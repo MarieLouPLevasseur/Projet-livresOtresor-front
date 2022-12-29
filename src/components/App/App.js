@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
 
 import Navbar from '../Navbar/Navbar'
 import Home from '../Home/Home'
@@ -27,39 +26,31 @@ import PageNotFound from '../PageNotFound/PageNotFound';
 import UserLogin from '../UserLogin/UserLogin';
 import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
 import { kidAvatar, kidId, kidLogin, kidUsername, kidProgress, kidFirstname } from '../../features/login/kidSlice';
-import { userLogout } from '../../features/login/userSlice';
-import { kidLogout } from '../../features/login/kidSlice';
 
+import SessionTimeout from '../SessionTimeout';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
 import NotAllowed from '../NotAllowed/NotAllowed';
 
 function App() {
+// TODO : change NotAllowed Pages
 
   const dispatch = useDispatch();
 
   const isLogUser = useSelector((state) => state.user.isLogUser);
+  console.log(isLogUser, "test is LogUser")
   const isLogKid = useSelector((state) => state.kid.isLogKid);
   console.log(isLogKid, "test is LogKid")
-  const handleLogout = () => {
-    dispatch(userLogout());
-    dispatch(kidLogout())
-    localStorage.removeItem('user');
-    localStorage.removeItem('kid');
-  };
 
   useEffect(() => {
     const loggedUser = JSON.parse(localStorage.getItem('user'));
     const loggedUserKids = JSON.parse(localStorage.getItem('userKids'));
     const loggedKid = JSON.parse(localStorage.getItem('kid'));
     const progressKid = JSON.parse(localStorage.getItem('kidProgress'));
+    console.log(isLogUser, "user logged dans useeffect")
     if (loggedUser) {
       dispatch(userLogin(loggedUser.token));
-      // TODO : Mettre un message de déconnexion pour ne pas surprendre l'utilisateur
-      setTimeout(() => Navigate('/connexion-parent'),1000*60*60);
-      setTimeout(() => handleLogout(),1000*60*60);
-
 
   // set user data only
       dispatch(userId(loggedUser.id));
@@ -83,9 +74,6 @@ function App() {
       dispatch(kidAvatar(loggedKid.profil_avatar));
       dispatch(kidProgress(progressKid.progress));
 
-      setTimeout(() => Navigate('/connexion-enfant'),1000*60*60);
-      setTimeout(() => handleLogout(),1000*60*60);
-
     }
   },[]);
 
@@ -96,16 +84,17 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* {isLogKid && <Route path="/inscription" element={<NotAllowed />} />} */}
-        {!isLogKid && <Route path="/inscription" element={<Register />} />}
-        <Route path="/connexion-enfant" element={<KidLogin />} />
-        <Route path='/connexion-parent' element={<UserLogin />} />
-        <Route path="/profil" element={<Profiles />} />
         <Route path="/mentions-legales" element={<Legal />} />
         <Route path="/tutoriel" element={<Tutorial />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/cookies" element={<Cookies />} />
         <Route path="/a-propos" element={<About />} />
+        
+        {/* {isLogKid && <Route path="/inscription" element={<NotAllowed />} />} */}
+        {!isLogKid && <Route path="/inscription" element={<Register />} />}
+        <Route path="/connexion-enfant" element={<KidLogin />} />
+        <Route path='/connexion-parent' element={<UserLogin />} />
+        <Route path="/profil" element={<Profiles />} />
         {isLogUser && <Route path="/profil/utilisateur" element={<HomeUser />} />}
         {isLogKid && <Route path="/profil/utilisateur" element={<NotAllowed />} />}
         <Route path="/profil/utilisateur/compte" element={<AccountManagement />} />
@@ -118,6 +107,8 @@ function App() {
         <Route path="/mes-livres/voir-livre/:id" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+      
+      <SessionTimeout />
       <Footer />
     </div>
   );
