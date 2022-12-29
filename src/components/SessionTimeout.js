@@ -20,7 +20,7 @@ import React, {
     const isLogUser = useSelector((state) => state.user.isLogUser);
     const isLogKid = useSelector((state) => state.kid.isLogKid);
 
-    const [openModalWarningLogout, setOpenModalWarningLogout] = useState(true);
+    const [openModalWarningLogout, setOpenModalWarningLogout] = useState(false);
     const handleOpenModalWarningLogout = () => {
       setOpenModalWarningLogout(true)
     }
@@ -43,9 +43,9 @@ import React, {
   console.log((isLogUser || isLogKid), "test condition log user or kid")
     useEffect(() => {
       if(isLogUser || isLogKid){
-      setTimeout(() => handleOpenModalWarningLogout(),1000*10);
+      setTimeout(() => handleOpenModalWarningLogout(),1000*3300);
       setTimeout(() => handleCloseWarningLogout(),1000*3600);
-      setTimeout(() => navigate('/connexion-parent'),1000*3600);
+      setTimeout(() => navigate('/'),1000*3600);
       setTimeout(() => handleLogout(),1000*3600);
       }
     
