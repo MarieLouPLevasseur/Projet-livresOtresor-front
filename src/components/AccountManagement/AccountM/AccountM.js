@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 function AccountM() {
   return (
     <div>
-    <Box sx={{ '& > :not(style)': { m: 1 } }}>
+    <Box sx={{ '& > :not(style)': { m: 1 }, display:"flex", flexDirection: {lg:'row'}}}>
       <Fab color="secondary" aria-label="edit">
         <EditIcon />
       </Fab>

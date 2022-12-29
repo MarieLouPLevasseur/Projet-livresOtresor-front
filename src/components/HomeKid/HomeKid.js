@@ -38,9 +38,11 @@ function HomeKid() {
   // set username
     const username = useSelector(state => {
       if(isLogUser) {
-          return state.user.kidUsername
+          // return state.user.kidUsername
+          return state.user.kidFirstname
       }
-      return state.kid.username;
+      // return state.kid.username;
+      return state.kid.firstname;
      })
 
   // set avatar

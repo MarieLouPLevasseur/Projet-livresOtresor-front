@@ -8,11 +8,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { useDispatch } from 'react-redux';
 
-import { userKidId, userKidUsername, userKidAvatar } from "../../../features/login/userSlice"
+import { userKidId, userKidUsername, userKidAvatar,userKidFirstname } from "../../../features/login/userSlice"
 import {  Link } from 'react-router-dom';
 
 
-function ButtonList( {kidId, username, avatar}){
+function ButtonList( {kidId, username, avatar,firstname}){
   const dispatch = useDispatch();
 
   function handleDispatchInfoKid(){
@@ -20,11 +20,13 @@ function ButtonList( {kidId, username, avatar}){
     localStorage.setItem('userKids', JSON.stringify({
       kidId,
       username,
-      avatar
+      avatar,
+      firstname
     }));
 
     dispatch(userKidId(kidId));
     dispatch(userKidUsername(username));
+    dispatch(userKidFirstname(firstname));
     dispatch(userKidAvatar(avatar));
         
 };
@@ -44,11 +46,14 @@ function ButtonList( {kidId, username, avatar}){
         </Fab>
       </Link>
       <Fab color="secondary" aria-label="edit">
+      <Link to = "/profil/utilisateur/compte" >
+
         <EditIcon />
+        </Link>
       </Fab>
-      <Fab>
+      {/* <Fab>
         <DeleteIcon />
-      </Fab>
+      </Fab> */}
     </Box>
     </div>
   )
