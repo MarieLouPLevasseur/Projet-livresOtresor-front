@@ -201,13 +201,17 @@ function MyBooks() {
   };
 
 
-  const handleChangeAuthor = (event) => {
-    setAuthor(event.target.value);
-    // ! Bug ne rend pas les bons auteurs dans le filtre
+  const handleChangeAuthor = (authorSelected) => {
+    console.log("********HANDLE CHANGE AUTHOR**********")
 
-    if (author) {
-      setCardsFilter(Cards.filter((book) => book.book.authors[0].name == author));
-    }
+    setAuthor(authorSelected);
+    console.log("info entrant dans handleChangeAuthor: ",authorSelected)
+     const authorFiltered = Cards.filter((books) => {
+        return (books.book.authors[0].name == authorSelected);
+      });
+    console.log("Filtre par author (authorFiltered): ", authorFiltered)
+
+      setCardsFilter(authorFiltered);
   };
 
   const handleChangeCollection = (event) => {
@@ -280,7 +284,9 @@ function MyBooks() {
                   id="demo-simple-author"
                   value={author}
                   label="author"
-                  onChange={handleChangeAuthor}
+                  // onChange={handleChangeAuthor}
+                  onChange={(e) => handleChangeAuthor(e.target.value)}
+
                 >
                   {console.log(author, " current author value selected")}
 
