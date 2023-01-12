@@ -15,6 +15,7 @@ import SearchBar from '../Search/SearchBar/SearchBar';
 import usePagination from "../Search/UsePagination";
 import Loading from '../Loading/Loading';
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
+import BookMenu from '../Book/BookMenu/BookMenu';
 
 import './MyBooks.scss';
 
@@ -275,7 +276,7 @@ function MyBooks() {
 
             <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
               {/* <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} /> */}
-              {/* SearchBar ----------------------*/}
+              {/* ------------SEARCH BAR CHOICE ----------------------*/}
               <Box
                 component="form"
                 onSubmit={(e) => {
@@ -291,8 +292,10 @@ function MyBooks() {
                   display: 'flex',
                   width: '100%',
                   flexDirection: { xs: 'column', md: 'row' },
-                  alignItems: 'center',
-                  margin: 'auto',
+                  // alignItems: 'center',
+                  alignSelf:'left',
+                  // margin: 'auto', 
+                  // marginRight:"10%"
 
                 }}
                 autoComplete="off"
@@ -312,7 +315,6 @@ function MyBooks() {
                   type="submit"
                   variant="contained"
                   sx={{
-                    // width: { xs: '50%', md: '20%' },
                     width: {xs:'80%',sm:"60%", l:'50%'},
                     margin: { xs: '15px', md: 'auto' },
                   }}
@@ -475,7 +477,12 @@ function MyBooks() {
             className="searchButton"
             type="submit"
             variant="contained"
-            sx={{ width: '100%', mb:5 }}
+            sx={{ width: {xs:'100%',sm:"20%"},
+                  marginLeft:{xs:'15%'},
+                  mb:5 ,
+                  justifyContent:'right',
+                  padding:'auto'
+                }}
           >
             Imprimer ma liste
           </Button>

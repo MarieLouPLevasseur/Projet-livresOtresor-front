@@ -17,6 +17,7 @@ import Loading from '../Loading/Loading';
 import './Rewards.scss'
 import AvatarList from './RewardsList/AvatarList'
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
+import BookMenu from '../Book/BookMenu/BookMenu';
 
 
 function Rewards() {
@@ -168,6 +169,8 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
       </Typography>
       <Box sx={{display: 'flex'}}>
         <HomeKidButtons />
+        {/* <BookMenu /> */}
+
         <BookIconeMenu/>
         <Box sx={{display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', mt: 2 , margin:{xs:'auto'}}}>
           <Avatar

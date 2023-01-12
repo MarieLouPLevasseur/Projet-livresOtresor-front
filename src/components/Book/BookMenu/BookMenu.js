@@ -7,12 +7,12 @@ import './BookMenu.scss'
 
 function BookMenu() {
   return (
-    <Box sx={{ flexGrow: 1, flexDirection: 'column', maxWidth : '200px', display:{ xs: 'none', sm: 'block' }, marginLeft:'-300px'}}>
+    <Box sx={{ flexGrow: 1, flexDirection: 'column', maxWidth : '200px', display:{ xs: 'none', sm: 'block',backgroundColor:'yellow' }}}>
       {/* injection d'une Box pour responsive */}
-      <Box display={'flex'} >
+      <Box display={'flex'} sx={{backgroundColor:'red'}} >
           <Button
             className='button'
-            sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px'}}
+            sx={{ my: 2, color: 'red',fontFamily:'Montserrat', display: 'block', ml: 5, minWidth:'200px',backgroundColor:'red'}}
           >
             <NavLink
               className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
