@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
+import { TextField,Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -229,6 +229,24 @@ function MyBooks() {
       
   };
 
+  const handleSubmitSearch = () => {
+    console.log("********HANDLE SUBMIT SEARCH**********")
+
+    // setItemToSearch(searchSelected);
+    // console.log("info entrant dans handleSubmitSearch: ",searchSelected)
+    console.log("info entrant dans handleSubmitSearch : ", Search)
+    // console.log("info entrant dans handleSubmitSearch 3: ", itemToSearch)
+     const searchFiltered = Cards.filter((books) => {
+
+      // TODO : chaine de caractère à filtré: si mot clé présent dans le titre OU la description
+        return (books.book.title == Search) ;
+      });
+    console.log("Filtre par mot de recherche (searchFiltered): ", searchFiltered)
+
+      setCardsFilter(searchFiltered);
+      
+  };
+
   // useEffect(() => {
   // if (category){
   //   setCardsFilter(Cards.filter((book) => book.category.name === category));
@@ -260,7 +278,54 @@ function MyBooks() {
         <Box sx={{ display: 'flex' }}>
           <HomeKidButtons />
           <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
-            <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} />
+            {/* <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} /> */}
+            {/* SearchBar ----------------------*/}
+      <Box
+        component="form"
+        onSubmit={(e) => {
+          // setItemToSearch({Search})
+          e.preventDefault()
+          handleSubmitSearch({ Search })
+          setSearch("")
+        }}
+
+        sx={{
+          mt: 2,
+          mb: 5,
+          display: 'flex',
+          width: { sm: '70%', md: '40%' },
+          paddingLeft: { xs: '5em', sm: '8em' },
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'center',
+          margin: { md: 'auto' },
+          marginRight: { xs: '17%', sm: '20%' }
+
+        }}
+        autoComplete="off"
+      >
+        <TextField
+          value={Search}
+          onChange={(event) => {
+            setSearch(event.target.value);
+          }}
+          id="outlined-basic"
+          label="Recherche..."
+          variant="outlined"
+          sx={{ width: '70%', mr: 0.5 }}
+        />
+        <Button
+          className="searchButton"
+          type="submit"
+          variant="contained"
+          sx={{
+            width: { xs: '50%', md: '20%' },
+            margin: { xs: '15px', md: 'auto' },
+          }}
+        >
+          C'est parti !
+        </Button>
+      </Box>
+      {/*  ----------------------*/}
             <Box sx={{ display: "flex", width: "100%", justifyContent: 'center', mb: 3 }}>
               <FormControl sx={{ width: '20%' }}>
                 <InputLabel id="demo-simple-select-category">Catégorie</InputLabel>
@@ -272,7 +337,6 @@ function MyBooks() {
                   label="category"
                   onChange={(e) => handleChangeCategory(e.target.value)}
                 >
-                  {/* {console.log(category, " current category value selected")} */}
 
                   {categoriesList.map((data) => (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
@@ -287,11 +351,9 @@ function MyBooks() {
                   id="demo-simple-author"
                   value={author}
                   label="author"
-                  // onChange={handleChangeAuthor}
                   onChange={(e) => handleChangeAuthor(e.target.value)}
 
                 >
-                  {/* {console.log(author, " current author value selected")} */}
 
                   {authorsList.map((data) => (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
@@ -306,12 +368,10 @@ function MyBooks() {
                   id="demo-simple-collection"
                   value={collection}
                   label="collection"
-                  // onChange={handleChangeCollection}
                   onChange={(e) => handleChangeCollection(e.target.value)}
 
 
                 >
-                  {/* {console.log(collection, " :current collection value selected")} */}
 
                   {collectionList.map((data) => (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
@@ -327,6 +387,7 @@ function MyBooks() {
                 variant="contained"
                 sx={{ width: '15%' }}
                 onClick={() => setCardsFilter(Cards)}
+
               >
                 Tous mes livres
               </Button>
@@ -357,7 +418,6 @@ function MyBooks() {
                   image={data.book.cover}
                   alt="Book Cover"
                 />
-                {/* {console.log(CardsFilter, " current Cards filtered")} */}
 
                 <CardContent sx={{ width: '80%' }}>
                   <Typography gutterBottom variant="h5" component="div">
