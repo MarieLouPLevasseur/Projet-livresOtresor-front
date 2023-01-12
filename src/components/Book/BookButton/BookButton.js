@@ -36,12 +36,11 @@ function BookButton(Book) {
   // Redirect when connected
   const navigate = useNavigate();
 
+  //  TODO mettre une alerte de succès lors d'un passage d'un nouveau niveau lors de l'enregistrement d'un livre lu
 
 
   // Redirect when success
-  //  TODO pour l'instant redirection vers "mes livres" car il faudrait récupérer l'isbn du nouveau livres avec la route "last-read" qui contiendra l'isbn du dernier livre enregistré
-      //* TODO vérifier qu'en back il ne s'agit pas uniquement du dernier livre lu (sinon il faudra une nouvelle route ou un filtre sur "tous mes livres")
-      //* ou plus simplement mettre en homepage le dernier livre enregistré (et non pas lu) et mettre un clique pour que l'enfant puisse le consulter
+     
   useEffect(() => {
     if (alertSuccesSubmit) {
       setTimeout(() => {
@@ -84,15 +83,13 @@ function BookButton(Book) {
         "isbn" :       Book.Book.isbn,
         "cover":       Book.Book.cover,
         "publisher":   Book.Book.publisher,
-        "description": Book.Book.description !=="" ? "Il n'y a pas de description pour ce livre" : Book.Book.description,
+        "description": Book.Book.description == "" ? "Il n'y a pas de description pour ce livre" : Book.Book.description,
         "title":       Book.Book.title,
         "authors":     [{"name": Book.Book.authors[0].name}],
-        // "authors":     [{"name": 'inconnu'}],
         
       }
     }
   
-      // TODO il faudra mettre une pop up pour signalé si bien enregistré ou si erreur (ex doublon) + redirection
   postApi(apiUrl + apiEndpointCreateBook,loginFormData);
   }
 };

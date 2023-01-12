@@ -163,8 +163,10 @@ function MyBooks() {
         })
     }
 
+    // setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
+    // setCardsFilter(Cards.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
 
-  }, [kidId]);
+  }, [kidId,itemToSearch]);
 
   // Handle Functions
   const handleChangeRead = () => {
@@ -181,20 +183,21 @@ function MyBooks() {
     setCardsFilter(booksEnvy);
   }
 
-  const handleChangeCategory = (event) => {
-    setCategory(event.target.value);
-    // ! Bug ne rend pas les bonnes catégories dans le filtre
-    // ! après test il semble que le filtres projette les résultats de la sélection précédente (il y a un phénomène de décalage ): 
-    // ! ex: je sélectionne "Non-classé", rien ne se passe, je sélectionne "Aventure" les cartes de "non-classée son dispatchées" si je clique sur un 3e item dans la liste j'aurai la liste "Aventure"
-
-    if (category) {
-
-      // setCardsFilter(Cards.filter((book) => book.category.name == category));
-      let categoryFiltered = Cards.filter((books) => {
-        return books.category.name == { category };
+  const handleChangeCategory = (categorySelected) => {
+    console.log("********HANDLE CHANGE CATEGORY**********")
+    setCategory(categorySelected);
+    console.log("info entrant dans handleChangeCategory: ",categorySelected)
+   
+    // console.log("valeur de Cards: ", Cards)
+     
+      const categoryFiltered = Cards.filter((books) => {
+        return (books.category.name == categorySelected);
       });
+    console.log("Filtre par la catégorie (categoryFiltered): ", categoryFiltered)
       setCardsFilter(categoryFiltered);
-    }
+    // console.log(CardsFilter, "test cardFilter depuis handlechangeCategory")
+   
+
   };
 
 
@@ -231,9 +234,9 @@ function MyBooks() {
   // };
   // }, [category, author]);
 
-  useEffect(() => {
-    setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
-  }, [itemToSearch]);
+  // useEffect(() => {
+  //   setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
+  // }, [itemToSearch]);
 
   if (LoadingCards || LoadingCategories || LoadingAuthors || LoadingCollections) {
     return <Loading />
@@ -260,7 +263,7 @@ function MyBooks() {
                   id="demo-simple-category"
                   value={category}
                   label="category"
-                  onChange={handleChangeCategory}
+                  onChange={(e) => handleChangeCategory(e.target.value)}
                 >
                   {console.log(category, " current category value selected")}
 
