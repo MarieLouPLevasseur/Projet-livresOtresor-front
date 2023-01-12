@@ -232,14 +232,10 @@ function MyBooks() {
   const handleSubmitSearch = () => {
     console.log("********HANDLE SUBMIT SEARCH**********")
 
-    // setItemToSearch(searchSelected);
-    // console.log("info entrant dans handleSubmitSearch: ",searchSelected)
     console.log("info entrant dans handleSubmitSearch : ", Search)
-    // console.log("info entrant dans handleSubmitSearch 3: ", itemToSearch)
      const searchFiltered = Cards.filter((books) => {
 
-      // TODO : chaine de caractère à filtré: si mot clé présent dans le titre OU la description
-        return (books.book.title == Search) ;
+        return (books.book.title.includes(Search) || books.book.description.includes(Search)) ;
       });
     console.log("Filtre par mot de recherche (searchFiltered): ", searchFiltered)
 
@@ -247,21 +243,6 @@ function MyBooks() {
       
   };
 
-  // useEffect(() => {
-  // if (category){
-  //   setCardsFilter(Cards.filter((book) => book.category.name === category));
-  // }
-  // if (author){
-  //   setCardsFilter(Cards.filter((book) => book.book.authors[0].name === author));
-  // }
-  // return () => {
-  //   setCardsFilter(Cards);
-  // };
-  // }, [category, author]);
-
-  // useEffect(() => {
-  //   setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
-  // }, [itemToSearch]);
 
   if (LoadingCards || LoadingCategories || LoadingAuthors || LoadingCollections) {
     return <Loading />
