@@ -214,16 +214,19 @@ function MyBooks() {
       setCardsFilter(authorFiltered);
   };
 
-  const handleChangeCollection = (event) => {
-    setCollection(event.target.value);
+  const handleChangeCollection = (collectionSelected) => {
+    console.log("********HANDLE CHANGE COLLECTION**********")
 
-    if (collection) {
-      // ! Bug ne rend pas les bonnes collections dans le filtre
-      // setCardsFilter(Cards.filter((book) => book.series.name === collection));
-      // return()=>{
-      setCardsFilter(Cards.filter((book) => book.series !== null ? book.series.name == collection : null == collection));
-      // }
-    }
+    setCollection(collectionSelected);
+    console.log("info entrant dans handleChangeCollection: ",collectionSelected)
+     const collectionFiltered = Cards.filter((books) => {
+
+        return (books.series !== null ? books.series.name == collectionSelected : null == collection);
+      });
+    console.log("Filtre par collection (collectionFiltered): ", collectionFiltered)
+
+      setCardsFilter(collectionFiltered);
+      
   };
 
   // useEffect(() => {
@@ -269,7 +272,7 @@ function MyBooks() {
                   label="category"
                   onChange={(e) => handleChangeCategory(e.target.value)}
                 >
-                  {console.log(category, " current category value selected")}
+                  {/* {console.log(category, " current category value selected")} */}
 
                   {categoriesList.map((data) => (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
@@ -288,7 +291,7 @@ function MyBooks() {
                   onChange={(e) => handleChangeAuthor(e.target.value)}
 
                 >
-                  {console.log(author, " current author value selected")}
+                  {/* {console.log(author, " current author value selected")} */}
 
                   {authorsList.map((data) => (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
@@ -303,10 +306,12 @@ function MyBooks() {
                   id="demo-simple-collection"
                   value={collection}
                   label="collection"
-                  onChange={handleChangeCollection}
+                  // onChange={handleChangeCollection}
+                  onChange={(e) => handleChangeCollection(e.target.value)}
+
 
                 >
-                  {console.log(collection, " current collection value selected")}
+                  {/* {console.log(collection, " :current collection value selected")} */}
 
                   {collectionList.map((data) => (
                     <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
@@ -352,7 +357,7 @@ function MyBooks() {
                   image={data.book.cover}
                   alt="Book Cover"
                 />
-                {console.log(CardsFilter, " current Cards filtered")}
+                {/* {console.log(CardsFilter, " current Cards filtered")} */}
 
                 <CardContent sx={{ width: '80%' }}>
                   <Typography gutterBottom variant="h5" component="div">
