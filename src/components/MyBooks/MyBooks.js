@@ -63,8 +63,6 @@ function MyBooks() {
   const isLogUser = useSelector((state) => state.user.isLogUser);
   const isLogKid = useSelector((state) => state.kid.isLogKid);
 
-  //  console.log(isLogUser, "User is logged");
-  //  console.log(isLogKid, "Kid is logged");
 
   // set token
   const token = useSelector(state => {
@@ -126,7 +124,7 @@ function MyBooks() {
         }
       })
         .then((response) => {
-          console.log(response.data, "categoriesList data")
+          // console.log(response.data, "categoriesList data")
           setCategoriesList(response.data)
           setLoadingCategories(false);
         })
@@ -141,9 +139,8 @@ function MyBooks() {
         }
       })
         .then((response) => {
-          // console.log(response.data)
           setCollectionList(response.data)
-          console.log(response.data, "collectionsList data")
+          // console.log(response.data, "collectionsList data")
           setLoadingCollections(false);
         })
         .catch((error) => {
@@ -157,7 +154,7 @@ function MyBooks() {
         }
       })
         .then((response) => {
-          console.log(response.data, "authorsList data")
+          // console.log(response.data, "authorsList data")
           setAuthorsList(response.data.authors)
           setLoadingAuthors(false);
         })
@@ -165,9 +162,6 @@ function MyBooks() {
           console.log('Erreur !', error);
         })
     }
-
-    // setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
-    // setCardsFilter(Cards.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
 
   }, [kidId, itemToSearch]);
 
@@ -187,19 +181,19 @@ function MyBooks() {
   }
 
   const handleChangeCategory = (categorySelected) => {
-    console.log("********HANDLE CHANGE CATEGORY**********")
+    // console.log("********HANDLE CHANGE CATEGORY**********")
     setCategory(categorySelected);
     setCollection("");
     setAuthor("");
 
-    console.log("info entrant dans handleChangeCategory: ", categorySelected)
+    // console.log("info entrant dans handleChangeCategory: ", categorySelected)
 
     // console.log("valeur de Cards: ", Cards)
 
     const categoryFiltered = Cards.filter((books) => {
       return (books.category.name == categorySelected);
     });
-    console.log("Filtre par la catégorie (categoryFiltered): ", categoryFiltered)
+    // console.log("Filtre par la catégorie (categoryFiltered): ", categoryFiltered)
     setCardsFilter(categoryFiltered);
     // console.log(CardsFilter, "test cardFilter depuis handlechangeCategory")
 
@@ -208,33 +202,33 @@ function MyBooks() {
 
 
   const handleChangeAuthor = (authorSelected) => {
-    console.log("********HANDLE CHANGE AUTHOR**********")
+    // console.log("********HANDLE CHANGE AUTHOR**********")
 
     setAuthor(authorSelected);
     setCategory("");
     setCollection("");
-    console.log("info entrant dans handleChangeAuthor: ", authorSelected)
+    // console.log("info entrant dans handleChangeAuthor: ", authorSelected)
     const authorFiltered = Cards.filter((books) => {
       return (books.book.authors[0].name == authorSelected);
     });
-    console.log("Filtre par author (authorFiltered): ", authorFiltered)
+    // console.log("Filtre par author (authorFiltered): ", authorFiltered)
 
     setCardsFilter(authorFiltered);
   };
 
   const handleChangeCollection = (collectionSelected) => {
-    console.log("********HANDLE CHANGE COLLECTION**********")
+    // console.log("********HANDLE CHANGE COLLECTION**********")
 
     setCollection(collectionSelected);
     setCategory("");
     setAuthor("");
 
-    console.log("info entrant dans handleChangeCollection: ", collectionSelected)
+    // console.log("info entrant dans handleChangeCollection: ", collectionSelected)
     const collectionFiltered = Cards.filter((books) => {
 
       return (books.series !== null ? books.series.name == collectionSelected : null == collection);
     });
-    console.log("Filtre par collection (collectionFiltered): ", collectionFiltered)
+    // console.log("Filtre par collection (collectionFiltered): ", collectionFiltered)
 
     setCardsFilter(collectionFiltered);
 
@@ -272,10 +266,8 @@ function MyBooks() {
           <HomeKidButtons />
           <BookIconeMenu/>
           {/* ------GLOBAL BAR-------- */}
-          <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', ml: '3%' }} >
-
-            <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
-              {/* <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} /> */}
+          <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', ml:{xs:'3%', sm:'0%'}  }} >
+          <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: {xs:'3%', sm:'0%'} }}>              {/* <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} /> */}
               {/* ------------SEARCH BAR CHOICE ----------------------*/}
               <Box
                 component="form"
@@ -292,10 +284,7 @@ function MyBooks() {
                   display: 'flex',
                   width: '100%',
                   flexDirection: { xs: 'column', md: 'row' },
-                  // alignItems: 'center',
-                  alignSelf:'left',
-                  // margin: 'auto', 
-                  // marginRight:"10%"
+                  alignItems: 'center',
 
                 }}
                 autoComplete="off"
@@ -315,7 +304,8 @@ function MyBooks() {
                   type="submit"
                   variant="contained"
                   sx={{
-                    width: {xs:'80%',sm:"60%", l:'50%'},
+                    maxWidth:'280px',
+                    width: {xs:'80%',sm:"60%", md:'40%'},
                     margin: { xs: '15px', md: 'auto' },
                   }}
                 >
@@ -395,7 +385,6 @@ function MyBooks() {
                     width: '100%',
                     justifyContent: 'center',
                     flexDirection: { xs: 'column', sm:'row'},
-                    // gap: '5%',
                     mr: '10%',
                     mb: 5
                   }}
@@ -438,13 +427,11 @@ function MyBooks() {
                                         flexDirection: {xs:'column',sm:'row'},
                                         justifyContent:{xs:'center'},
                                         width: {xs:"100%",sm:"80%"},
-                                        // height: "50%",
                                         mb: 1.5 
                                    }}>
                 <CardMedia
                   sx={{ width: {xs:'100px',sm:'25%'},
                         maxWidth:{sm:'250px'},
-                        // maxHeight:{sm:"30%"} ,
                         alignSelf:'center'
                       }}
                   component="img"
@@ -477,10 +464,10 @@ function MyBooks() {
             className="searchButton"
             type="submit"
             variant="contained"
-            sx={{ width: {xs:'100%',sm:"20%"},
+            sx={{ width: {xs:'100%',sm:"30%", md:'20%'},
                   marginLeft:{xs:'15%'},
                   mb:5 ,
-                  justifyContent:'right',
+                  justifyContent:'center',
                   padding:'auto'
                 }}
           >

@@ -9,7 +9,7 @@ import './HomeKidButtons.scss'
 export default function HomeKidButtons() {
   return (
     // display:{ xs: 'none', sm: 'block' }
-    <Box sx={{ flexGrow: 1, display:{xs:'none',sm:'flex'}, flexDirection: 'column', maxWidth : '20%', }}>
+    <Box sx={{ flexGrow: 1, display:{xs:'none',sm:'flex'}, flexDirection: 'column', width : '20%', maxWidth:'250px' }}>
       <Tooltip title="Accueil">
 
       <Button
