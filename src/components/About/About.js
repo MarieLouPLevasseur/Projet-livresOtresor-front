@@ -8,65 +8,80 @@ import './About.scss';
 
 function About() {
   return (
-    <div className='About'>
+    <div className='About' >
+  <Box className="wrapperAbout" sx={{margin: '30px'}} >
+
     <Typography className='titre1' variant="h1" sx={{color:"#4462A5", padding: '40px', letterSpacing:'1px', }}>  Qui sommes-nous </Typography>
 
-    <Typography className='titre2' variant="h2" sx={{paddingBottom:'10px', lineHeight: '40px', letterSpacing:'2px', width:{xs:'70%', md:'100%'}}}>
-          Bienvenue sur Livres O'Trésor développé par une équipe de développeurs talentueux. </Typography>
-          <Box className='box1' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'center',  marginBottom: '35px', gap:'100px'} }}>
+    <Typography className='titre2' variant="h2" sx={{paddingBottom:'10px', lineHeight: '40px', letterSpacing:'2px', alignItems:'center'}}>
+          Bienvenue sur Livres O'Trésor développé par une équipe de développeurs talentueux. 
+    </Typography>
+    <Box className='box1' sx={{display: {xs:'flex-column', alignSelf: 'center', md: 'flex', justifyContent: 'center',  marginBottom: '35px', gap:'100px'} }}>
 
 
            <Typography className='paragraphe-1' sx={{ maxWidth: '900px', lineHeight: '30px', letterSpacing:'2px'}}>
 
-Notre site sert à encourager et de fournir une plate-forme sûre pour les enfants qui aiment la lecture tout en étant supervisés par un parent. Notre équipe a pour but de créer un site de qualité, pour que les parents passent du temps avec leurs enfants, et puisse partager leur amour à la lecture avec eux.
+              Notre site sert à encourager les enfants qui aiment la lecture en fournissant une plate-forme sûre tout en étant supervisés par un parent. Notre équipe a pour but de créer un site de qualité, pour que les parents passent du temps avec leurs enfants, et puissent partager leur amour de la lecture avec eux.
             </Typography> </Box>
   
               <Typography className='titre1' variant="h1" sx={{color:"#4462A5", padding: '40px', letterSpacing:'1px'}}>L'équipe </Typography>
                 
               <Box className='box1'  sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: '40px', gap:'100px'} }}>
 
-              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: '400px', minHeight: '200px', lineHeight: '150px', letterSpacing:'2px', border:'3px solid #4462A5'}}>
+              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: {md:'400px'}, minHeight: '200px', lineHeight: '2', letterSpacing:'2px', border:'3px solid #4462A5'}}>
+
               <CardMedia
               component="img"
               sx={{width:'30%', margin: 'auto'}}
-              image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+              image="img/Avatar-MarieLou.png"
               ></CardMedia>
-               Owner: Marie Lou Prince-Levasseur   
+               Marie Lou Prince-Levasseur  <br/>
+               Product Owner<br/>
+               Développeuse Symfony (et Réact)
               </Typography>
-              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: '400px', minHeight: '200px', lineHeight: '150px', letterSpacing:'2px', border:'3px solid #4462A5'}}>
+              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: {md:'400px'}, minHeight: '200px', lineHeight: '2', letterSpacing:'2px', border:'3px solid #4462A5'}}>
               <CardMedia
               component="img"
               sx={{width:'30%', margin: 'auto'}}
-              image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+              image="img/Avatar-Cedric.png"
               ></CardMedia>
-              Scrum Master: Cédric Cochard
+              Cédric Cochard <br/>
+              Scrum Master<br/>
+              Développeur Réact
               </Typography>
-              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: '400px', minHeight: '200px', lineHeight: '150px', letterSpacing:'2px', border:'3px solid #4462A5'}}>
+              <Typography className='paragraphe' sx={{ padding:'30px',  maxWidth: {md:'400px'}, minHeight: '200px', lineHeight: '2', letterSpacing:'2px', border:'3px solid #4462A5'}}>
               <CardMedia
               component="img"
               sx={{width:'30%', margin: 'auto'}}
-              image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+              image="img/Avatar-Tiphany.png"
               ></CardMedia>
-              Git Master: Tiphany Quemeneur
+              Tiphany Quemeneur <br/>
+              Git Master<br/>
+              Développeuse Symfony
               </Typography></Box>
               <Box className='box2' sx={{display: {xs:'flex-column', md: 'flex', justifyContent: 'space-evenly', alignItems: 'center', marginBottom: '35px', gap:'100px',} }}>
-              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: '400px', minHeight: '200px', lineHeight: '150px', letterSpacing:'2px', border:'3px solid #4462A5'}}>
+              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: {md:'400px'}, minHeight: '200px', lineHeight: '2', letterSpacing:'2px', border:'3px solid #4462A5'}}>
               <CardMedia
               component="img"
               sx={{width:'30%', margin: 'auto'}}
-              image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+              image="img/Avatar-Maxime.png"
               ></CardMedia>
-              Lead Front: Maxime Kerkheide
+              Maxime Kerkheide<br/>
+              Lead Front<br/>
+              Développeur Réact
               </Typography>
-              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: '400px', minHeight: '200px', lineHeight: '150px', letterSpacing:'2px', border:'3px solid #4462A5'}}>
+              <Typography className='paragraphe' sx={{ padding:'30px', maxWidth: {md:'400px'}, minHeight: '200px', lineHeight: '2', letterSpacing:'2px', border:'3px solid #4462A5'}}>
               <CardMedia
               component="img"
               sx={{width:'30%', margin: 'auto'}}
-              image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/512px-Circle-icons-profile.svg.png"
+              image="img/Avatar-Aswan.png"
               ></CardMedia>
-              Lead Back: Aswan Joseph-Mathieu
+              Aswan Joseph-Mathieu<br/>
+              Lead Back<br/>
+              Développeuse Symfony (et graphiste)
               </Typography>
 
+      </Box>
       </Box>
 
     </div>
