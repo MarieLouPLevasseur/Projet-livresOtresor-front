@@ -37,6 +37,9 @@ const theme = createTheme({
 
 function Search() {
 
+  // const { DOMParser } = require('xmldom');
+
+
   // Local state
   const [Cards, setCards] = useState([]);
   const [LoadingCards, setLoadingCards] = useState(false)
@@ -142,8 +145,8 @@ function Search() {
     // console.log(googleApiKey, "valeur googleApiKey dans API 1");
 
     // Api Call on Google Book
-
-    return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${Search}&key=${googleApiKey}`, { params: { maxResults: 10 } })
+   
+    return axios.get(`https://www.googleapis.com/books/v1/volumes?q=${Search}&key=${googleApiKey}`, { params: { maxResults: 30 } })
       .then((response) => {
 
         //? RECUPERER LA LISTE D'INFO => tableau d'objet google
@@ -222,7 +225,7 @@ function Search() {
 
 
   /**
-   * Search result on Google Book Api with list of valid ISBN code
+   * Search result on ISBN_API Book Api with list of valid ISBN code from Google Api Book
    * @param {Array} ISBNList list of valid ISBN code
    * 
    */
@@ -232,7 +235,6 @@ function Search() {
     // console.log({isbndbApiKey}, "valeur isbnApiKey dans API 2");
     // console.log({googleApiKey}, "valeur googleApiKey dans API 2");
     for (let isbn of ISBNList) {
-      // const booksApi2 = await axios.get(`https://api2.isbndb.com/book/${isbn}`,
       await axios.get(`https://api2.isbndb.com/book/${isbn}`,
 
         {
@@ -271,15 +273,85 @@ function Search() {
     return isbnApiResult
 
   }
+// ! TEST nouvelle voie sur OPEN LIBRARY BOOK
+ /**
+   * Search result on OPEN_Library_API Book Api with list of valid ISBN code from Google Api Book
+   * @param {Array} ISBNList list of valid ISBN code
+   * 
+   */
+  async function openLibraryApiBook(ISBNList) {
+    // console.log("************Function openLibraryApiBook******************")
+    const openLibraryApiResult = [];
+    for (let isbn of ISBNList) {
+      await axios.get(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=json`,
+        
+      )
+        .then(result => {
+          // console.log(result)
+          if (Object.keys(result.data).length > 0) {
+            openLibraryApiResult.push(result);
+        }
+         
+        })
+        .catch(error => {
+          // Handle error
+          console.log(error);
+          if (error.response) {
+            // The client was given an error response (5xx, 4xx)
+            console.log("response data: ", error.response.data);
+            console.log("respsonse status: ", error.response.status);
+            console.log("repseonse headers: ", error.response.headers);
 
+          } else if (error.request) {
+            // The client never received a response, and the request was never left
+            console.log("request: ", error.request);
+
+          } else {
+            // Anything else
+            console.log('Error: ', error.message);
+          }
+        });
+
+    }
+    return openLibraryApiResult
+
+  }
+
+  // function searchCoverLastChance($isbn){
+
+  //   const IsbnToSeach = $isbn;
+
+  //   const url = `https://www.google.com/search?q=${IsbnToSeach}&tbm=isch`;
+
+  //         axios.get(url)
+  //              .then(response => {
+  //                const html = response.data;
+  //                console.log(response.data);
+  //                const parser = new DOMParser();
+  //                const doc = parser.parseFromString(html, 'text/html');
+  //                const imgURL = doc.getElementsByTagName('img')[0].getAttribute('src');
+  //                console.log(imgURL);
+  //              })
+  //              .catch(error => {
+  //                console.log(error);
+  //              });
+
+
+
+  // }
+
+// !----------------------
+
+
+//  * @param {Array} ISBNDBSearchInfo informations of books from second Search from ISBNDB Api 
   /**
  * 
  * @param {Array} googleSearchInfo informations of books from initial Search from Google Api Books
- * @param {Array} ISBNDBSearchInfo informations of books from second Search from ISBNDB Api 
+ * @param {Array} OpenLibrarySearchInfo informations of books from second Search from ISBNDB Api 
  * @param {Array} isbnValidCodeList List of Valid Code ISBN
  * @return {Object}
  */
-  function completeBook(googleSearchInfo, ISBNDBSearchInfo, isbnValidCodeList) {
+  function completeBook(googleSearchInfo, OpenLibrarySearchInfo, isbnValidCodeList) {
     // console.log("************* Complete Book **********************")
 
     // ? --- For Each ISBN code Valid complete all key with Google Book OR ISBN DB Book -------
@@ -287,9 +359,9 @@ function Search() {
     // console.log(isbnValidCodeList, "List de codes ISBN valide dans complete Book")
     // console.log(completeBook, "je suis un complete book qui devrait etre vide")
     for (let isbnValid of isbnValidCodeList) {
-
+      console.log("-------------------------------");
       // Set a complete new book
-      let completeBook = { id: '', title: '', isbn: '', cover: '', authors: [], 'description': '', publisher: '' };
+      let completeBook = { id: '', title: '', isbn: '', cover: ImgCard, authors: [], description: '', publisher: '' };
 
       let coverBook = "";
 
@@ -340,11 +412,15 @@ function Search() {
                 completeBook.authors.push({ name: author })
               }
             }
-
+            console.log("valeur imageLinks : ", gBook.volumeInfo.imageLinks !== undefined)
             // CoverBook
-            if (gBook.volumeInfo.imageLinks !== undefined) {
+            if (gBook.volumeInfo.imageLinks) {
               // completeBook.title= gBook.volumeInfo.title + " "+ gBook.volumeInfo.subtitle
-              coverBook = gBook.volumeInfo.imageLinks.thumbnails;
+              coverBook = gBook.volumeInfo.imageLinks.thumbnail;
+              // console.log("google Cover imageLinks", gBook.volumeInfo.imageLinks )
+              completeBook.cover =coverBook;
+
+              console.log("google Cover Book", coverBook )
             }
 
 
@@ -354,56 +430,123 @@ function Search() {
       }
       // ? -------- Check each ISBN DB Book-----------
 
-      for (let iBook of ISBNDBSearchInfo) {
-        // console.log("----je suis un IsbnDB book------")
-        // console.log(iBook, "isbn book")
-        // console.log(iBook.data.book.isbn13, "test isbn API 2")
-        if (iBook.data.book.isbn13 === isbnValid) {
+      // for (let iBook of ISBNDBSearchInfo) {
+      //   // console.log("----je suis un IsbnDB book------")
+      //   // console.log(iBook, "isbn book")
+      //   // console.log(iBook.data.book.isbn13, "test isbn API 2")
+      //   if (iBook.data.book.isbn13 === isbnValid) {
+      //     // console.log("j'ai le bon ISBN je traite la demande")
+
+      //     // Cover
+      //     //ISBN DB has cover: set ISBN DB
+      //     if (iBook.data.book.image !== "") {
+      //       console.log("j'ai une image sur ISBN")
+      //       console.log(iBook.data.book.image, "image de ISBN")
+      //       completeBook.cover = iBook.data.book.image
+
+      //       console.log(completeBook.cover, "completeBook?")
+      //     }
+      //     //ISBN DB has no cover but google has: set google
+      //     else if (iBook.data.book.image === "" && coverBook !== "") {
+      //       completeBook.cover = coverBook;
+      //       console.log("j'ai une image sur GOOGLE")
+      //       console.log(completeBook.cover, "completeBook?")
+
+      //     }
+      //     else {
+      //       // completeBook.cover = "https://i.pinimg.com/564x/11/1b/59/111b5913903c2bfbe7f11487bb3f06f6.jpg"
+      //       completeBook.cover = ImgCard
+      //       console.log("j'ai une image par défaut")
+      //       console.log(completeBook.cover, "completeBook?")
+      //     }
+      //   }
+      //   if (completeBook.publisher === undefined) {
+      //     let publisher = iBook.data.book.publisher;
+      //     // ! put regex to check data
+      //     // ALPHï¿½E
+      //     // const regex = new RegExp("^[a-zA-Z0-9]+$", "g");
+      //     // console.log(regex().publisher, "test regex") 
+      //     completeBook.publisher = publisher
+      //   }
+      //   if (completeBook.authors.length === 0) {
+
+      //     let authors = iBook.data.book.authors;
+      //     console.log( authors, "authors dans ibook")
+      //     for (let author of authors){
+
+      //       completeBook.authors.push({ name: author })
+      //     }
+         
+      //   }
+
+      // }
+      // !! TEST POUR COMPLETE AVEC OPEN LIBRARY BOOK
+      console.log(OpenLibrarySearchInfo);
+      for (let iBook of OpenLibrarySearchInfo) {
+        let openBook = iBook.data;
+        console.log("----je suis un Open Library book------")
+        // console.log(Object.keys(openBook)[0], "test OpenLibrayry API ISBN KEY")
+        console.log(iBook, "Open book");
+        if ((Object.keys(openBook)[0]!== undefined) && (Object.keys(openBook)[0] === `ISBN:${isbnValid}`)) {
           // console.log("j'ai le bon ISBN je traite la demande")
 
           // Cover
-          //ISBN DB has cover: set ISBN DB
-          if (iBook.data.book.image !== "") {
-            console.log("j'ai une image sur ISBN")
-            console.log(iBook.data.book.image, "image de ISBN")
-            completeBook.cover = iBook.data.book.image
+          //OpenLibrary has cover: set Open Library Cover
+            if (openBook[`ISBN:${isbnValid}`].cover) { 
+                // console.log("j'ai une image sur OpenLibrary")
+                let openBookCover = openBook[`ISBN:${isbnValid}`].cover;
+                
+                
+                if (openBookCover.hasOwnProperty('large')) { 
+                    completeBook.cover = openBookCover.large
+                } else if (openBookCover.hasOwnProperty('medium')) { 
+                    completeBook.cover = openBookCover.medium
 
-            console.log(completeBook.cover, "completeBook?")
-          }
-          //ISBN DB has no cover but google has: set google
-          else if (iBook.data.book.image === "" && coverBook !== "") {
-            completeBook.cover = coverBook;
-            console.log("j'ai une image sur GOOGLE")
-            console.log(completeBook.cover, "completeBook?")
+                } else if(openBookCover.hasOwnProperty('small')){ 
+                    completeBook.cover = openBookCover.small
 
-          }
-          else {
-            // completeBook.cover = "https://i.pinimg.com/564x/11/1b/59/111b5913903c2bfbe7f11487bb3f06f6.jpg"
-            completeBook.cover = ImgCard
-            console.log("j'ai une image par défaut")
-            console.log(completeBook.cover, "completeBook?")
-          }
-        }
-        if (completeBook.publisher === undefined) {
-          let publisher = iBook.data.book.publisher;
-          // ! put regex to check data
-          // ALPHï¿½E
-          // const regex = new RegExp("^[a-zA-Z0-9]+$", "g");
-          // console.log(regex().publisher, "test regex") 
-          completeBook.publisher = publisher
-        }
-        if (completeBook.authors.length === 0) {
+                }
+                  // console.log(completeBook.cover, "completeBook?")
+                  // console.log(coverBook, "google coverBook?")
 
-          let authors = iBook.data.book.authors;
-          console.log( authors, "authors dans ibook")
-          for (let author of authors){
+            }
 
-            completeBook.authors.push({ name: author })
-          }
+            // Publisher
+              //OpenLibrary has publisher: set Open Library Publisher
+            if (openBook[`ISBN:${isbnValid}`].publishers) { 
+                let openBookPublisher = openBook[`ISBN:${isbnValid}`].publishers;
+                
+                
+                if (completeBook.publisher == "") { 
+                    completeBook.publisher = openBookPublisher[0].name
+
+                }
+
+            }
+            // Authors
+
+            if (completeBook.authors.length === 0) {
+                  if (openBook[`ISBN:${isbnValid}`].authors) { 
+
+                  let authors = openBook[`ISBN:${isbnValid}`].authors;
+                  console.log( authors, "authors dans open book")
+                    for (let author of authors){
+
+                      completeBook.authors.push({ name: author.name })
+                    }
+                  }
+            }
          
         }
+       
+       if(completeBook.cover == ImgCard){
+
+        // Lancer la fonction pour chercher la cover
+        // searchCoverLastChance(isbnValid);
+       }
 
       }
+      // !!-------------------------------------------
 
       //? ---- For each book complete push in complete List Book-----
       // console.log(completeBook, "test complete book")
@@ -431,12 +574,16 @@ function Search() {
         // console.log(resultGoogleApi, "test du premier résultat asyncrone:API 1: Google Api")
       )
       //?-----3. List all books on APi ISBN DB---------------
-      .then(resultIsbnList => isbnApi2Book(resultIsbnList)
+      // .then(resultIsbnList => isbnApi2Book(resultIsbnList)
+      .then(resultIsbnList => openLibraryApiBook(resultIsbnList)
+
         // console.log(resultIsbnList, "test du retour sur la liste des code ISBN: isbnList")
       )
       //?-----4. Compare and complete list of books----------
 
-      .then(resultApi2Isbn => completeBook(googleSearchInfo, resultApi2Isbn, isbnValidCodeList)
+      // .then(resultApi2Isbn => completeBook(googleSearchInfo, resultApi2Isbn, isbnValidCodeList)
+      .then(resultOpenLibrary => completeBook(googleSearchInfo, resultOpenLibrary, isbnValidCodeList)
+
         // console.log(resultApi2Isbn, "test du retour asyncrone: Api 2: Isbn Api")
       )
       //?-----5.Return list of books completed---------------
