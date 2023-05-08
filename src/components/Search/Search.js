@@ -679,18 +679,23 @@ function Search() {
         });
 
   }
-
+// Remise à la page une par défaut lors d'une nouvelle recherche
   useEffect(() => {
-     // Récupère les données stockées dans la session
+    setCurrentPage(1);
+    _DATA.jump(1);
+  }, [Cards]);
+
+// Appel des infos en session si une recherche antérieur a eut lieu
+  useEffect(() => {
      const storedCards = sessionStorage.getItem('cards');
-     // Si les données sont stockées, utilise-les
        if (storedCards) {
          setCards(JSON.parse(storedCards));
        }
   },[]);
-  useEffect(() => {
 
-    // Récupération des clés
+// Récupération des clés
+    useEffect(() => {
+
     if (((googleApiKey === "") || (isbndbApiKey === "")) && (token !== "")) {
       axios.get(apiUrl + apiEndpointApiKey, {
         headers: {
