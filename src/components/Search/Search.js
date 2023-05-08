@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector, useDispatch } from 'react-redux';
 
 import './SearchBar/SearchBar.scss'
-import { AirlineSeatLegroomExtraOutlined, Padding } from '@mui/icons-material'
+import { AirlineSeatLegroomExtraOutlined, Padding, WorkHistoryTwoTone } from '@mui/icons-material'
 
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
@@ -37,7 +37,7 @@ const theme = createTheme({
 
 function Search() {
 
-  // const { DOMParser } = require('xmldom');
+  const [searchQuery, setSearchQuery] = useState('');
 
 
   // Local state
@@ -200,12 +200,9 @@ function Search() {
       if (book.volumeInfo.industryIdentifiers === undefined) {
         //Set off th List of results
         console.log("oups: industryIdentifier est UNdefined: je n'ai pas d'IBSN")
-        // const Search = googleSearch
         // console.log(Search, "copy du state Search avant slice")
         indexToDelete.push(bookIndex);
-        // delete(googleSearch[bookIndex])
         // console.log(googleSearch, "Après delete")
-        // setGoogleSearch(Search)
 
       }
       bookIndex++
@@ -274,7 +271,6 @@ function Search() {
     return isbnApiResult
 
   }
-// ! TEST nouvelle voie sur OPEN LIBRARY BOOK
  /**
    * Search result on OPEN_Library_API Book Api with list of valid ISBN code from Google Api Book
    * @param {Array} ISBNList list of valid ISBN code
@@ -670,6 +666,10 @@ function Search() {
           // troisième fonction à exécuter
           const finalResult = completeBook(googleSearchInfo, resultOpenLibrary, isbnValidCodeList, resultApi2Isbn);
           setCompleteBookListState(finalResult);
+
+        // Stocke les données dans la session
+        sessionStorage.setItem('cards', JSON.stringify(finalResult));
+
           setCards(finalResult);
           setLoadingCards(false);
           return finalResult;
@@ -681,8 +681,16 @@ function Search() {
   }
 
   useEffect(() => {
+     // Récupère les données stockées dans la session
+     const storedCards = sessionStorage.getItem('cards');
+     // Si les données sont stockées, utilise-les
+       if (storedCards) {
+         setCards(JSON.parse(storedCards));
+       }
+  },[]);
+  useEffect(() => {
 
-
+    // Récupération des clés
     if (((googleApiKey === "") || (isbndbApiKey === "")) && (token !== "")) {
       axios.get(apiUrl + apiEndpointApiKey, {
         headers: {
@@ -702,6 +710,8 @@ function Search() {
           console.log(error);
         })
     }
+
+   
 
   },);
 
@@ -778,11 +788,11 @@ function Search() {
                                           display: "flex",
                                           flexDirection: { xs: 'column', xl:'row' },
                                           alignItems: { xs: 'center' },
-                                          width: "100%", height: "50%", mb: 1.5,
+                                          width: "100%",  mb: 1.5,
                                           border:'groove'
                                            }}>
                   <CardMedia
-                    sx={{ width: { xs: '40%', md: 'auto', lg: '40%' }, height: { xs: '120%', sm: '120%', md: '60%', lg: '70%' }, padding:5 }}
+                    sx={{ width: { xs: '40%', md: 'auto', lg: '20%' }, height: { xs: '120%', sm: '120%', md: '30%', lg: '70%' }, padding:5 }}
                     component="img"
                     image={data.cover}
                     alt="Book Cover"
@@ -791,13 +801,13 @@ function Search() {
                     <Typography gutterBottom variant="h5" component="div" sx={{ fontSize: { sm: '1.5em', md: '2em', lg: '2.3em' } }} >
                       {data.title}
                     </Typography>
-                    <Typography sx={{ margin:3, fontStyle: 'italic', maxLines: 4, fontSize: { sm: '1em', md: '1.4em', lg: '1.6em', textAlign:'justify' } }} variant="body2" color="text.secondary">
+                    <Typography sx={{ margin:3, fontStyle: 'italic', maxLines: 4, fontSize: { sm: '1em', md: '1.4em', lg: '1.3em', textAlign:'justify' }, wordWrap: 'break-word' }} variant="body2" color="text.secondary">
                       {data.description == null ? "Aucune description n'est disponible pour ce livre" : data.description.length > 300 ? `${data.description.substring(0, 300)}...` : data.description}
                     </Typography>
                   </CardContent>
-                  <CardActions sx={{ width: '10%', marginTop: '5px', justifyContent: 'center', paddingBottom: '10%'}}>
+                  <CardActions sx={{ width: {md:'10%',lg:'auto'}, marginTop: '5px', justifyContent: 'center', paddingBottom: '10%'}}>
                     <Link to={`/recherche/voir-livre`} style={{ textDecoration: 'none' }}>
-                      <Button sx={{ fontSize: { md: '1em', lg: '1em' } }} size="small"
+                      <Button sx={{ fontSize: { md: '1em', lg: '1em' }, color:'white',backgroundColor:"#4462A5", minWidth:"200px" }} size="small"
                         onClick={() => { handleDispatchSearchBookInfo(data) }}
                       >Voir le livre</Button>
                     </Link>
