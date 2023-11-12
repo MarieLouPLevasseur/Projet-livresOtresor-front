@@ -22,18 +22,38 @@ function BookButton(Book) {
   
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const kidId = useSelector((state) => state.kid.id);
+  // const token = useSelector((state) => state.kid.token);
+  // const kidId = useSelector((state) => state.kid.id);
+  const isLogUser = useSelector((state) => state.user.isLogUser);
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
 
+   // set id
+   const id = useSelector(state => {
+    if(isLogUser) {
+        return state.user.kidId
+    }
+    return state.kid.id;
+   })
+
+    // set token
+    const token = useSelector(state => {
+      if(isLogUser) {
+          return state.user.token
+      }
+      return state.kid.token;
+     })
 
   // Api EndPoint
-  const apiEndpointCreateBook = `/api/v1/kids/${kidId}/books`
+  const apiEndpointCreateBook = `/api/v1/kids/${id}/books`
+  // console.log(apiEndpointCreateBook)
+  // console.log("id")
+  // console.log(id)
 
+  
   // Redirect when connected
   const navigate = useNavigate();
 
@@ -64,7 +84,7 @@ function BookButton(Book) {
     setAlertErrorLogin(true)
   })
   .then(function (response) {
-    console.log(response);
+    // console.log(response);
     setAlertSuccesSubmit(true);
   })
 }
@@ -78,16 +98,18 @@ function BookButton(Book) {
       setAlertErrorSubmit(true);
     } else {
       console.log(Book.Book, "je suis le Book.Book dans le bouton")
+
+      let bookData = Book.Book;
       const loginFormData = {
         "is_read":     isRead,
         "book":{
-        "isbn" :       Book.Book.isbn,
-        "cover":       Book.Book.cover,
-        "publisher":   Book.Book.publisher,
-        "description": Book.Book.description == "" ? "Il n'y a pas de description pour ce livre" : Book.Book.description,
-        "title":       Book.Book.title,
-        "authors":     [{"name": Book.Book.authors[0].name}],
-        
+        "isbn" :       JSON.stringify(bookData.isbn),
+        "cover":       bookData.cover,
+        "publisher":   bookData.publisher,
+        "description": bookData.description == "" ? "Il n'y a pas de description pour ce livre" : bookData.description,
+        "title":       bookData.title,
+        // "authors":     [{"name": bookData.authors[0].name}],
+        "authors":     [{"name": bookData.authors[0]?.name || "inconnu"}]
       }
     }
   

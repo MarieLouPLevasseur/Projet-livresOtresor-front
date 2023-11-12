@@ -5,8 +5,11 @@ import { Box, Typography, Avatar } from '@mui/material'
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
+import Tooltip from '@mui/material/Tooltip';
+
 
 import { kidAvatar } from '../../features/login/kidSlice';
+import { userKidAvatar  } from '../../features/login/userSlice';
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons'
@@ -91,7 +94,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
     }
     })
     .then((response) => {
-      console.log(response.data);
+      // console.log(response.data);
       setAvatarsList(response.data);
       setLoadingAvatarsList(false);
     })
@@ -105,7 +108,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
     }
     })
     .then((response) => {
-      console.log(response.data)
+      // console.log(response.data)
       setDiplomasList(response.data);
       setLoadingDiplomasList(false)
     })
@@ -136,9 +139,9 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
 
   const dispatch = useDispatch();
 
-   const handleClick = (url) => {
+   const handleClickAvatar = (url) => {
      setCurrentAvatarToSetValue(url);
-     console.log(url);
+    //  console.log(url);
 
 
 
@@ -148,11 +151,29 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
       };
 
 
-      console.log(currentAvatarToSetValue);
+      // console.log(currentAvatarToSetValue);
        const newAvatarTosetJson = JSON.stringify(newAvatarToset);
      patchApi(apiUrl + apiEndpointSetAvatar,newAvatarTosetJson);
 
-      dispatch (kidAvatar(url));
+
+     if(isLogUser) {
+        dispatch(userKidAvatar(url))
+      }
+      else{
+        dispatch (kidAvatar(url))
+
+      }
+
+   };
+
+   const handleClickDiploma = (url) => {
+  
+      // TODO Ouvrir la fenêtre d'impression avec l'image
+    // const printWindow = window.open('', '_blank');
+    // printWindow.document.write(`<html><head><title>Imprimer</title></head><body><img src="${url}" alt="diplome"></body></html>`);
+    // printWindow.document.close();
+    // printWindow.print();
+
    };
 // **************************************************************
 
@@ -201,7 +222,12 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
         
           {avatarsList.map((image) => (
             <ImageListItem key={image.id}>
-              <img className='avatarImage' src={image.url} alt='avatar'  onClick={(e)=> {handleClick(e.target.src)}} />
+     
+            <Tooltip title="Choisis moi comme avatar" placement="top">
+
+              <img className='avatarImage' src={image.url} alt='avatar'  onClick={(e)=> {handleClickAvatar(e.target.src)}}  />
+            </Tooltip>
+ 
             </ImageListItem>
           ))}
         </ImageList>
@@ -219,7 +245,11 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
         >
           {diplomasList.map((image) => (
             <ImageListItem key={image.id}>
-              <img className="diplomaImage" src={image.url} alt='diplome'/>
+              <Tooltip title="Clique pour m'imprimer" placement="top">
+
+                <img className="diplomaImage" src={image.url} alt='diplome'  onClick={(e)=> {handleClickDiploma(e.target.src)}}/>
+              </Tooltip>
+
             </ImageListItem>
           ))}
         </ImageList>
