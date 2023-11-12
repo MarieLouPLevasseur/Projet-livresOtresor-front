@@ -3,9 +3,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import NotAllowedCover from '../../assets/img/notAllowed.png'
+import ImageError from '../../../assets/img/error.png'
 
-import './NotAllowed.scss'
+import './Error.scss'
 
 const theme = createTheme({
   palette:{
@@ -15,12 +15,12 @@ const theme = createTheme({
   },
 });
 
-function NotAllowed() {
+function Error() {
   return (
     <div className='container'>
       <ThemeProvider theme={theme}>
         <Box sx={{display:'flex', flexDirection: 'column', width: '60%', alignItems: 'center', mt: 1,ml:'auto', mr:'auto'}}>
-          <img src={NotAllowedCover} alt="page erreur"></img>
+          <img src={ ImageError} alt="page erreur serveur"></img>
           <Link to='/' style={{ textDecoration: 'none'}}>
             <Button
               className="searchButton"
@@ -37,4 +37,4 @@ function NotAllowed() {
   )
 }
 
-export default NotAllowed
+export default Error

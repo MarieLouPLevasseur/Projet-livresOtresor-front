@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import './SearchBar/SearchBar.scss'
 import { AirlineSeatLegroomExtraOutlined, Padding, WorkHistoryTwoTone } from '@mui/icons-material'
+import { handleErrors } from '../../Utils/handleErrors'
 
 
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel'
@@ -44,8 +45,6 @@ function Search() {
   const [Cards, setCards] = useState([]);
   const [LoadingCards, setLoadingCards] = useState(false)
   const [Search, setSearch] = useState('');
-  // const [lastChanceCover, setlastChanceCover] = useState('');
-  // const [itemToSearch, setItemToSearch] = useState('');
   const [completeBookListState, setCompleteBookListState] = useState([]);
 
   // Set datas if User or Kid
@@ -114,13 +113,9 @@ function Search() {
     // console.log(search, "test search dans le HandleSubmit")
     // setItemToSearch(search)
     setSearch(search)
-    // console.log(Search, "Search du state")
-
     searchBook()
 
   }
-
-// !----------------------
 
   /**
    * Search on Api google Book, set ISBN list, Search on Api 2 isbn DB and fix final complete result on each book
@@ -138,9 +133,9 @@ function Search() {
       })
 
       .then((response) => {
-        console.log(response)
-        console.log(response.data)
-        // setLoadingApiKey(false);
+        // console.log(response)
+        // console.log(response.data)
+  
         setCompleteBookListState(response.data.books);
 
         // Stocke les données dans la session
@@ -151,7 +146,8 @@ function Search() {
           // return response;
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
+        handleErrors(error)
       });
 
   }

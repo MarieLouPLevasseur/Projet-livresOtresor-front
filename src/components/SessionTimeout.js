@@ -40,13 +40,19 @@ import React, {
         localStorage.removeItem('user');
         localStorage.removeItem('kid');
       };
-  console.log((isLogUser || isLogKid), "test condition log user or kid")
+  // console.log((isLogUser || isLogKid), "test condition log user or kid")
     useEffect(() => {
       if(isLogUser || isLogKid){
-      setTimeout(() => handleOpenModalWarningLogout(),1000*3300);
-      setTimeout(() => handleCloseWarningLogout(),1000*3600);
-      setTimeout(() => navigate('/'),1000*3600);
-      setTimeout(() => handleLogout(),1000*3600);
+        setTimeout(() => handleOpenModalWarningLogout(), 1000 * 60 * 55); // Avertissement après 55 minutes
+        setTimeout(() => handleCloseWarningLogout(), 1000 * 60 * 60);  // Fermer l'avertissement après 5 minutes
+        setTimeout(() => navigate('/'), 1000 * 60 * 60);  // Rediriger après 1 heure (temps total de connexion maximal back)
+        setTimeout(() => handleLogout(), 1000 * 60 * 60);  // Déconnecter après 1 heure (temps total de connexion maximal back)
+
+        // TEST
+        // setTimeout(() => handleOpenModalWarningLogout(), 1000 * 30); // Déconnexion après 30 secondes pour les tests
+        // setTimeout(() => handleCloseWarningLogout(), 1000 * 60);     // Fermeture de l'avertissement après 60 secondes
+        // setTimeout(() => navigate('/'), 1000 * 60);                  // Redirection après 60 secondes
+        // setTimeout(() => handleLogout(), 1000 * 60);                 // Déconnexion après 60 secondes
       }
     
     }, [isLogUser, isLogKid]);

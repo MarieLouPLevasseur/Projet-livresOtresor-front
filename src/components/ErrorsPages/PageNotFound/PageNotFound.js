@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import ImageError from '../../assets/img/image-404.png'
+import ImageError from '../../../assets/img/image-404.png'
 
 import './PageNotFound.scss'
 

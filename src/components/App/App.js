@@ -21,7 +21,9 @@ import BookConfig from '../BookConfig/BookConfig'
 import Rewards from '../Rewards/Rewards'
 import Book from '../Book/Book'
 import Footer from '../Footer/Footer'
-import PageNotFound from '../PageNotFound/PageNotFound';
+import PageNotFound from '../ErrorsPages/PageNotFound/PageNotFound';
+import NotAllowed from '../ErrorsPages/NotAllowed/NotAllowed';
+import ErrorServer from '../ErrorsPages/ErrorServer/Error';
 
 import UserLogin from '../UserLogin/UserLogin';
 import { userFirstname, userId, userKidAvatar, userKidId, userKidUsername,userKidFirstname, userLastname, userLogin , userEmail} from '../../features/login/userSlice';
@@ -31,10 +33,8 @@ import SessionTimeout from '../SessionTimeout';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.scss';
-import NotAllowed from '../NotAllowed/NotAllowed';
 
 function App() {
-// TODO : change NotAllowed Pages
 
   const dispatch = useDispatch();
 
@@ -106,6 +106,7 @@ function App() {
         <Route path="/recherche/voir-livre" element={<Book />} />
         <Route path="/mes-livres/voir-livre/:id" element={<BookConfig />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/error-server" element={<ErrorServer />} />
       </Routes>
       
       <SessionTimeout />

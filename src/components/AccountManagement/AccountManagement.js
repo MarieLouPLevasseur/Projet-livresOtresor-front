@@ -32,6 +32,8 @@ import CloseEye from '../../assets/img/oeil_ferme.png';
 import logoBook from '../../assets/img/logo.3.png';
 import PasswordStrengthMeter from '../PasswordStrengthMeter/PasswordStrengthMeter';
 
+import { handleErrors } from '../../Utils/handleErrors'
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -125,6 +127,7 @@ function AccountManagement() {
         })
         .catch((error) => {
           console.log(error);
+          handleErrors(error)
         })
 
         axios.get(apiUrl + apiEndpointUsers, {
