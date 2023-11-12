@@ -556,6 +556,8 @@ function AccountManagement() {
               <Card variant='outlined' sx={{ border: '1px solid #4462A5', marginBottom: '30px', marginTop: '30px', marginLeft: '20px', width: '40%' }}>
                 <Typography sx={{ fontSize: '1.4rem', padding: '15px', fontFamily: 'montserrat', color: 'white', background: '#4462A5' }}>Informations des comptes enfants</Typography>
               </Card>
+              <Typography sx={{ fontSize: '1rem', padding: '10px', fontFamily: 'montserrat', color: 'red' }}>En ajoutant un identifiant et un mot de passe au compte enfant, vous lui permettez d'accèder de manière autonome à son espace enfant. Il pourra consulter son espace personnel et ses récompenses.</Typography>
+
               {/* KID CARD to edit***** */}
               {KidsValue.map((e) => (
                 <Box key={e.id} sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', width: '100%' }}>

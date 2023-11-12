@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
+import { TextField, Box, Button, Typography, Pagination, Card, CardMedia, CardContent, CardActions } from '@mui/material'
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -14,6 +14,8 @@ import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons';
 import SearchBar from '../Search/SearchBar/SearchBar';
 import usePagination from "../Search/UsePagination";
 import Loading from '../Loading/Loading';
+import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
+import BookMenu from '../Book/BookMenu/BookMenu';
 
 import './MyBooks.scss';
 
@@ -31,7 +33,8 @@ const theme = createTheme({
 });
 
 function MyBooks() {
-
+// TODO : dans la version mobile, ajouter un placement visuelle sur les réponses en descendant l'écran 
+    // TODO : ou en affichant le nombre de réponse trouver (obligé de scroller pour voir s'il y a un élément....bof)
   // Local State
   const [Cards, setCards] = useState([]);
   const [CardsFilter, setCardsFilter] = useState([]);
@@ -60,8 +63,6 @@ function MyBooks() {
   const isLogUser = useSelector((state) => state.user.isLogUser);
   const isLogKid = useSelector((state) => state.kid.isLogKid);
 
-  //  console.log(isLogUser, "User is logged");
-  //  console.log(isLogKid, "Kid is logged");
 
   // set token
   const token = useSelector(state => {
@@ -123,7 +124,7 @@ function MyBooks() {
         }
       })
         .then((response) => {
-          console.log(response.data, "categoriesList data")
+          // console.log(response.data, "categoriesList data")
           setCategoriesList(response.data)
           setLoadingCategories(false);
         })
@@ -138,9 +139,8 @@ function MyBooks() {
         }
       })
         .then((response) => {
-          // console.log(response.data)
           setCollectionList(response.data)
-          console.log(response.data, "collectionsList data")
+          // console.log(response.data, "collectionsList data")
           setLoadingCollections(false);
         })
         .catch((error) => {
@@ -154,7 +154,7 @@ function MyBooks() {
         }
       })
         .then((response) => {
-          console.log(response.data, "authorsList data")
+          // console.log(response.data, "authorsList data")
           setAuthorsList(response.data.authors)
           setLoadingAuthors(false);
         })
@@ -163,8 +163,7 @@ function MyBooks() {
         })
     }
 
-
-  }, [kidId]);
+  }, [kidId, itemToSearch]);
 
   // Handle Functions
   const handleChangeRead = () => {
@@ -181,59 +180,74 @@ function MyBooks() {
     setCardsFilter(booksEnvy);
   }
 
-  const handleChangeCategory = (event) => {
-    setCategory(event.target.value);
-    // ! Bug ne rend pas les bonnes catégories dans le filtre
-    // ! après test il semble que le filtres projette les résultats de la sélection précédente (il y a un phénomène de décalage ): 
-    // ! ex: je sélectionne "Non-classé", rien ne se passe, je sélectionne "Aventure" les cartes de "non-classée son dispatchées" si je clique sur un 3e item dans la liste j'aurai la liste "Aventure"
+  const handleChangeCategory = (categorySelected) => {
+    // console.log("********HANDLE CHANGE CATEGORY**********")
+    setCategory(categorySelected);
+    setCollection("");
+    setAuthor("");
 
-    if (category) {
+    // console.log("info entrant dans handleChangeCategory: ", categorySelected)
 
-      // setCardsFilter(Cards.filter((book) => book.category.name == category));
-      let categoryFiltered = Cards.filter((books) => {
-        return books.category.name == { category };
-      });
-      setCardsFilter(categoryFiltered);
-    }
+    // console.log("valeur de Cards: ", Cards)
+
+    const categoryFiltered = Cards.filter((books) => {
+      return (books.category.name == categorySelected);
+    });
+    // console.log("Filtre par la catégorie (categoryFiltered): ", categoryFiltered)
+    setCardsFilter(categoryFiltered);
+    // console.log(CardsFilter, "test cardFilter depuis handlechangeCategory")
+
+
   };
 
 
-  const handleChangeAuthor = (event) => {
-    setAuthor(event.target.value);
-    // ! Bug ne rend pas les bons auteurs dans le filtre
+  const handleChangeAuthor = (authorSelected) => {
+    // console.log("********HANDLE CHANGE AUTHOR**********")
 
-    if (author) {
-      setCardsFilter(Cards.filter((book) => book.book.authors[0].name == author));
-    }
+    setAuthor(authorSelected);
+    setCategory("");
+    setCollection("");
+    // console.log("info entrant dans handleChangeAuthor: ", authorSelected)
+    const authorFiltered = Cards.filter((books) => {
+      return (books.book.authors[0].name == authorSelected);
+    });
+    // console.log("Filtre par author (authorFiltered): ", authorFiltered)
+
+    setCardsFilter(authorFiltered);
   };
 
-  const handleChangeCollection = (event) => {
-    setCollection(event.target.value);
+  const handleChangeCollection = (collectionSelected) => {
+    // console.log("********HANDLE CHANGE COLLECTION**********")
 
-    if (collection) {
-      // ! Bug ne rend pas les bonnes collections dans le filtre
-      // setCardsFilter(Cards.filter((book) => book.series.name === collection));
-      // return()=>{
-      setCardsFilter(Cards.filter((book) => book.series !== null ? book.series.name == collection : null == collection));
-      // }
-    }
+    setCollection(collectionSelected);
+    setCategory("");
+    setAuthor("");
+
+    // console.log("info entrant dans handleChangeCollection: ", collectionSelected)
+    const collectionFiltered = Cards.filter((books) => {
+
+      return (books.series !== null ? books.series.name == collectionSelected : null == collection);
+    });
+    // console.log("Filtre par collection (collectionFiltered): ", collectionFiltered)
+
+    setCardsFilter(collectionFiltered);
+
   };
 
-  // useEffect(() => {
-  // if (category){
-  //   setCardsFilter(Cards.filter((book) => book.category.name === category));
-  // }
-  // if (author){
-  //   setCardsFilter(Cards.filter((book) => book.book.authors[0].name === author));
-  // }
-  // return () => {
-  //   setCardsFilter(Cards);
-  // };
-  // }, [category, author]);
+  const handleSubmitSearch = () => {
+    console.log("********HANDLE SUBMIT SEARCH**********")
 
-  useEffect(() => {
-    setCardsFilter(CardsFilter.filter((item) => item.book.title.toLowerCase().includes(itemToSearch.toLowerCase())));
-  }, [itemToSearch]);
+    console.log("info entrant dans handleSubmitSearch : ", Search)
+    const searchFiltered = Cards.filter((books) => {
+
+      return (books.book.title.includes(Search) || books.book.description.includes(Search));
+    });
+    console.log("Filtre par mot de recherche (searchFiltered): ", searchFiltered)
+
+    setCardsFilter(searchFiltered);
+
+  };
+
 
   if (LoadingCards || LoadingCategories || LoadingAuthors || LoadingCollections) {
     return <Loading />
@@ -248,116 +262,198 @@ function MyBooks() {
           Mes livres
         </Typography>
         <Box sx={{ display: 'flex' }}>
+
           <HomeKidButtons />
-          <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: '3%' }}>
-            <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} />
-            <Box sx={{ display: "flex", width: "100%", justifyContent: 'center', mb: 3 }}>
-              <FormControl sx={{ width: '20%' }}>
-                <InputLabel id="demo-simple-select-category">Catégorie</InputLabel>
-                <Select
-                  sx={{ width: "80%" }}
-                  labelId="demo-simple-select-category"
-                  id="demo-simple-category"
-                  value={category}
-                  label="category"
-                  onChange={handleChangeCategory}
+          <BookIconeMenu/>
+          {/* ------GLOBAL BAR-------- */}
+          <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column', alignItems: 'center', ml:{xs:'3%', sm:'0%'}  }} >
+          <Box sx={{ display: 'flex', width: '70%', flexDirection: 'column', alignItems: 'center', ml: {xs:'3%', sm:'0%'} }}>              {/* <SearchBar search={Search} setSearch={setSearch} setItemToSearch={setItemToSearch} /> */}
+              {/* ------------SEARCH BAR CHOICE ----------------------*/}
+              <Box
+                component="form"
+                onSubmit={(e) => {
+                  // setItemToSearch({Search})
+                  e.preventDefault()
+                  handleSubmitSearch({ Search })
+                  setSearch("")
+                }}
+
+                sx={{
+                  mt: 2,
+                  mb: 5,
+                  display: 'flex',
+                  width: '100%',
+                  flexDirection: { xs: 'column', md: 'row' },
+                  alignItems: 'center',
+
+                }}
+                autoComplete="off"
+              >
+                <TextField
+                  value={Search}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                  }}
+                  id="outlined-basic"
+                  label="Recherche..."
+                  variant="outlined"
+                  sx={{ width: '70%', mr: 0.5 }}
+                />
+                <Button
+                  className="searchButton"
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    maxWidth:'280px',
+                    width: {xs:'80%',sm:"60%", md:'40%'},
+                    margin: { xs: '15px', md: 'auto' },
+                  }}
                 >
-                  {console.log(category, " current category value selected")}
+                  C'est parti !
+                </Button>
+              </Box>
+              {/*  -------LIST CHOICES---------------*/}
+              <Box sx={{
+                display: "flex",
+                width: "100%",
+                justifyContent: 'center',
+                marginRight:"10%",
+                mb: 3,
+                flexDirection: { xs: "column", sm:"row" },
+                
+              }}
+              >
 
-                  {categoriesList.map((data) => (
-                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
-                  ))};
-                </Select>
-              </FormControl>
-              <FormControl sx={{ width: '20%' }}>
-                <InputLabel id="demo-simple-select-author">Auteur</InputLabel>
-                <Select
-                  sx={{ width: "80%" }}
-                  labelId="demo-simple-select-author"
-                  id="demo-simple-author"
-                  value={author}
-                  label="author"
-                  onChange={handleChangeAuthor}
+                <FormControl sx={{ width: '100%',margin:{xs:"10px"} }}>
+                  <InputLabel id="demo-simple-select-category">Catégorie</InputLabel>
+                  <Select
+                    sx={{ width: "100%",
+                        }}
+                    labelId="demo-simple-select-category"
+                    id="demo-simple-category"
+                    value={category}
+                    label="category"
+                    onChange={(e) => handleChangeCategory(e.target.value)}
+                  >
+
+                    {categoriesList.map((data) => (
+                      <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                    ))};
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ width: '100%', margin:{xs:"10px"} }}>
+                  <InputLabel id="demo-simple-select-author">Auteur</InputLabel>
+                  <Select
+                    sx={{ width: "100%",
+                        }}
+                    labelId="demo-simple-select-author"
+                    id="demo-simple-author"
+                    value={author}
+                    label="author"
+                    onChange={(e) => handleChangeAuthor(e.target.value)}
+
+                  >
+
+                    {authorsList.map((data) => (
+                      <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                    ))};
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ width: '100%',margin:{xs:"10px"} }}>
+                  <InputLabel id="demo-simple-select-collection">Collection</InputLabel>
+                  <Select
+                    sx={{ width: "100%"}}
+                    labelId="demo-simple-select-collection"
+                    id="demo-simple-collection"
+                    value={collection}
+                    label="collection"
+                    onChange={(e) => handleChangeCollection(e.target.value)}
+
+
+                  >
+
+                    {collectionList.map((data) => (
+                      <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
+                    ))};
+
+                  </Select>
+                </FormControl>
+              </Box>
+              {/* BOX CHOICES */}
+              <Box sx={{
+                    display: 'flex',
+                    width: '100%',
+                    justifyContent: 'center',
+                    flexDirection: { xs: 'column', sm:'row'},
+                    mr: '10%',
+                    mb: 5
+                  }}
                 >
-                  {console.log(author, " current author value selected")}
-
-                  {authorsList.map((data) => (
-                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
-                  ))};
-                </Select>
-              </FormControl>
-              <FormControl sx={{ width: '20%' }}>
-                <InputLabel id="demo-simple-select-collection">Collection</InputLabel>
-                <Select
-                  sx={{ width: "80%" }}
-                  labelId="demo-simple-select-collection"
-                  id="demo-simple-collection"
-                  value={collection}
-                  label="collection"
-                  onChange={handleChangeCollection}
+                <Button
+                  className="searchButton"
+                  type="submit"
+                  variant="contained"
+                  sx={{ width: '100%', margin:'10px' }}
+                  onClick={() => setCardsFilter(Cards)}
 
                 >
-                  {console.log(collection, " current collection value selected")}
-
-                  {collectionList.map((data) => (
-                    <MenuItem key={data.id} value={data.name}>{data.name}</MenuItem>
-                  ))};
-
-                </Select>
-              </FormControl>
+                  Tous mes livres
+                </Button>
+                <Button
+                  className="searchButton"
+                  type="submit"
+                  variant="contained"
+                  sx={{ width: '100%', margin:'10px' }}
+                  onClick={handleChangeRead}
+                >
+                  Mes livres lus
+                </Button>
+                <Button
+                  className="searchButton"
+                  type="submit"
+                  variant="contained"
+                  sx={{ width: '100%', margin:'10px' }}
+                  onClick={handleChangeEnvy}
+                >
+                  
+                  Ma liste d'envie
+                </Button>
+              </Box>
             </Box>
-            <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', gap: '5%', mr: '4%', mb: 5 }}>
-              <Button
-                className="searchButton"
-                type="submit"
-                variant="contained"
-                sx={{ width: '15%' }}
-                onClick={() => setCardsFilter(Cards)}
-              >
-                Tous mes livres
-              </Button>
-              <Button
-                className="searchButton"
-                type="submit"
-                variant="contained"
-                sx={{ width: '15%' }}
-                onClick={handleChangeRead}
-              >
-                Mes livres lus
-              </Button>
-              <Button
-                className="searchButton"
-                type="submit"
-                variant="contained"
-                sx={{ width: '15%' }}
-                onClick={handleChangeEnvy}
-              >
-                Ma liste d'envie
-              </Button>
-            </Box>
+
+            {/* ---------CARDS-------- */}
             {_DATA.currentData().map((data) => (
-              <Card key={data.id} sx={{ display: "flex", width: "100%", height: "50%", mb: 1.5 }}>
+              <Card key={data.id} sx={{ display: "flex",
+                                        flexDirection: {xs:'column',sm:'row'},
+                                        justifyContent:{xs:'center'},
+                                        width: {xs:"100%",sm:"80%"},
+                                        mb: 1.5 
+                                   }}>
                 <CardMedia
-                  sx={{ width: '15%', height: '100%' }}
+                  sx={{ width: {xs:'100px',sm:'25%'},
+                        maxWidth:{sm:'250px'},
+                        alignSelf:'center'
+                      }}
                   component="img"
                   image={data.book.cover}
                   alt="Book Cover"
                 />
-                {console.log(CardsFilter, " current Cards filtered")}
 
-                <CardContent sx={{ width: '80%' }}>
-                  <Typography gutterBottom variant="h5" component="div">
+                <CardContent sx={{ width:{xs:"90%", sm: '95%'}}}>
+                  <Typography gutterBottom variant="h5" component="div" sx={{textAlign:"center"}}>
                     {data.book.title}
                   </Typography>
-                  <Typography sx={{ fontStyle: 'italic', maxLines: 4 }} variant="body2" color="text.secondary">
+                  <Typography gutterBottom variant="h7" component="div" >
+                    Auteurs: {data.book.authors.map((author) => (author.name))}
+                  </Typography>
+                  <Typography sx={{ fontStyle: 'italic', maxLines: 4, textAlign:'justify' }} variant="body2" color="text.secondary" >
                     {data.book.description}
                   </Typography>
-                </CardContent>
-                <CardActions sx={{ width: '10%' }}>
-                  <Link to={`/mes-livres/voir-livre/${data.book.id}`} style={{ textDecoration: 'none' }}>
-                    <Button size="small">Voir le livre</Button>
+                  <Link to={`/mes-livres/voir-livre/${data.book.id}`} style={{ textDecoration: 'none', margin:'auto' }}>
+                    <Button size="small" sx={{alignSelf:'center'}}>Voir le livre</Button>
                   </Link>
-                </CardActions>
+                </CardContent>
+               
               </Card>
             ))}
             <Pagination sx={{ mt: 3, mb: 3 }} count={count} page={CurrentPage} onChange={handleChange} />
@@ -368,7 +464,12 @@ function MyBooks() {
             className="searchButton"
             type="submit"
             variant="contained"
-            sx={{ width: '15%' }}
+            sx={{ width: {xs:'100%',sm:"30%", md:'20%'},
+                  marginLeft:{xs:'15%'},
+                  mb:5 ,
+                  justifyContent:'center',
+                  padding:'auto'
+                }}
           >
             Imprimer ma liste
           </Button>

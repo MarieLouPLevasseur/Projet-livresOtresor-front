@@ -59,7 +59,7 @@ export default function CustomizedAccordions() {
         </AccordionSummary>
         <AccordionDetails>
           <Typography sx={{textAlign:'left'}}>
-          C’est très simple il suffit de cliquer sur le lien « s’inscrire » dans la barre de navigation sur le haut du site. Vous devrez indiquer avec un email valide et un mot de passe. L’enfant n’est pas autorisé à se créer un compte directement en son nom, l’inscription ne se fait qu’un par un adulte. Et voilà vous êtes connecté.
+          C’est très simple il suffit de cliquer sur le lien « s’inscrire » dans la barre de navigation sur le haut du site. Vous devrez indiquer avec un email valide et un mot de passe. L’enfant n’est pas autorisé à se créer un compte directement en son nom, l’inscription ne se fait que par un par un adulte. Et voilà vous êtes connecté.
           </Typography>
         </AccordionDetails>
       </Accordion>

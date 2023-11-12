@@ -100,10 +100,14 @@ function HomeKid() {
     }
     })
     .then((response) => {
-      console.log(response.data)
-      setLastBookValue(response.data);
+      // console.log(response)
+      // console.log(response.data)
+      if(response.data !== ""){
+
+        setLastBookValue(response.data);
+        setLastBookValueBookkidId(response.data.book.id)
+      }
       setLoadingLastBookValue(false);
-      setLastBookValueBookkidId(response.data.book.id)
     })
     .catch((error) => {
       console.log('Erreur !', error);
@@ -138,24 +142,38 @@ function HomeKid() {
           </Typography>
         </Box>
       </Box>
-      <Box sx={{display: 'flex', width: '70%', m:{sm:'auto'}, flexDirection:{xs:'column', md:'row'} }}>
-      <Link to= {`/mes-livres/voir-livre/${lastBookValueBookkidId}`} >
-          <Box 
-            component="img"
-            alt="Couverture d'un livre"
-            src={lastBookValue ? lastBookValue.book.cover : defaultCover }
-            sx={{
-              height: 300,
-              width: 250,
-              maxHeight: { xs: 200, md: 300 },
-              maxWidth: { xs: 200, md: 300 },
-              marginLeft: 20,
-              marginBottom:{md:15},
-              marginTop: 8,
-            }}
-          />
-        </Link>
-        <Box sx={{width: '50%', textAlign: 'center', margin:{ sm:'auto'}, marginLeft:{xs:22,sm:22}, marginRight:{md:100}}}>
+      <Box sx={{display: 'flex', width: '100%', m:{sm:'auto'}, flexDirection:{xs:'column', md:'row'} }}>
+        <Box sx={{width: {sm:0, md:250} }}>
+        </Box>
+        <Link to= {`/mes-livres/voir-livre/${lastBookValueBookkidId}`} >
+            <Box 
+              component="img"
+              alt="Couverture d'un livre"
+              src={lastBookValue ? lastBookValue.book.cover : defaultCover }
+              sx={{
+                // height: 300,
+                minWidth: {md:250},
+                // maxHeight: { xs: 200, md: 300 },
+                maxHeight: 'auto',
+                maxWidth: { xs: 200, md: 300 },
+                textAlign: 'center',
+                // marginLeft: {md: 30 },
+                marginBottom:{md:15},
+                marginTop: 8,
+              }}
+            />
+          </Link>
+        <Box 
+          sx={{
+                width: {xs:'100%',
+                md:'50%'},
+                textAlign: 'center',
+                margin:'auto',
+                mt: 3,
+                mb:5,
+                // marginLeft: {md: 30 },
+
+              }}>
           <Link to= {`/mes-livres/voir-livre/${lastBookValueBookkidId}`} >
 
               <Typography sx={{ mt: 8, fontFamily: 'Montserrat', fontWeight: 500, textDecoration: 'underline',  }} >

@@ -58,8 +58,25 @@ function BookConfig() {
 
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const kidId = useSelector((state) => state.kid.id);
+  // const token = useSelector((state) => state.kid.token);
+  // const kidId = useSelector((state) => state.kid.id);
+  const isLogUser = useSelector((state) => state.user.isLogUser);
+
+   // set token
+   const token = useSelector(state => {
+    if(isLogUser) {
+        return state.user.token
+    }
+    return state.kid.token;
+   })
+
+     // set id
+     const kidId = useSelector(state => {
+      if(isLogUser) {
+          return state.user.kidId
+      }
+      return state.kid.id;
+     })
 
   // Local States
   const [Book, setBook] = useState([]);

@@ -7,6 +7,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
 import axios from 'axios';
+import { NavLink } from "react-router-dom";
 
 import './BookButton.scss'
 
@@ -21,27 +22,46 @@ function BookButton(Book) {
   
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
-  const token = useSelector((state) => state.kid.token);
-  const kidId = useSelector((state) => state.kid.id);
+  // const token = useSelector((state) => state.kid.token);
+  // const kidId = useSelector((state) => state.kid.id);
+  const isLogUser = useSelector((state) => state.user.isLogUser);
 
   // Error states
   const [alertErrorSubmit, setAlertErrorSubmit] = useState(false);
   const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   const [alertSuccesSubmit, setAlertSuccesSubmit] = useState(false);
 
+   // set id
+   const id = useSelector(state => {
+    if(isLogUser) {
+        return state.user.kidId
+    }
+    return state.kid.id;
+   })
+
+    // set token
+    const token = useSelector(state => {
+      if(isLogUser) {
+          return state.user.token
+      }
+      return state.kid.token;
+     })
 
   // Api EndPoint
-  const apiEndpointCreateBook = `/api/v1/kids/${kidId}/books`
+  const apiEndpointCreateBook = `/api/v1/kids/${id}/books`
+  // console.log(apiEndpointCreateBook)
+  // console.log("id")
+  // console.log(id)
 
+  
   // Redirect when connected
   const navigate = useNavigate();
 
+  //  TODO mettre une alerte de succès lors d'un passage d'un nouveau niveau lors de l'enregistrement d'un livre lu
 
 
   // Redirect when success
-  //  TODO pour l'instant redirection vers "mes livres" car il faudrait récupérer l'isbn du nouveau livres avec la route "last-read" qui contiendra l'isbn du dernier livre enregistré
-      //* TODO vérifier qu'en back il ne s'agit pas uniquement du dernier livre lu (sinon il faudra une nouvelle route ou un filtre sur "tous mes livres")
-      //* ou plus simplement mettre en homepage le dernier livre enregistré (et non pas lu) et mettre un clique pour que l'enfant puisse le consulter
+     
   useEffect(() => {
     if (alertSuccesSubmit) {
       setTimeout(() => {
@@ -64,7 +84,7 @@ function BookButton(Book) {
     setAlertErrorLogin(true)
   })
   .then(function (response) {
-    console.log(response);
+    // console.log(response);
     setAlertSuccesSubmit(true);
   })
 }
@@ -78,21 +98,21 @@ function BookButton(Book) {
       setAlertErrorSubmit(true);
     } else {
       console.log(Book.Book, "je suis le Book.Book dans le bouton")
+
+      let bookData = Book.Book;
       const loginFormData = {
         "is_read":     isRead,
         "book":{
-        "isbn" :       Book.Book.isbn,
-        "cover":       Book.Book.cover,
-        "publisher":   Book.Book.publisher,
-        "description": Book.Book.description !=="" ? "Il n'y a pas de description pour ce livre" : Book.Book.description,
-        "title":       Book.Book.title,
-        "authors":     [{"name": Book.Book.authors[0].name}],
-        // "authors":     [{"name": 'inconnu'}],
-        
+        "isbn" :       JSON.stringify(bookData.isbn),
+        "cover":       bookData.cover,
+        "publisher":   bookData.publisher,
+        "description": bookData.description == "" ? "Il n'y a pas de description pour ce livre" : bookData.description,
+        "title":       bookData.title,
+        // "authors":     [{"name": bookData.authors[0].name}],
+        "authors":     [{"name": bookData.authors[0]?.name || "inconnu"}]
       }
     }
   
-      // TODO il faudra mettre une pop up pour signalé si bien enregistré ou si erreur (ex doublon) + redirection
   postApi(apiUrl + apiEndpointCreateBook,loginFormData);
   }
 };
