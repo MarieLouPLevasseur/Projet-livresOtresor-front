@@ -13,6 +13,7 @@ import Loading from '../Loading/Loading';
 import defaultCover from '../../assets/img/defaultCover.jpg'
 import './HomeKid.scss';
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
+import { handleErrors } from '../../Utils/handleErrors'
 
 function HomeKid() {
  
@@ -93,6 +94,7 @@ function HomeKid() {
     })
     .catch((error) => {
       console.log('Erreur !', error);
+      handleErrors(error)
     })
 
     axios.get(apiUrl + apiEndpointLastBook, {headers : {
@@ -111,6 +113,7 @@ function HomeKid() {
     })
     .catch((error) => {
       console.log('Erreur !', error);
+      handleErrors(error)
     })
   }
   }, [id]);

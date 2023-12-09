@@ -30,7 +30,7 @@ import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
 import Loading from '../Loading/Loading';
 import HomeCarousel from '../Home/HomeCarousel/HomeCarousel';
 import HomeKidButtons from '../HomeKid/HomeKidButtons/HomeKidButtons';
-
+import { handleErrors } from '../../Utils/handleErrors'
 
 import './BookConfig.scss'
 
@@ -142,10 +142,10 @@ function BookConfig() {
         }
       })
         .then((response) => {
-          console.log("*********UseEffect*****************")
+          // console.log("*********UseEffect*****************")
 
           setBook(response.data);
-          console.log(response.data, " Book datas");
+          // console.log(response.data, " Book datas");
           setCardsFilter(response.data);
           setCards(response.data);
           setLoadingCards(false);
@@ -154,11 +154,11 @@ function BookConfig() {
           setcurrentComment(response.data[0].comment);
 
           setBookkidId(response.data[0].id)
-          console.log({ bookkidId }, "value current bookkid id")
+          // console.log({ bookkidId }, "value current bookkid id")
 
           // setIsRead(response.data[0].is_read)
           setCurrentIsRead(response.data[0].is_read)
-          console.log({ currentIsRead }, "is read Data on book")
+          // console.log({ currentIsRead }, "is read Data on book")
 
           if (response.data[0].series !== null) {
             setCollectionNameValue(response.data[0].series.name);
@@ -167,7 +167,7 @@ function BookConfig() {
           else {
             setCurrentCollection("je n'ai pas encore choisi de collection");
           }
-          console.log({ currentCollection }, "collection value on book")
+          // console.log({ currentCollection }, "collection value on book")
 
           if (response.data[0].category.length !== 0) {
             setCurrentCategory(response.data[0].category.name);
@@ -180,11 +180,12 @@ function BookConfig() {
             // setRatingValue(response.data[0].rating);
             setCurrentRating(response.data[0].rating);
           }
-          console.log({ ratingValue }, "rating value on book")
+          // console.log({ ratingValue }, "rating value on book")
 
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         });
 
       // call API for Categories
@@ -194,15 +195,16 @@ function BookConfig() {
         }
       })
         .then((response) => {
-          console.log("*********QueryListCategories*****************")
+          // console.log("*********QueryListCategories*****************")
 
-          console.log(response.data)
+          // console.log(response.data)
           setCategoriesList(response.data, "categorie list data")
           setLoadingCategories(false);
 
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         });
 
       // call API for Collections
@@ -222,6 +224,7 @@ function BookConfig() {
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         });
     }
   }, [kidId]);
@@ -260,6 +263,7 @@ function BookConfig() {
       .catch(function (error) {
         console.log(error);
         setAlertErrorSubmit(true)
+        handleErrors(error)
       });
   }
   // call API for Delete Book
@@ -284,6 +288,7 @@ function BookConfig() {
       .catch(function (error) {
         console.log(error,"erreur");
         setAlertErrorSubmitDelete(true)
+        handleErrors(error)
       });
   }
 
@@ -292,8 +297,8 @@ function BookConfig() {
 
   // -----HANDLE CHANGE on form fields ----------
   const handleChangeCategory = (event) => {
-    console.log("*********handlechangecategory*****************")
-    console.log(event.target.value, 'event entrant dans handleChange Category')
+    // console.log("*********handlechangecategory*****************")
+    // console.log(event.target.value, 'event entrant dans handleChange Category')
     setCategory(event.target.value);
     setCategoryId(event.target.value.id);
     if (category) {
@@ -302,10 +307,10 @@ function BookConfig() {
   };
 
   const handleChangeCollectionList = (event) => {
-    console.log("*********HandlechangeCollectionList*****************")
+    // console.log("*********HandlechangeCollectionList*****************")
     setCollection(event.target.value);
     setCollectionNameValue(event.target.value);
-    console.log({ collection }, "data collection and collectionNamevalue on handlechange")
+    // console.log({ collection }, "data collection and collectionNamevalue on handlechange")
 
 
     if (collection) {
@@ -314,7 +319,7 @@ function BookConfig() {
   };
 
   const handleChangeNewCollectionName = (event) => {
-    console.log("*********handleChangeNewCollectionName*****************")
+    // console.log("*********handleChangeNewCollectionName*****************")
     //erase list selected
     setCollection("");
     if (collection) {
@@ -324,8 +329,8 @@ function BookConfig() {
 
 
   const handleChangeRating = (event) => {
-    console.log("*********HandlechangeRating*****************")
-    console.log(event.target.value, "data rating on handlechange")
+    // console.log("*********HandlechangeRating*****************")
+    // console.log(event.target.value, "data rating on handlechange")
     setRatingValue(event.target.value);
 
     if (collection) {
@@ -334,7 +339,7 @@ function BookConfig() {
   };
 
   const handleChangeRadioButton = event => {
-    console.log("*********HandleChangeRadioButton*****************")
+    // console.log("*********HandleChangeRadioButton*****************")
 
     if (event.target.value == "true") {
       setIsRead(true);

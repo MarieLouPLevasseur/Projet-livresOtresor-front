@@ -1,17 +1,37 @@
-export const handleErrors = async (error) => {
- 
-      if (error.response.status === 401 || error.response.status === 403) {
+import { userLogout } from '../features/login/userSlice';
+import { kidLogout } from '../features/login/kidSlice';
 
-        window.location.href = '/error-access';
-        return false;
+import { store } from '../components/App/Store';
 
-      } else if (error.response.status === 500) {
+export const handleErrors = async (error, setAutoLogout) => {
 
-        window.location.href = '/error-server';
-        return false;
-      } 
+    const dispatch = store.dispatch;
+
+    const handleLogout = () => {
       
-      return false;
+      dispatch(userLogout());
+      dispatch(kidLogout())
+      localStorage.removeItem('user');
+      localStorage.removeItem('kid');
+      localStorage.setItem('isAutoLogout', true);
 
+    };
+
+      // Erreur CONNEXION
+      if (error.response.message === "Expired JWT Token" || error.response.status === 401){
+        handleLogout();
+     
+        window.location.href = '/';
+
+      }
+      // Erreur AUTORISATION
+      else if(error.response.status === 403){
+        window.location.href = '/error-access';
+
+      } 
+      // Erreur SERVER
+      else if (error.response.status === 500 || error.message === "Network Error") {
+        window.location.href = '/error-server';
+      }     
   };
   

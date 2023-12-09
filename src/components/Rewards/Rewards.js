@@ -21,7 +21,7 @@ import './Rewards.scss'
 import AvatarList from './RewardsList/AvatarList'
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
 import BookMenu from '../Book/BookMenu/BookMenu';
-
+import { handleErrors } from '../../Utils/handleErrors'
 
 function Rewards() {
 
@@ -100,6 +100,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
     })
     .catch((error) => {
       console.log('Erreur !', error);
+      handleErrors(error)
     })
 
     // Call list of Diplomas
@@ -114,6 +115,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
     })
     .catch((error) => {
       console.log('Erreur !', error);
+      handleErrors(error)
     })
   }
   }, [id]);
@@ -134,6 +136,7 @@ const [alertErrorLogin, setAlertErrorLogin] = useState(false);
   .catch(function (error) {
     console.log(error);
     setAlertErrorLogin(true)
+    handleErrors(error)
   });
 }
 

@@ -26,7 +26,7 @@ import './KidLogin.scss';
 import OpenEye from '../../assets/img/oeil_ouvert.png';
 import CloseEye from '../../assets/img/oeil_ferme.png';
 import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
-
+import { handleErrors } from '../../Utils/handleErrors'
 
 
 function Copyright(props) {
@@ -137,6 +137,7 @@ export default function KidLogin() {
     .catch(function (error) {
       console.log(error);
       setAlertErrorLogin(true)
+      handleErrors(error)
     });
   }
 

@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 import Box from '@mui/material/Box';
 import Faq from './Faq/Faq'
 import HomeCarousel from './HomeCarousel/HomeCarousel'
 import { Typography } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 
 import './Home.scss'
 import Image1 from '../../assets/img/homeimage1.jpg'
 import Image2 from '../../assets/img/homeimage2.jpg'
 import Logo from '../../assets/img/logo.3.png'
+import CustomModal from './../CustomModal';
 
 const theme = createTheme({
   palette:{
@@ -23,9 +25,35 @@ const theme = createTheme({
   }
 });
 
-function Home() {
+// function Home() {
+function Home ( ) {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const isLogUser = useSelector((state) => state.user.isLogUser);
+  const isLogKid = useSelector((state) => state.kid.isLogKid);
+
+  useEffect(() => {
+    // Récupérer des données du localStorage
+    const isAutoLogoutString = localStorage.getItem('isAutoLogout');
+    const isAutoLogout = JSON.parse(isAutoLogoutString);
+    
+    if (isAutoLogout) {
+      setShowLogoutModal(true);
+      localStorage.setItem('isAutoLogout', JSON.stringify(false));
+    }
+  }, []);
+  
+
   return (
     <ThemeProvider theme={theme}>
+    {/* Modal de déconnexion */}
+    <CustomModal
+      open={showLogoutModal}
+      onClose={() => setShowLogoutModal(false)}
+      title="Déconnexion"
+      description="Vous avez été déconnecté"
+    />
+     
     <div className='home'>
       <HomeCarousel />
       <Box sx={{display: 'flex', flexDirection: 'column', width: '70%', m: 'auto'}}>

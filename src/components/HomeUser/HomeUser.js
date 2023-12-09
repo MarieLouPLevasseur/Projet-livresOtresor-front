@@ -11,6 +11,8 @@ import './HomeUser.scss'
 import { Button, Typography } from '@mui/material';
 import Account from './Account/Account';
 import Loading from '../Loading/Loading';
+import { handleErrors } from '../../Utils/handleErrors'
+
 // import { userFirstname, userLastname } from '../../features/login/userSlice';
 
 function HomeUser() {
@@ -46,6 +48,7 @@ function HomeUser() {
     })
     .catch((error) => {
       console.log('Erreur !', error);
+      handleErrors(error)
     })
 
     

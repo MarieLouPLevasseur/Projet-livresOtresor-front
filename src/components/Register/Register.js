@@ -26,7 +26,7 @@ import CloseEye from '../../assets/img/oeil_ferme.png';
 import './Register.scss';
 import Image from '../../assets/img/register.jpg';
 import PasswordStrengthMeter from '../PasswordStrengthMeter/PasswordStrengthMeter';
-
+import { handleErrors } from '../../Utils/handleErrors'
 
 function Copyright(props) {
   return (
@@ -173,6 +173,7 @@ export default function Register() {
       })
       .catch(function (error) {
         console.log(error);
+        handleErrors(error)
       });
   }
 

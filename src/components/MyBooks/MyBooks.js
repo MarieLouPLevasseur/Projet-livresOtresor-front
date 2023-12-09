@@ -16,6 +16,7 @@ import usePagination from "../Search/UsePagination";
 import Loading from '../Loading/Loading';
 import BookIconeMenu from '../Book/BookIconeMenu/BookIconeMenu';
 import BookMenu from '../Book/BookMenu/BookMenu';
+import { handleErrors } from '../../Utils/handleErrors'
 
 import './MyBooks.scss';
 
@@ -115,6 +116,7 @@ function MyBooks() {
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         })
 
       // call API for Categories 
@@ -130,6 +132,7 @@ function MyBooks() {
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         })
 
       // call API for Collections
@@ -145,6 +148,7 @@ function MyBooks() {
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         })
 
       // call API for Authors
@@ -160,6 +164,7 @@ function MyBooks() {
         })
         .catch((error) => {
           console.log('Erreur !', error);
+          handleErrors(error)
         })
     }
 

@@ -10,7 +10,7 @@ import axios from 'axios';
 import { NavLink } from "react-router-dom";
 
 import './BookButton.scss'
-
+import { handleErrors } from '../../../Utils/handleErrors'
 
 
 /**
@@ -82,6 +82,7 @@ function BookButton(Book) {
   .catch(function (error) {
     console.log(error);
     setAlertErrorLogin(true)
+    handleErrors(error)
   })
   .then(function (response) {
     // console.log(response);

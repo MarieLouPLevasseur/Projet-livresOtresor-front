@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Logo from '../../assets/img/logo.png';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRef } from 'react';
 
 import { userLogout } from '../../features/login/userSlice';
 import { kidLogout } from '../../features/login/kidSlice';
@@ -46,18 +47,24 @@ const Navbar = () => {
 
   const dispatch = useDispatch()
 
-  const [anchorElNav, setAnchorElNav] = useState(false);
+  const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(false);
+  const anchorElNavRef = useRef(null);
 
   const handleOpenNavMenu = (event) => {
-    setAnchorElNav(true);
+    // setAnchorElNav(true);
+    // setAnchorElNav(anchorElNavRef.current);
+    setAnchorElNav(anchorElNavRef.current.getBoundingClientRect());
+
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(true);
   };
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(false);
+    // setAnchorElNav(false);
+    setAnchorElNav(null);
+
   };
 
   const handleCloseUserMenu = () => {
@@ -89,6 +96,8 @@ const Navbar = () => {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              // ref={anchorElNavRef}
+
             >
               <MenuIcon />
             </IconButton>
