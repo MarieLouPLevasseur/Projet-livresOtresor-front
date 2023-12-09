@@ -18,7 +18,7 @@ export default function HomeKidButtons() {
       >
         <NavLink
           className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
-          style={{ textDecoration: 'none'}}
+          style={{ display: 'block',textDecoration: 'none', width: 'inherit', height: 'inherit'}}
           to='/profil/enfant'
         >
           Accueil
@@ -32,7 +32,7 @@ export default function HomeKidButtons() {
       >
         <NavLink
           className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
-          style={{ textDecoration: 'none'}}
+          style={{ display: 'block',textDecoration: 'none', width: 'inherit', height: 'inherit'}}
           to='/mes-livres'
         >
           Mes livres
@@ -47,7 +47,7 @@ export default function HomeKidButtons() {
       >
         <NavLink
           className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
-          style={{ textDecoration: 'none'}}
+          style={{ display: 'block',textDecoration: 'none', width: 'inherit', height: 'inherit'}}
           to='/recompenses'
         >
           Mes récompenses
@@ -63,7 +63,7 @@ export default function HomeKidButtons() {
       >
         <NavLink
           className={({ isActive }) => (isActive ? 'button button--active' : 'button')}
-          style={{ textDecoration: 'none'}}
+          style={{ display: 'block',textDecoration: 'none', width: 'inherit', height: 'inherit'}}
           to='/recherche'
         >
           Recherche de livres
