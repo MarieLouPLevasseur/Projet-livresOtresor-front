@@ -26,6 +26,7 @@ import Image from '../../assets/img/userlogin2.jpg';
 import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
 import OpenEye from '../../assets/img/oeil_ouvert.png';
 import CloseEye from '../../assets/img/oeil_ferme.png';
+import Spinner from '../Loading/Spinner';
 
 
 function Copyright(props) {
@@ -74,6 +75,11 @@ function AnotherFooter(props) {
 }
 
 export default function UserLogin() {
+
+  // spinner
+  const [loading, setLoadingSpinner] = useState(false);
+
+
   // Api url
   const apiUrl = useSelector((state) => state.api.apiUrl);
   const apiLoginEndpoint = "/api/v1/login/user"
@@ -124,6 +130,8 @@ export default function UserLogin() {
   // ****  Api Call ******
   // Login
   const postApiLogin = (routeApi, data) => {
+    setLoadingSpinner(true); 
+
     axios.post(routeApi, data, {
       headers: {
         "Content-Type": "application/json"
@@ -152,6 +160,9 @@ export default function UserLogin() {
       .catch(function (error) {
         console.log(error);
         setAlertErrorLogin(true)
+      })
+      .finally(() => {
+        setLoadingSpinner(false); 
       });
   }
   // Reset PAssword
@@ -279,9 +290,15 @@ export default function UserLogin() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 2, mb: 2, backgroundColor: '#4462A5' }}
+                disabled={loading} 
               >
-                S'identifier
+                {loading ? (
+                  <div className="spinner" /> 
+                ) : (
+                  'S\'identifier'
+                )}
               </Button>
+            
               <Grid container>
                 <Grid item xs>
                   <Link href="/inscription" underline="hover" variant="body2" fontFamily={'Montserrat'} color="#768fd7">

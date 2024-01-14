@@ -26,7 +26,7 @@ import './KidLogin.scss';
 import OpenEye from '../../assets/img/oeil_ouvert.png';
 import CloseEye from '../../assets/img/oeil_ferme.png';
 import { useTogglePasswordVisibility } from '../../components/useTogglePasswordVisibility';
-import { handleErrors } from '../../Utils/handleErrors'
+import Spinner from '../Loading/Spinner';
 
 
 function Copyright(props) {
@@ -75,6 +75,9 @@ const theme = createTheme({
 
 export default function KidLogin() {
 
+    // spinner
+    const [loading, setLoadingSpinner] = useState(false);
+
   // Redux-toolkit state import
   const apiUrl = useSelector((state) => state.api.apiUrl);
 
@@ -112,6 +115,9 @@ export default function KidLogin() {
 
   // Api Call
   const postApi = (routeApi ,data) => {
+
+    setLoadingSpinner(true);
+
     axios.post(routeApi , data, {headers : {
       "Content-Type": "application/json"
     },
@@ -137,7 +143,9 @@ export default function KidLogin() {
     .catch(function (error) {
       console.log(error);
       setAlertErrorLogin(true)
-      handleErrors(error)
+    })
+    .finally(() => {
+      setLoadingSpinner(false); 
     });
   }
 
@@ -229,7 +237,11 @@ export default function KidLogin() {
                 variant="contained"
                 sx={{ mt: 2, mb: 2, background:'#4462A5' }}
               >
-                S'identifier
+                {loading ? (
+                  <div className="spinner" /> 
+                ) : (
+                  'S\'identifier'
+                )}
               </Button>
               <Grid container>
                 <Grid item xs={12}>

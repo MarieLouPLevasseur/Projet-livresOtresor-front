@@ -27,6 +27,7 @@ import './Register.scss';
 import Image from '../../assets/img/register.jpg';
 import PasswordStrengthMeter from '../PasswordStrengthMeter/PasswordStrengthMeter';
 import { handleErrors } from '../../Utils/handleErrors'
+import Spinner from '../Loading/Spinner';
 
 function Copyright(props) {
   return (
@@ -75,6 +76,9 @@ function AnotherFooter(props) {
 
 export default function Register() {
 
+  // spinner
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
+
   // Api base url
   const apiUrl = useSelector((state) => state.api.apiUrl);
 
@@ -84,6 +88,8 @@ export default function Register() {
   const [emailValue, setEmail] = useState("");
   const [passwordValue, setPassword] = useState("");
   const [verifiedPasswordValue, setVerifiedPasswordValue] = useState("");
+  const [passwordLengthError, setPasswordLengthError] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
   const { passwordVisibility, rightIcon, handlePasswordVisibility } =
@@ -102,6 +108,7 @@ export default function Register() {
   const [alertInvalidPassword, setAlertInvalidPassword] = useState(false);
   const [alertMatchPassword, setAlertMatchPassword] = useState(false);
   const [alertLegalMention, setAlertLegalMention] = useState(false);
+  const [alertServorError, setAlertServorError] = useState(false);
 
   // Redirect when connected
   const navigate = useNavigate();
@@ -134,15 +141,22 @@ export default function Register() {
   // };
 
   const checkPasswordMatch = () => {
-    console.log("------- Password Matchs-----------")
+    // console.log("------- Password Matchs-----------")
 
-    console.log(passwordValue, " Valeur mot de passe  ")
-    console.log(verifiedPasswordValue, " Valeur Vérification mot de passe ")
-    console.log(passwordValue === verifiedPasswordValue, " Les mot de passe sont égaux? ")
+    // console.log(passwordValue, " Valeur mot de passe  ")
+    // console.log(verifiedPasswordValue, " Valeur Vérification mot de passe ")
+    // console.log(passwordValue === verifiedPasswordValue, " Les mot de passe sont égaux? ")
     if (passwordValue !== verifiedPasswordValue) {
       setPasswordMatchError(true);
     } else {
       setPasswordMatchError(false);
+    }
+
+     // Vérification de la longueur du mot de passe
+     if (verifiedPasswordValue.length < 5) {
+      setPasswordLengthError(true);
+    } else {
+      setPasswordLengthError(false);
     }
   };
 
@@ -160,6 +174,9 @@ export default function Register() {
 
   //api call
   const postApi = (routeApi, data) => {
+
+    setLoadingSpinner(true); 
+
     axios.post(routeApi, data, {
       headers: {
         "Content-Type": "application/json"
@@ -173,7 +190,15 @@ export default function Register() {
       })
       .catch(function (error) {
         console.log(error);
-        handleErrors(error)
+        const errorMessage = handleErrors(error);
+        if(errorMessage != null){
+          setAlertServorError(true);
+        }
+        console.log(errorMessage);
+
+      })
+      .finally(() => {
+        setLoadingSpinner(false); 
       });
   }
 
@@ -207,7 +232,7 @@ export default function Register() {
         email: emailValue,
         password: passwordValue,
       };
-      setLoading(true);
+      // setLoading(true);
 
       const profilUserJson = JSON.stringify(profilUser);
       postApi(apiUrl + apiEndpoint, profilUserJson)
@@ -322,8 +347,16 @@ export default function Register() {
                 <Grid item xs={12}>
 
                   <TextField
-                    error={passwordMatchError}
-                    helperText={passwordMatchError ? "Les mots de passe ne sont pas concordants" : ""}
+                    // error={passwordMatchError}
+                    // helperText={passwordMatchError ? "Les mots de passe ne sont pas concordants" : ""}
+                    error={passwordMatchError || passwordLengthError}
+                    helperText={
+                      passwordMatchError
+                        ? "Les mots de passe ne sont pas concordants"
+                        : passwordLengthError
+                        ? "Le mot de passe doit contenir au moins 5 caractères"
+                        : ""
+                    }
                     required
                     fullWidth
                     name="VerifiedPassword"
@@ -362,8 +395,14 @@ export default function Register() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                disabled={loadingSpinner} 
+
               >
-                S'inscrire
+              {loadingSpinner ? (
+                <div className="spinner" /> 
+              ) : (
+                'S\'inscrire'
+              )}
               </Button>
               <Grid container>
                 <Grid item xs>
@@ -380,6 +419,8 @@ export default function Register() {
       </Grid>
 
       {/* **** Alert Submissions **** */}
+      {/* TODO: factoriser les alertes de soumission en erreur */}
+      
       <Snackbar
         open={alertSuccesSubmit}
         autoHideDuration={6000}
@@ -394,6 +435,21 @@ export default function Register() {
           Inscription réussie !
         </MuiAlert>
       </Snackbar>
+      <Snackbar
+        open={alertServorError}
+        autoHideDuration={6000}
+        onClose={() => setAlertServorError(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          Une erreur s'est produite lors de la soumission
+        </MuiAlert>
+      </Snackbar>
+
       <Snackbar
         open={alertErrorSubmit}
         autoHideDuration={6000}

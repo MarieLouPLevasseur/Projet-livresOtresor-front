@@ -12,6 +12,11 @@ import zxcvbn from 'zxcvbn';
       })
 
       const funProgressColor = ()=>{
+
+      if (passwordValue.length > 0 && passwordValue.length < 5) {
+        
+        return '#828082';
+      }
         switch (testedResult.score) {
           case 0:
               return '#828082';
@@ -28,6 +33,11 @@ import zxcvbn from 'zxcvbn';
           }
       }
       const createPasswordLabel = ()=>{
+
+        if (passwordValue.length > 0 && passwordValue.length < 5) {
+        
+          return 'trop court';
+        }
         switch (testedResult.score) {
           case 0:
             return ''
